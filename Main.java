@@ -10,7 +10,7 @@ public class Main {
         ArrayList<Client> clients = ParsingClientsFromFile("Data/data101.vrp");
         for(Client c : clients)
         {
-            System.out.println (c);
+            System.out.println (c.getIdName());
         }
 
     }
@@ -22,13 +22,6 @@ public class Main {
             File file = new File(fileName);
             Scanner scanner = new Scanner(file);
 
-            // skip the header lines
-            while (scanner.hasNextLine()) {
-                String line = scanner.nextLine();
-                if (line.equals("DATA_CLIENTS")) {
-                    break;
-                }
-            }
 
             // read the client data
             while (scanner.hasNextLine()) {

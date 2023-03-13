@@ -17,6 +17,31 @@ public class Client {
         this.service = service;
     }
 
+    public String getIdName() {
+        return idName;
+    }
 
+    public int getX() {
+        return x;
+    }
 
+    public int getY() {
+        return y;
+    }
+
+    public int getReadyTime() {
+        return readyTime;
+    }
+
+    public int getDueTime() {
+        return dueTime;
+    }
+
+    public int getDemand() {
+        return demand;
+    }
+
+    public int getService() {
+        return service;
+    }
 }
