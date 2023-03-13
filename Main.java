@@ -7,12 +7,15 @@ import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
-        ArrayList<Client> clients = ParsingClientsFromFile("Data/data101.vrp");
+        int total_poid = 0;
+        int nb_camion = 0;
+        ArrayList<Client> clients = ParsingClientsFromFile("Data/data1102.vrp");
         for(Client c : clients)
         {
-            System.out.println (c.getIdName());
+            total_poid += c.getDemand();
         }
-
+        nb_camion = (total_poid/200) + 1;
+        System.out.println("nombre de camion nécessaire :"+ nb_camion + " Poids total transporté :" + total_poid);
     }
 
     public static ArrayList<Client> ParsingClientsFromFile(String fileName) {

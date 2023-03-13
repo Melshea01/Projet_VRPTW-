@@ -15,4 +15,13 @@ public class Transport {
     public List<Integer> getClientlivre() {
         return clientlivre;
     }
+
+    public int calculnbtransportmin(ArrayList<Client> clients ){
+        int total_poid = 0;
+        for(Client c : clients)
+        {
+            total_poid += c.getDemand();
+        }
+        return total_poid;
+    }
 }
