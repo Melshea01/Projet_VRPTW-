@@ -49,7 +49,6 @@ public class Parsing {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         }
-
         InstanceVRP instanceVRP = new InstanceVRP(capacity, clients.size() - 1, clients);
         return instanceVRP;
     }

@@ -5,6 +5,9 @@ public class Transport {
     int id_vehicule = 1 ;
     int chargement;
     int id_route;
+    int x_vehicule;
+    int y_vehicule;
+
     private ArrayList<Integer> clientlivre;
 
     public Transport(int id_vehicule, int chargement, int id_route){
@@ -27,5 +30,29 @@ public class Transport {
             total_poid += c.getDemand();
         }
         return total_poid;
+    }
+
+    public int getX_vehicule() {
+        return x_vehicule;
+    }
+
+    public int getY_vehicule() {
+        return y_vehicule;
+    }
+
+    public void setX_vehicule(int x_vehicule) {
+        this.x_vehicule = x_vehicule;
+    }
+
+    public void setY_vehicule(int y_vehicule) {
+        this.y_vehicule = y_vehicule;
+    }
+
+    public void addChargement(int chargement) {
+        this.chargement += chargement;
+    }
+
+    public void setClientlivre(ArrayList<Integer> clientlivre) {
+        this.clientlivre = clientlivre;
     }
 }
