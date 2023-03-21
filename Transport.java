@@ -2,13 +2,17 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Transport {
-    int id_vehicule;
+    int id_vehicule = 1 ;
     int chargement;
-    private List<Integer> clientlivre;
+    int id_route;
+    private ArrayList<Integer> clientlivre;
 
-    public Transport(){
-        clientlivre = new ArrayList<Integer>();
+    public Transport(int id_vehicule, int chargement, int id_route){
+        this.id_vehicule = id_vehicule;
+        this.chargement = chargement;
+        this.id_route = id_route;
     }
+
     public void livrerClient(int idClient) {
         clientlivre.add(idClient);
     }
