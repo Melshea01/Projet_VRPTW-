@@ -10,6 +10,12 @@ public class Transport {
 
     private ArrayList<Integer> clientlivre;
 
+    public Transport(){
+        this.id_vehicule = 0;
+        this.chargement = 0;
+        this.id_route = 0;
+    }
+
     public Transport(int id_vehicule, int chargement, int id_route){
         this.id_vehicule = id_vehicule;
         this.chargement = chargement;

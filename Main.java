@@ -1,14 +1,10 @@
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
 import java.util.ArrayList;
-import java.util.Scanner;
 
 public class Main {
     public static void main(String[] args) {
         Parsing p = new Parsing();
-
+        SolutionAleatoire solution = new SolutionAleatoire();
+        ArrayList<Transport> transports = new ArrayList<>();
         int total_poid = 0;
         int nb_camion = 0;
         InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data101.vrp");
@@ -26,7 +22,8 @@ public class Main {
 
         System.out.println("nombre de camion nécessaire :"+ nb_camion + " Poids total transporté :" + total_poid);
 
-
+        transports = solution.generateRandomSolution(instanceVRP);
+        System.out.println(transports);
     }
 
 }
