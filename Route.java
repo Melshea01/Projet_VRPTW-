@@ -3,28 +3,34 @@ import java.util.ArrayList;
 public class Route {
 static int id_route =0 ;
 int distance ;
-private ArrayList<Client> route;
+private ArrayList<Client> clients = new ArrayList<>();
+
+
 
 /*Route à faire
 * Ajouter les destinations au fur et à mesure
 * les sauvegarder pour éviter de repasser sur une route passer
 * */
 
-    public Route(int distance, ArrayList<Client> route) {
+    public Route() {
+        this.distance = 0;
+    }
+
+    public Route(int distance, int id) {
         this.distance = distance;
-        this.route = route;
+        this.id_route = id;
     }
 
     public  void addDestination (Client Destination) {
-        route.add(Destination);
+        clients.add(Destination);
     }
 
     public void removeDestination (Client Destination){
-        route.remove(Destination);
+        clients.remove(Destination);
     }
 
     public ArrayList<Client> getRoute() {
-        return route;
+        return clients;
     }
 
     /*
