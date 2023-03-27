@@ -7,7 +7,7 @@ public class Main {
         ArrayList<Transport> transports = new ArrayList<>();
         int total_poid = 0;
         int nb_camion = 0;
-        InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data101.vrp");
+        InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data102.vrp");
 
         /*Calcul de la capacité totale demandée par les clients*/
         for(Client c : instanceVRP.clients)
@@ -22,8 +22,8 @@ public class Main {
 
         System.out.println("nombre de camion nécessaire :"+ nb_camion + " Poids total transporté :" + total_poid);
 
-        transports = solution.generateRandomSolution(instanceVRP);
-        System.out.println(transports);
+        solution.generateRandomSolution(instanceVRP);
+        System.out.println("nombre de transport final " + solution.transports.size());
     }
 
 }

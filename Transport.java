@@ -8,12 +8,14 @@ public class Transport {
     int x_vehicule;
     int y_vehicule;
 
+    Route route;
     private ArrayList<Integer> clientlivre;
 
     public Transport(){
         this.id_vehicule = 0;
         this.chargement = 0;
-        this.id_route = 0;
+        this.x_vehicule =0;
+        this.y_vehicule=0;
     }
 
     public Transport(int id_vehicule, int chargement, int id_route){
@@ -60,5 +62,10 @@ public class Transport {
 
     public void setClientlivre(ArrayList<Integer> clientlivre) {
         this.clientlivre = clientlivre;
+    }
+
+    public void reinitializeTransport(){
+           this.setY_vehicule(0);
+           this.setX_vehicule(0);
     }
 }
