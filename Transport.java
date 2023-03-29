@@ -18,10 +18,8 @@ public class Transport {
         this.y_vehicule=0;
     }
 
-    public Transport(int id_vehicule, int chargement, int id_route){
-        this.id_vehicule = id_vehicule;
-        this.chargement = chargement;
-        this.id_route = id_route;
+    public int getChargement() {
+        return chargement;
     }
 
     public void livrerClient(int idClient) {

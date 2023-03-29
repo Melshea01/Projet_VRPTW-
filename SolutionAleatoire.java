@@ -28,7 +28,7 @@ public class SolutionAleatoire {
             transportUsed.setX_vehicule(x_depot);
 
             //Remplissage du camion
-            while (time <=230){
+            while (time <=230 && transportUsed.chargement <= VRP.getCapacity() ){
                 //Calculer les clients potentiel
                 for (int i = 1; i < toDeliver.size(); i++) {
                     //la distance entre le véhicule et le client
@@ -40,7 +40,7 @@ public class SolutionAleatoire {
                     }
                 }
 
-                if(potentials.isEmpty()){
+                if(potentials.isEmpty()  ){
                     time += 1;
                     }
                 else {         //Choisir une valeur random parmis les possibilités
