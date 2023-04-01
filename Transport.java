@@ -2,20 +2,32 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Transport {
-    int id_vehicule = 1 ;
+    private static int nextId = 1;
+    private int id;
     int chargement;
     int id_route;
     int x_vehicule;
     int y_vehicule;
 
-    Route route;
+    Route route = new Route();
+
+    public Route getRoute() {
+        return route;
+    }
+
+
     private ArrayList<Integer> clientlivre;
 
+    public int getId() {
+        return id;
+    }
+
     public Transport(){
-        this.id_vehicule = 0;
+        this.id = generateId();;
         this.chargement = 0;
         this.x_vehicule =0;
         this.y_vehicule=0;
+        new Route();
     }
 
     public int getChargement() {
@@ -65,5 +77,10 @@ public class Transport {
     public void reinitializeTransport(){
            this.setY_vehicule(0);
            this.setX_vehicule(0);
+    }
+
+    //Garantie que chaque véhicule aura un ID unique
+    private static synchronized int generateId() {
+        return nextId++;
     }
 }

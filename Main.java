@@ -7,6 +7,8 @@ public class Main {
         ArrayList<Transport> transports = new ArrayList<>();
         int total_poid = 0;
         int nb_camion = 0;
+        double distance = 0.0;
+
         InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data102.vrp");
 
         /*Calcul de la capacité totale demandée par les clients*/
@@ -22,8 +24,23 @@ public class Main {
 
         System.out.println("nombre de camion nécessaire :"+ nb_camion + " Poids total transporté :" + total_poid);
 
-        solution.generateRandomSolution(instanceVRP);
+        distance = solution.generateRandomSolution(instanceVRP);
+
+        /*
+        //Vérification des routes
+        int i=0;
+        for (Transport transport: solution.transports) {
+            Route route = solution.transports.get(transport.getId()-1 ).getRoute();
+            i++;
+            System.out.println(i);
+            System.out.println(route.getCoordonnees());
+        }
+        */
+
+
+
         System.out.println("nombre de transport final " + solution.transports.size());
+        System.out.println("distance final " + distance);
     }
 
 }

@@ -1,28 +1,35 @@
+import java.awt.*;
+import java.awt.geom.Point2D;
 import java.util.ArrayList;
 
 public class Route {
 static int id_route =0 ;
+
+//Distance total
 int distance ;
 private ArrayList<Client> clients = new ArrayList<>();
+//Stocke les emplacement des clients
+private ArrayList<Point> coordonnees= new ArrayList<Point>();
 
 
-
-/*Route à faire
+    /*Route à faire
 * Ajouter les destinations au fur et à mesure
 * les sauvegarder pour éviter de repasser sur une route passer
 * */
 
     public Route() {
         this.distance = 0;
+        this.clients = clients;
+        this.coordonnees = coordonnees;
     }
 
-    public Route(int distance, int id) {
-        this.distance = distance;
-        this.id_route = id;
-    }
+
 
     public  void addDestination (Client Destination) {
+
         clients.add(Destination);
+        Point point = new Point(Destination.getX(), Destination.getY());
+        this.coordonnees.add((point));
     }
 
     public void removeDestination (Client Destination){
@@ -46,4 +53,14 @@ private ArrayList<Client> clients = new ArrayList<>();
     public void addDistance(Double d) {
         distance += d;
     }
+
+    public ArrayList<Point> getCoordonnees() {
+        return coordonnees;
+    }
+
+
+
+
+
+
 }
