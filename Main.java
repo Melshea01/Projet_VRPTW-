@@ -1,13 +1,23 @@
+import Graphique.Visualisation;
+import Graphique.Visualisation2;
+import Logistique.Client;
+import Logistique.InstanceVRP;
+import Logistique.Parsing;
+import Logistique.Transport;
+
 import java.util.ArrayList;
 
 public class Main {
     public static void main(String[] args) {
+
+        System.setProperty("org.graphstream.ui", "swing");
+
         Parsing p = new Parsing();
         SolutionAleatoire solution = new SolutionAleatoire();
         ArrayList<Transport> transports = new ArrayList<>();
         int total_poid = 0;
         int nb_camion = 0;
-        double distance = 0.0;
+        ArrayList<Transport> distance;
 
         InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data102.vrp");
 
@@ -24,23 +34,34 @@ public class Main {
 
         System.out.println("nombre de camion nécessaire :"+ nb_camion + " Poids total transporté :" + total_poid);
 
-        distance = solution.generateRandomSolution(instanceVRP);
+        transports = solution.generateRandomSolution(instanceVRP);
+        double distance2  ;
+        distance2 = solution.calculateDistance(solution.transports);
+
 
         /*
         //Vérification des routes
+        double distance3 = 0;
         int i=0;
-        for (Transport transport: solution.transports) {
-            Route route = solution.transports.get(transport.getId()-1 ).getRoute();
+        for (Logistique.Transport transport: solution.transports) {
+            Logistique.Route route = solution.transports.get(transport.getId()-1 ).getRoute();
             i++;
             System.out.println(i);
-            System.out.println(route.getCoordonnees());
+            System.out.println(route.getCoordonnees() + "distance total de chaque route "+ solution.transports.get(transport.getId()-1 ).getRoute().getDistance());
+            distance3 += solution.transports.get(transport.getId()-1 ).getRoute().getDistance();
         }
+        ArrayList<Client> clientroute1= new ArrayList<Client>();
+        clientroute1 = distance.get(0).getRoute().getRoute();
         */
 
 
 
+
+        Visualisation2.show(transports,instanceVRP);
+
+
         System.out.println("nombre de transport final " + solution.transports.size());
-        System.out.println("distance final " + distance);
+        System.out.println("distance final " + distance2);
     }
 
 }

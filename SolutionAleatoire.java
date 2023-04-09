@@ -1,3 +1,8 @@
+import Logistique.Client;
+import Logistique.InstanceVRP;
+import Logistique.Route;
+import Logistique.Transport;
+
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -11,13 +16,14 @@ public class SolutionAleatoire {
         this.transports = new ArrayList<>();
     }
 
-    public Double generateRandomSolution(InstanceVRP VRP) {
+    //TODO : Renvoyer une arraylist, la distance renvoyé par cette variable est fausse
+    public ArrayList<Transport> generateRandomSolution(InstanceVRP VRP) {
         ArrayList<Client> toDeliver = VRP.getClients();
         ArrayList<Double> distances = new ArrayList<>();
         ArrayList<Client> potentials = new ArrayList<>();
         int x_depot = toDeliver.get(0).getX();
         int y_depot = toDeliver.get(0).getY();
-        Double Distancefinal = 0.00;
+        double Distancefinal = 0.00;
 
 
         while (toDeliver.size()!=1){
@@ -26,13 +32,14 @@ public class SolutionAleatoire {
             Transport transportUsed = new Transport();
             transportUsed.setY_vehicule(y_depot);
             transportUsed.setX_vehicule(x_depot);
+            transportUsed.route.addDestination(toDeliver.get(0));
 
             //Remplissage du camion
             while (time <=230 && transportUsed.chargement <= VRP.getCapacity() ){
                 //Calculer les clients potentiel
                 for (int i = 1; i < toDeliver.size(); i++) {
                     //la distance entre le véhicule et le client
-                    Double distance = sqrt(pow(toDeliver.get(i).getX() - transportUsed.getX_vehicule(), 2) + pow(toDeliver.get(i).getY()-transportUsed.getY_vehicule(), 2));
+                    double distance = sqrt(pow(toDeliver.get(i).getX() - transportUsed.getX_vehicule(), 2) + pow(toDeliver.get(i).getY()-transportUsed.getY_vehicule(), 2));
                     //à add dans le if, si la demande rentre dans le camion
                     if (time + distance >= toDeliver.get(i).getReadyTime() && time + distance < toDeliver.get(i).getDueTime()) {
                         potentials.add(toDeliver.get(i));
@@ -47,15 +54,16 @@ public class SolutionAleatoire {
                     Random r = new Random();
                     int choosen = r.nextInt(potentials.size());
 
-                    //Ajout de la distance entre l'ancien
+                    //Ajout de la distance entre l'ancien et le nouveau point
                     Distancefinal += sqrt(pow(toDeliver.get(choosen).getX() - transportUsed.getX_vehicule(), 2) + pow(toDeliver.get(choosen).getY()-transportUsed.getY_vehicule(), 2));
                     //on update le véhicule
                     transportUsed.setX_vehicule(potentials.get(choosen).getX());
                     transportUsed.setY_vehicule(potentials.get(choosen).getY());
                     transportUsed.addChargement(potentials.get(choosen).getDemand());
-                    //On update la route lié au véhicule
-                    transportUsed.route.addDestination(potentials.get(choosen));
 
+                    //On update la route lié au véhicule et la distance actuelle de la route
+                    transportUsed.route.addDestination(potentials.get(choosen));
+                    transportUsed.route.addRouteDistance(distances.get(choosen));
 
                     //On enlève le client de la liste des gens à livrer
                     toDeliver.remove(potentials.get(choosen));
@@ -69,12 +77,12 @@ public class SolutionAleatoire {
 
             this.transports.add(transportUsed);
             }
-        return Distancefinal;
+        return transports;
         }
 
 
 
-        //TODO : Renvoyer une arraylist
+
     public void twOptSolution(InstanceVRP VRP){
         ArrayList<Client> toDeliver = VRP.getClients();
         Route route = new Route();
@@ -86,11 +94,10 @@ public class SolutionAleatoire {
         int improve = 0;
         int iterations = 0;
         long comparisons = 0;
-
+        int i =0;
         //Itération
-        double bestdistance = generateRandomSolution(VRP);
-
-
+        ArrayList<Transport> solution = generateRandomSolution(VRP);
+        double bestdistance = calculateDistance(solution);
       /*  repeat until no improvement is made {
             best_distance = calculateTotalDistance(existing_route)
             start_again:
@@ -111,39 +118,16 @@ public class SolutionAleatoire {
 
     //Fonction permettant d'échanger la positionde deux routes (deux arêtes)
 
-    //Fonction capable de calculer la distance a partir d'une solution
-    public static double calculateDistance(ArrayList<Integer> solution, double[][] distances, double[][] times, double[] demands, double capacity) {
+    public double calculateDistance(ArrayList<Transport> transports) {
         double totalDistance = 0;
-        double[] arrivalTime = new double[distances.length];
-
-        // Parcours de la solution
-        for (int i = 1; i < solution.size(); i++) {
-            int from = solution.get(i - 1);
-            int to = solution.get(i);
-
-            // Calcul de la distance entre deux clients
-            double distance = distances[from][to];
-
-            // Calcul du temps de service (temps d'attente inclus)
-            double serviceTime = Math.max(arrivalTime[from] + times[from][to], times[from][to]);
-
-            // Vérification de la faisabilité de la capacité
-            if (i < solution.size() - 1) {
-                int next = solution.get(i + 1);
-                if (demands[to] > capacity || demands[to] + demands[next] > capacity) {
-                    return Double.MAX_VALUE;
-                }
-            }
-
-            // Mise à jour du temps d'arrivée
-            arrivalTime[to] = serviceTime + demands[to];
-
-            // Mise à jour de la distance totale
-            totalDistance += distance;
+        int i =0;
+        //Pour chaque transport de la solution on ajoute la distance parcourue
+        for (Transport transport: transports) {
+            i=0;
+            totalDistance += transport.getRoute().distance;
+            System.out.println(totalDistance);
         }
-
         return totalDistance;
     }
-
 
 }

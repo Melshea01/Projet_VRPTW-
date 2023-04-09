@@ -1,15 +1,21 @@
+package Logistique;
+
+import Logistique.Client;
+import Logistique.Route;
+
 import java.util.ArrayList;
 import java.util.List;
 
 public class Transport {
     private static int nextId = 1;
     private int id;
-    int chargement;
-    int id_route;
+    public int chargement;
     int x_vehicule;
     int y_vehicule;
 
-    Route route = new Route();
+    double distance;
+
+    public Route route = new Route();
 
     public Route getRoute() {
         return route;
@@ -28,6 +34,7 @@ public class Transport {
         this.x_vehicule =0;
         this.y_vehicule=0;
         new Route();
+
     }
 
     public int getChargement() {
@@ -83,4 +90,7 @@ public class Transport {
     private static synchronized int generateId() {
         return nextId++;
     }
+
+    //Fonction capable de calculer la distance a partir d'une liste de transport
+
 }
