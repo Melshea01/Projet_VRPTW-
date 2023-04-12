@@ -8,9 +8,12 @@ import java.util.Random;
 import Logistique.InstanceVRP;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants;
 import org.graphstream.ui.spriteManager.Sprite;
 import org.graphstream.ui.spriteManager.SpriteManager;
+import org.graphstream.ui.layout.*;
 
 import Logistique.Client;
 import Logistique.Route;
@@ -18,17 +21,20 @@ import Logistique.Transport;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
 
+
 public class Visualisation2 {
 
 
     public static void show(ArrayList<Transport> transports, InstanceVRP VRP) {
         Graph graph = new SingleGraph("VRPTW");
+        ArrayList<Client> Client = VRP.getClients();
 
         // Ajouter le premier client (dépôt) en tant que nœud
         Client depot = VRP.getClients().get(0);
         Node depotNode = graph.addNode(depot.getIdName());
         depotNode.setAttribute("xy", depot.getX(), depot.getY());
         depotNode.setAttribute("ui.label", depot.getIdName());
+        Client.remove(depot);
 
         // Ajouter les autres clients en tant que noeuds et les routes en tant qu'arêtes
         int routeId = 0;
@@ -41,7 +47,9 @@ public class Visualisation2 {
 
             // Ajouter l'arête entre le dépôt et le premier nœud de la route
             String LastNodeId = clients.get(1).getIdName();
-            graph.addNode(LastNodeId);
+            Node node1 = graph.addNode(LastNodeId);
+            node1.setAttribute("xy", clients.get(1).getX(), clients.get(1).getY());
+            node1.setAttribute("ui.label", clients.get(1).getIdName());
             String edgeId = "route_" + Integer.toString(routeId);
             graph.addEdge(edgeId, depotNode.getId(),LastNodeId);
 
@@ -50,7 +58,7 @@ public class Visualisation2 {
                 Client client = clients.get(i);
                 Node node = graph.addNode(client.getIdName());
                 node.setAttribute("xy", client.getX(), client.getY());
-                node.setAttribute("ui.label", client.getIdName());
+                node.setAttribute("ui.label", client.getIdName() );
 
                 // Ajouter l'arête entre le dernier nœud et le nouveau nœud
                 edgeId = "route_" + Integer.toString(routeId) + "_" + Integer.toString(i);
@@ -67,7 +75,7 @@ public class Visualisation2 {
         }
 
 
-        // Définir les styles d'affichage
+
         graph.setAttribute("ui.stylesheet", "node { size: 20px; text-size: 15; fill-color: red; text-color: black; } "
                 + "edge { size: 1px; } "
                 + "sprite.vehicle { shape: circle; size: 25px; fill-color: blue; }");
@@ -81,11 +89,11 @@ public class Visualisation2 {
             }
         }*/
 
-        // Lancement de la visualisation
-        Viewer viewer = graph.display();
+
+        Viewer viewer = graph.display(false);
+        System.out.println("nombre de noeud"+ graph.getNodeCount());
         View view = viewer.getDefaultView();
-        view.getCamera().setViewPercent(0.5);
-        view.getCamera().setAutoFitView(true);
+
 
     }
 
