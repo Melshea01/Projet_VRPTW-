@@ -1,7 +1,9 @@
+package Solution;
+
 import Logistique.Client;
 import Logistique.InstanceVRP;
-import Logistique.Route;
 import Logistique.Transport;
+import Solution.Solution;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -16,8 +18,9 @@ public class SolutionAleatoire {
         this.transports = new ArrayList<>();
     }
 
-    //TODO : Renvoyer une arraylist, la distance renvoyé par cette variable est fausse
-    public ArrayList<Transport> generateRandomSolution(InstanceVRP VRP) {
+    //Fonction qui prend en paramètre l'instance VRP
+    public Solution generateRandomSolution(InstanceVRP VRP) {
+        Solution solution = new Solution();
         ArrayList<Client> toDeliver = VRP.getClients();
         ArrayList<Double> distances = new ArrayList<>();
         ArrayList<Client> potentials = new ArrayList<>();
@@ -74,60 +77,13 @@ public class SolutionAleatoire {
                     distances.clear();}
 
                 }
-
+            solution.addRoute(transportUsed.route);
+            solution.addTransport(transportUsed);
             this.transports.add(transportUsed);
+
             }
-        return transports;
+        return solution;
         }
 
-
-
-
-    public void twOptSolution(InstanceVRP VRP){
-        ArrayList<Client> toDeliver = VRP.getClients();
-        Route route = new Route();
-        int size = toDeliver.size();
-
-        //Somme de toutes les routes venant de la solution aléatoire ?
-        double newDist;
-        int swaps = 1;
-        int improve = 0;
-        int iterations = 0;
-        long comparisons = 0;
-        int i =0;
-        //Itération
-        ArrayList<Transport> solution = generateRandomSolution(VRP);
-        double bestdistance = calculateDistance(solution);
-      /*  repeat until no improvement is made {
-            best_distance = calculateTotalDistance(existing_route)
-            start_again:
-            for (i = 0; i <= number of nodes eligible to be swapped - 1; i++) {
-                for (j = i + 1; j <= number of nodes eligible to be swapped; j++) {
-                    new_route = 2optSwap(existing_route, i, j)
-                    new_distance = calculateTotalDistance(new_route)
-                    if (new_distance < best_distance) {
-                        existing_route = new_route
-                        best_distance = new_distance
-                goto start_again
-                    }
-                }
-            }
-        }*/
-
-    }
-
-    //Fonction permettant d'échanger la positionde deux routes (deux arêtes)
-
-    public double calculateDistance(ArrayList<Transport> transports) {
-        double totalDistance = 0;
-        int i =0;
-        //Pour chaque transport de la solution on ajoute la distance parcourue
-        for (Transport transport: transports) {
-            i=0;
-            totalDistance += transport.getRoute().distance;
-            System.out.println(totalDistance);
-        }
-        return totalDistance;
-    }
 
 }

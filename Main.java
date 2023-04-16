@@ -1,9 +1,10 @@
-import Graphique.Visualisation;
 import Graphique.Visualisation2;
 import Logistique.Client;
 import Logistique.InstanceVRP;
 import Logistique.Parsing;
 import Logistique.Transport;
+import Solution.Solution;
+import Solution.SolutionAleatoire;
 
 import java.util.ArrayList;
 
@@ -14,7 +15,6 @@ public class Main {
 
         Parsing p = new Parsing();
         SolutionAleatoire solution = new SolutionAleatoire();
-        ArrayList<Transport> transports = new ArrayList<>();
         int total_poid = 0;
         int nb_camion = 0;
         ArrayList<Transport> distance;
@@ -34,10 +34,7 @@ public class Main {
 
         System.out.println("nombre de camion nécessaire :"+ nb_camion + " Poids total transporté :" + total_poid);
 
-        transports = solution.generateRandomSolution(instanceVRP);
-        double distance2  ;
-        distance2 = solution.calculateDistance(solution.transports);
-
+        Solution transports = solution.generateRandomSolution(instanceVRP);
 
         /*
         //Vérification des routes
@@ -55,13 +52,11 @@ public class Main {
         */
 
 
+        Visualisation2.show(transports.getRoutes(),instanceVRP);
 
 
-        Visualisation2.show(transports,instanceVRP);
-
-
-        System.out.println("nombre de transport final " + solution.transports.size());
-        System.out.println("distance final " + distance2);
+        System.out.println("nombre de transport final " + transports.getRoutes().size());
+        System.out.println("distance final " + transports.getTotalDistance()) ;
     }
 
 }

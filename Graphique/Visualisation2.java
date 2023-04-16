@@ -6,6 +6,7 @@ import java.util.Map;
 import java.util.Random;
 
 import Logistique.InstanceVRP;
+import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.MultiGraph;
@@ -25,7 +26,7 @@ import org.graphstream.ui.view.Viewer;
 public class Visualisation2 {
 
 
-    public static void show(ArrayList<Transport> transports, InstanceVRP VRP) {
+    public static void show(ArrayList<Route> routes, InstanceVRP VRP) {
         Graph graph = new SingleGraph("VRPTW");
         ArrayList<Client> Client = VRP.getClients();
 
@@ -40,8 +41,7 @@ public class Visualisation2 {
         int routeId = 0;
         Map<String, String> routeColors = new HashMap<>();
 
-        for (Transport transport : transports) {
-            Route route = transport.getRoute();
+        for (Route route : routes) {
             ArrayList<Client> clients = route.getRoute();
 
 
@@ -91,9 +91,8 @@ public class Visualisation2 {
 
 
         Viewer viewer = graph.display(false);
-        System.out.println("nombre de noeud"+ graph.getNodeCount());
+        System.out.println("nombre de noeud :"+ graph.getNodeCount());
         View view = viewer.getDefaultView();
-
 
     }
 

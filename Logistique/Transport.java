@@ -91,6 +91,7 @@ public class Transport {
         return nextId++;
     }
 
-    //Fonction capable de calculer la distance a partir d'une liste de transport
+
+
 
 }

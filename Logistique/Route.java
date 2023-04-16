@@ -93,6 +93,10 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
         return nextId++;
     }
 
+    public Client getRandomClient() {
+        int index = (int) (Math.random() * clients.size());
+        return clients.get(index);
+    }
 
 
 }
