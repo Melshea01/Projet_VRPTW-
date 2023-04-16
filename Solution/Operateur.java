@@ -14,7 +14,7 @@ public class Operateur {
 
     //Operateur capable de bouger un client entre deux routes choisies aléatoirement
     //TODO : Finir la fonction  capable de bouger un client entre deux routes aléatoirement
-    public Solution generateNeighbor_MoveClient(Solution solution, int tabuTenure) {
+    public Solution generateNeighbor_MoveClient(Solution solution, int tabuTenure, int capacity) {
         // Sélectionner une route au hasard
         Route route1 = solution.getRandomRoute();
         // Vérifier que la route sélectionnée contient au moins deux clients
@@ -23,6 +23,7 @@ public class Operateur {
         }
         // Sélectionner un client au hasard dans la route
         Client client1 = route1.getRandomClient();
+
         // Vérifier que le client sélectionné n'est pas le dépôt
         if (client1.getIdName() == "d0") {
             return null;
@@ -34,7 +35,7 @@ public class Operateur {
             return null;
         }
         // Vérifier que la deuxième route peut accueillir le client
-        if (!route2.canAddClient(client1)) {
+        if (!route2.addClient(route1,client1,capacity)) {
             return null;
         }
         // Créer une nouvelle solution en déplaçant le client de la première route à la deuxième route
@@ -48,66 +49,21 @@ public class Operateur {
         newSolution.addRoute(newRoute1);
         newSolution.addRoute(newRoute2);
         // Ajouter le mouvement à la liste tabou
+        //TODO : Créer la liste Tabou
         TabuMove move = new TabuMove(client1, client1, route1, client2, route2,);
         newSolution.addTabuMove(move, tabuTenure);
         return newSolution;
     }
 
 
+/*    Cette méthode va parcourir toutes les positions possibles d'insertion du client dans la route, puis calculer l'heure
+    d'arrivée à cette position avec la méthode calculateArrivalTime. Ensuite, elle vérifie si l'heure d'arrivée respecte la
+    contrainte de temps du client avec la méthode isFeasible. Si c'est le cas, elle calcule un score représentant l'écart entre
+    l'heure d'arrivée et le début de la fenêtre de temps, et garde en mémoire la position où ce score est le plus faible.
+    Finalement, elle insère le client à cette position et retourne true, ou bien retourne false si l'ajout n'a pas été possible.*/
 
-    //Fonction capble de générer une solution voisine
-   /* public List<Transport> generateNeighbors(ArrayList<Transport> transports) {
-        List<Transport> neighbors = new ArrayList<>();
-
-        // For each vehicle in the current solution
-        for (Transport vehicle : transports) {
-
-            // For each customer in the vehicle's route
-            for (int i = 1; i < vehicle.getRoute().getRoute().size()- 1; i++) {
-                for (int j = i + 1; j < vehicle.getRoute().getRoute().size() - 1; j++) {
-
-                    // Swap the two customers and create a new solution
-                    //Cloner la solution entière càd la liste de transport
-                    Transport neighbor = transports.clone();
-                    Customer customer1 = vehicle.getRoute().get(i);
-                    Customer customer2 = vehicle.getRoute().get(j);
-                    vehicle.getRoute().set(i, customer2);
-                    vehicle.getRoute().set(j, customer1);
-
-                    // Check if the new solution respects the time windows
-                    if (neighbor.checkTimeWindows()) {
-                        neighbors.add(neighbor);
-                    }
-                }
-            }
-        }
-
-        return neighbors;
-    }*/
-
-    //TODO : Finir la fonction capable de determiner si on peut ajouter un client à une route
-    public boolean canAddClient(Client client,Route route) {
-        int demand1 = route.getTotalDemandRoute();
-        // Vérifier si le client peut être ajouté en termes de capacité
-        if ( + client.getDemand() > getVehicle().getCapacity()) {
-            return false;
-        }
-        // Vérifier si le client peut être ajouté en termes de fenêtre de temps
-        double arrivalTime = getLastDepartureTime() + getTravelTime(getLastClient(), client);
-        if (arrivalTime > client.getTwEnd()) {
-            return false;
-        }
-        double waitTime = Math.max(client.getTwStart() - arrivalTime, 0);
-        double serviceTime = client.getServiceTime();
-        double totalIdleTime = Math.max(waitTime, client.getTwStart() - getLastDepartureTime());
-        if (arrivalTime + waitTime + serviceTime + totalIdleTime > client.getTwEnd()) {
-            return false;
-        }
-        return true;
-    }
 
     //Vérifie si l'échange entre deux clients est possible
-
     public static boolean isFeasibleSwap(Client c1, Client c2, Route route1, Route route2,int capacity) {
 
         //On récupère une liste client de chaque route
@@ -148,5 +104,6 @@ public class Operateur {
         }
         return true;
     }
+
 
 }

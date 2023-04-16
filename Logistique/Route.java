@@ -98,5 +98,54 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
         return clients.get(index);
     }
 
+    public double calculateArrivalTime(Route route, Client prevClient, Client currClient) {
+        double distance = Math.sqrt(Math.pow(currClient.getX() - prevClient.getX(), 2) + Math.pow(currClient.getY() - prevClient.getY(), 2));
+        double arrivalTime = prevClient.getService() + distance;
+        if (arrivalTime < currClient.getReadyTime()) {
+            return currClient.getReadyTime();
+        } else if (arrivalTime <= currClient.getDueTime()) {
+            return arrivalTime;
+        } else {
+            return Double.POSITIVE_INFINITY;
+        }
+    }
+
+    public boolean addClient(Route route, Client client, int capacity) {
+        // Vérifier si la demande du client dépasse la capacité restante de la route
+        if (route.getTotalDemandRoute()+ client.getDemand() > capacity) {
+            return false;
+        }
+
+        //Verification de la contrainte de temps
+        int positionToInsert = -1;
+        double bestScore = Double.MAX_VALUE;
+
+        for (int i = 1; i <= route.getRoute().size(); i++) {
+            route.getRoute().add(i, client);
+            //Calcul du temps d'arrivée entre l'ancien client et le nouveau
+            double arrivalTime = route.calculateArrivalTime(route, route.getRoute().get(i-1),   route.getRoute().get(i));
+            //Ajout temporaire du client
+            if (client.isFeasible(arrivalTime)) {
+                //calcule le score d'un client à une position donnée dans une route en fonction de sa contrainte de temps,
+                // utilisé pour évaluer la qualité de l'insertion du client à cette position dans la route
+                double score = Math.abs(client.getReadyTime() - arrivalTime);
+                if (score < bestScore) {
+                    bestScore = score;
+                    positionToInsert = i;
+                }
+            }
+            //On enlève le client si aucun placement n'est possible
+            route.getRoute().remove(i);
+        }
+
+        if (positionToInsert != -1) {
+            route.getRoute().add(positionToInsert, client);
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+
 
 }
