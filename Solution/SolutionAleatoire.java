@@ -26,6 +26,7 @@ public class SolutionAleatoire {
         ArrayList<Client> potentials = new ArrayList<>();
         int x_depot = toDeliver.get(0).getX();
         int y_depot = toDeliver.get(0).getY();
+        int max_time = toDeliver.get(0).getDueTime();
         double Distancefinal = 0.00;
 
 
@@ -38,7 +39,7 @@ public class SolutionAleatoire {
             transportUsed.route.addDestination(toDeliver.get(0));
 
             //Remplissage du camion
-            while (time <=230 && transportUsed.chargement <= VRP.getCapacity() ){
+            while (time <= max_time && transportUsed.chargement <= VRP.getCapacity() ){
                 //Calculer les clients potentiel
                 for (int i = 1; i < toDeliver.size(); i++) {
                     //la distance entre le véhicule et le client

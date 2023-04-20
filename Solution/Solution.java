@@ -5,6 +5,9 @@ import Logistique.Transport;
 
 import java.util.ArrayList;
 
+import static java.lang.Math.pow;
+import static java.lang.Math.sqrt;
+
 public class Solution {
 
     private ArrayList<Route> routes;
@@ -31,6 +34,9 @@ public class Solution {
         double totalDistance = 0.0;
         for (Route route : this.routes) {
             totalDistance += route.getDistance();
+            //On ajoute la distance entre le dernier client et le dépot
+            totalDistance += sqrt(pow(route.getRoute().get(route.getRoute().size()-1).getX() -route.getRoute().get(0).getX(), 2) + pow(route.getRoute().get(route.getRoute().size()-1).getY() -route.getRoute().get(0).getY(), 2));
+
         }
         return totalDistance;
     }

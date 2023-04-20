@@ -110,6 +110,7 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
         }
     }
 
+    //fonction relocate capable d'ajouter un client d'une route vers une autre
     public boolean addClient(Route route, Client client, int capacity) {
         // Vérifier si la demande du client dépasse la capacité restante de la route
         if (route.getTotalDemandRoute()+ client.getDemand() > capacity) {

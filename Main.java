@@ -19,7 +19,7 @@ public class Main {
         int nb_camion = 0;
         ArrayList<Transport> distance;
 
-        InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data102.vrp");
+        InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data201.vrp");
 
         /*Calcul de la capacité totale demandée par les clients*/
         for(Client c : instanceVRP.clients)
