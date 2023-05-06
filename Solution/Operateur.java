@@ -5,6 +5,7 @@ import Logistique.Transport;
 import Logistique.*;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static java.lang.Math.pow;
@@ -19,12 +20,14 @@ public class Operateur {
         boolean improve = true;
         while (improve){
             improve = false;
+            Client clientinitial = route.getRoute().get(0);
             //Pour tous les clients de la route
             for (Client c : route.getRoute()){
                 int index = route.getRoute().indexOf(c);
+
+                //Essayer de le placer sur toutes les ok
+
                 //pour tous les clients ayant un index différent de i+1 et i-1 et de 0
-                //revoir 2opt peut-être modulo par la taille du machine -1 pour retomber sur le dépot qui est en première place
-                //
             }
 
         }
@@ -32,7 +35,32 @@ public class Operateur {
         return newroute;
     }
 
-    //Créer une fonction swap afin de faire le changement de tour s'inspier du code suivant https://github.com/jackspyder/2-opt/blob/master/src/sample/TwoOpt.java
+    public Route twoOptSameRoute(Route route) {
+        int size = route.getRoute().size();
+        Route newRoute= route.cloneRoute(route);
+        boolean improved = true;
+        while (improved) {
+            improved = false;
+            for (int i = 1; i < size - 2; i++) {
+                for (int j = i + 1; j < size - 1; j++) {
+                    double dist1 = route.getDistanceBetweenTwoClient(route.getRoute().get(i - 1),route.getRoute().get(i)) + route.getDistanceBetweenTwoClient(route.getRoute().get(j),route.getRoute().get(j+1));
+                    double dist2 = route.getDistanceBetweenTwoClient(route.getRoute().get(i - 1),route.getRoute().get(j)) +  route.getDistanceBetweenTwoClient(route.getRoute().get(i),route.getRoute().get(j+1));
+                    System.out.println(" distance initial " + dist1 + " distance secondaire " +dist2);
+                    if (dist2 < dist1) {
+                        //Vérification contrainte de temps
+                        System.out.println("Vérification contrainte de temps " + route.isFeasible(route));
+                        if(route.isFeasible(route)){
+                            //On inverse les élements entre l'index de début de et de fin
+                            Collections.reverse(newRoute.getRoute().subList(i, j + 1));
+                            improved = true;
+                            return newRoute;
+                        }
+                    }
+                }
+            }
+        }
+        return null;
+    }
 
 
 
@@ -87,7 +115,7 @@ public class Operateur {
         }
     }
 
-    //TODO : Créer l'opérateur, exchange qui va échanger de place deux client entre deux routes
+    //TODO : Finir l'opérateur, exchange qui va échanger de place deux client entre deux routes (Ajouter les fenetres de temps)
     public static boolean exchangeInter(Client c1, Client c2, Route route1, Route route2,int capacity) {
 
         //On récupère une liste client de chaque route

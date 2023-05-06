@@ -147,6 +147,31 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
         }
     }
 
+    public double getDistanceBetweenTwoClient(Client c1, Client c2){
+        double x1 = c1.getX();
+        double y1 = c1.getY();
+        double x2 = c2.getX();
+        double y2 = c2.getY();
+        double distance = Math.sqrt(Math.pow((x2 - x1), 2) + Math.pow((y2 - y1), 2));
+        return distance;
+    }
+
+    public boolean isFeasible(Route route) {
+        int currentTime = 0; // On commence à l'entrepôt à l'heure 0
+        for (int i = 1; i < route.getRoute().size(); i++) { // On parcourt la route (en ignorant l'entrepôt)
+            Client currentClient = route.getRoute().get(i);
+            double travelTime = getDistanceBetweenTwoClient(route.getRoute().get(i - 1), currentClient); // Temps de trajet entre les clients i-1 et i
+            currentTime += travelTime; // On ajoute le temps de trajet au temps actuel
+
+            // Vérification de la contrainte de temps
+            if (currentTime < currentClient.getReadyTime()) { // On arrive trop tôt
+                currentTime = currentClient.getReadyTime(); // On attend jusqu'à l'heure de début de la fenêtre de temps
+            } else if (currentTime > currentClient.getDueTime()) { // On arrive trop tard
+                return false; // La route n'est pas faisable
+            }
+        }
+        return true; // La route est faisable
+    }
 
 
 }

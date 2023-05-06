@@ -1,10 +1,8 @@
 import Graphique.Visualisation2;
-import Logistique.Client;
-import Logistique.InstanceVRP;
-import Logistique.Parsing;
-import Logistique.Transport;
+import Logistique.*;
 import Solution.Solution;
 import Solution.SolutionAleatoire;
+import Solution.Operateur;
 
 import java.util.ArrayList;
 
@@ -15,11 +13,13 @@ public class Main {
 
         Parsing p = new Parsing();
         SolutionAleatoire solution = new SolutionAleatoire();
+        Operateur o = new Operateur();
+
         int total_poid = 0;
         int nb_camion = 0;
         ArrayList<Transport> distance;
 
-        InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data201.vrp");
+        InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data101.vrp");
 
         /*Calcul de la capacité totale demandée par les clients*/
         for(Client c : instanceVRP.clients)
@@ -34,14 +34,16 @@ public class Main {
 
         System.out.println("nombre de camion nécessaire :"+ nb_camion + " Poids total transporté :" + total_poid);
 
-        Solution transports = solution.generateRandomSolution(instanceVRP);
+        Solution solution1 = solution.generateRandomSolution(instanceVRP);
+        ArrayList<Route> routes = solution1.getRoutes();
+        System.out.println(routes.size());
 
         /*
         //Vérification des routes
         double distance3 = 0;
         int i=0;
-        for (Logistique.Transport transport: solution.transports) {
-            Logistique.Route route = solution.transports.get(transport.getId()-1 ).getRoute();
+        for (Transport transports: transports) {
+            Logistique.Route route = transports.get(transport.getId()-1 ).getRoute();
             i++;
             System.out.println(i);
             System.out.println(route.getCoordonnees() + "distance total de chaque route "+ solution.transports.get(transport.getId()-1 ).getRoute().getDistance());
@@ -52,11 +54,22 @@ public class Main {
         */
 
 
-        Visualisation2.show(transports.getRoutes(),instanceVRP);
+        //Test des opérateurs
+
+        for (int i=0; i<20; i++ ){
+            Route routetest = solution1.getRoutes().get(i);
+            System.out.println("route de base "+ routetest.clients);
+            if(o.twoOptSameRoute(routetest) != null){
+                routetest= o.twoOptSameRoute(routetest);
+                System.out.println("route modifié " + routetest.clients);
+            };
+        }
+
+        Visualisation2.show(solution1.getRoutes(),instanceVRP);
 
 
-        System.out.println("nombre de transport final " + transports.getRoutes().size());
-        System.out.println("distance final " + transports.getTotalDistance()) ;
+        System.out.println("nombre de transport final " + solution1.getRoutes().size());
+        System.out.println("distance final " + solution1.getTotalDistance()) ;
     }
 
 }
