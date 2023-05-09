@@ -11,7 +11,7 @@ import java.util.Random;
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
-public class SolutionAleatoire {
+public class SolutionAleatoire extends Solution{
     ArrayList <Transport> transports;
 
     public SolutionAleatoire() {

@@ -10,6 +10,7 @@ public class Client {
     private int dueTime;
     private int demand;
     private int service;
+    public int livraisontime;
 
     public Client(String idName, int x, int y, int readyTime, int dueTime, int demand, int service) {
         this.idName = idName;
@@ -19,6 +20,7 @@ public class Client {
         this.dueTime = dueTime;
         this.demand = demand;
         this.service = service;
+        this.livraisontime = 0;
     }
 
     public String getIdName() {
@@ -41,8 +43,13 @@ public class Client {
         return dueTime;
     }
 
+
     public int getDemand() {
         return demand;
+    }
+
+    public int getLivraisontime() {
+        return livraisontime;
     }
 
     public int getService() {

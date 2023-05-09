@@ -156,16 +156,17 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
         return distance;
     }
 
+    //TODO : correction à effectuer sur la contrainte de temps
     public boolean isFeasible(Route route) {
         int currentTime = 0; // On commence à l'entrepôt à l'heure 0
         for (int i = 1; i < route.getRoute().size(); i++) { // On parcourt la route (en ignorant l'entrepôt)
             Client currentClient = route.getRoute().get(i);
             double travelTime = getDistanceBetweenTwoClient(route.getRoute().get(i - 1), currentClient); // Temps de trajet entre les clients i-1 et i
-            currentTime += travelTime; // On ajoute le temps de trajet au temps actuel
+            currentTime += travelTime; // On ajoute le temps de trajet au temps actuel + le temps de la livraison
 
             // Vérification de la contrainte de temps
             if (currentTime < currentClient.getReadyTime()) { // On arrive trop tôt
-                currentTime = currentClient.getReadyTime(); // On attend jusqu'à l'heure de début de la fenêtre de temps
+                currentTime = currentClient.getReadyTime()+currentClient.getService(); // On attend jusqu'à l'heure de début de la fenêtre de temps
             } else if (currentTime > currentClient.getDueTime()) { // On arrive trop tard
                 return false; // La route n'est pas faisable
             }

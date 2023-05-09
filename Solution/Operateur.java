@@ -24,9 +24,7 @@ public class Operateur {
             //Pour tous les clients de la route
             for (Client c : route.getRoute()){
                 int index = route.getRoute().indexOf(c);
-
                 //Essayer de le placer sur toutes les ok
-
                 //pour tous les clients ayant un index différent de i+1 et i-1 et de 0
             }
 
@@ -43,22 +41,17 @@ public class Operateur {
             improved = false;
             for (int i = 1; i < size - 2; i++) {
                 for (int j = i + 1; j < size - 1; j++) {
-                    double dist1 = route.getDistanceBetweenTwoClient(route.getRoute().get(i - 1),route.getRoute().get(i)) + route.getDistanceBetweenTwoClient(route.getRoute().get(j),route.getRoute().get(j+1));
-                    double dist2 = route.getDistanceBetweenTwoClient(route.getRoute().get(i - 1),route.getRoute().get(j)) +  route.getDistanceBetweenTwoClient(route.getRoute().get(i),route.getRoute().get(j+1));
-                    System.out.println(" distance initial " + dist1 + " distance secondaire " +dist2);
-                    if (dist2 < dist1) {
                         //Vérification contrainte de temps
-                        System.out.println("Vérification contrainte de temps " + route.isFeasible(route));
-                        if(route.isFeasible(route)){
+                        Collections.reverse(newRoute.getRoute().subList(i, j+2));
+                        if(newRoute.isFeasible(newRoute)){
                             //On inverse les élements entre l'index de début de et de fin
-                            Collections.reverse(newRoute.getRoute().subList(i, j + 1));
                             improved = true;
                             return newRoute;
                         }
                     }
                 }
             }
-        }
+
         return null;
     }
 

@@ -54,16 +54,7 @@ public class Main {
         */
 
 
-        //Test des opérateurs
 
-        for (int i=0; i<20; i++ ){
-            Route routetest = solution1.getRoutes().get(i);
-            System.out.println("route de base "+ routetest.clients);
-            if(o.twoOptSameRoute(routetest) != null){
-                routetest= o.twoOptSameRoute(routetest);
-                System.out.println("route modifié " + routetest.clients);
-            };
-        }
 
         Visualisation2.show(solution1.getRoutes(),instanceVRP);
 
