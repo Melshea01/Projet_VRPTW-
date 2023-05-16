@@ -26,8 +26,6 @@ private final int id;
     }
 
 
-
-
     public  void addDestination (Client Destination) {
         clients.add(Destination);
     }

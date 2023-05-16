@@ -1,3 +1,4 @@
+import Graphique.Visualisation;
 import Graphique.Visualisation2;
 import Logistique.*;
 import Solution.Operateur;
@@ -25,11 +26,11 @@ public class TestOperateur {
 
         //Instanciation de la solution 1
         Solution solution1 = solution.generateRandomSolution(instanceVRP1);
-        Solution newSolution = new Solution();
+        Solution solution2 = new Solution();
         ArrayList<Route> routes = solution1.getRoutes();
         System.out.println(routes.size());
 
-        Visualisation2 visu = new Visualisation2(solution1.getRoutes(), instanceVRP2.getClients());
+        Visualisation visu = new Visualisation(solution1.getRoutes(), instanceVRP2.getClients());
 
         //Test des opérateurs twoOpt
 
@@ -62,20 +63,18 @@ public class TestOperateur {
             }
             if (o.twoOptSameRoute(routetest) != null) {
                 routetest = o.twoOptSameRoute(routetest);
-                newSolution = solution1.replaceRoute(solution1, routetest);
+                solution2 = solution1.replaceRoute(routetest,0);
                 ArrayList<Client> clients = routetest.clients;
                 System.out.println("route modifié :");
                 for (Client client : clients) {
                     System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
                 }
-
                 try {
-                    visu.updateGraph(newSolution.getRoutes());
+                    visu.updateGraph(solution2.getRoutes());
                     Thread.sleep(3000);
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
 
             }
             i1++;

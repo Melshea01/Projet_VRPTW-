@@ -1,69 +1,97 @@
 package Graphique;
 
-import java.awt.*;
 import java.util.ArrayList;
-import javax.swing.JFrame;
-import javax.swing.JPanel;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Random;
+
+import org.graphstream.graph.Edge;
+import org.graphstream.graph.Graph;
+import org.graphstream.graph.Node;
+import org.graphstream.graph.implementations.SingleGraph;
 
 import Logistique.Client;
 import Logistique.Route;
-import Logistique.Transport;
-
-public class Visualisation extends JPanel {
-    private ArrayList<Route> routes;
-    private ArrayList<Transport> transports;
-
-    static final int MULTIPLIER = 10;
-
-    public Visualisation(ArrayList<Transport> transports) {
-        this.routes = new ArrayList<Route>();
-        for(int i=0; i<transports.size();i++){
-            this.routes.add(transports.get(i).getRoute());
-        }
-    }
-
-    public void paintComponent(Graphics g) {
-        super.paintComponent(g);
-        g.setColor(Color.BLACK);
-        Graphics2D g2d = (Graphics2D) g;
-        g2d.scale(5, 5); // agrandissement de 20 fois
+import org.graphstream.ui.view.View;
+import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.view.ViewerPipe;
 
 
-        // Dessine chaque route en utilisant des couleurs différentes
-        Color[] colors = {Color.RED, Color.BLUE, Color.GREEN, Color.YELLOW, Color.ORANGE, Color.PINK};
+public class Visualisation {
+
+    private org.graphstream.graph.Graph graph;
+
+    public  Visualisation(ArrayList<Route> routes, ArrayList<Client> Client) {
+        ArrayList<Client> copiedList = new ArrayList<>(Client);
+        Client depot = copiedList.get(0);
+
+        //Paramètre fenetre graph
+        graph = new SingleGraph("VRPTW");
+        graph.setAttribute("ui.stylesheet", "node { text-size: 20px; } edge { text-size: 20px; }");
+        graph.setAttribute("ui.quality");
+        graph.setAttribute("ui.antialias");
+        graph.setStrict(false);
 
 
-        for (int i = 0; i < routes.size(); i++) {
-            Route route = routes.get(i);
-            g.setColor(colors[i % colors.length]);
+        // Ajouter les autres clients en tant que noeuds et les routes en tant qu'arêtes
+        int routeId = 0;
 
-            // Dessine les clients visités
-            for (int j = 0; j < route.getListClient().size() -1; j++) {
-                Client client = route.getListClient().get(j);
-                int x = (int) client.getX();
-                int y = (int) client.getY();
-                g.fillOval(x - 5, y - 5, 10, 10);
+        for (Route route : routes) {
+            copiedList = route.getListClient();
+
+            // Ajouter le noeud du dépôt
+            Node depotNode = graph.addNode(depot.getIdName());
+            depotNode.setAttribute("ui.style", "fill-color: rgb(0,0,255); size: 10px;"); // Modifier la taille à 10px pour le dépôt
+            depotNode.setAttribute("ui.label",  depot.getIdName());
+            depotNode.setAttribute("xy", depot.getX(), depot.getY());
+
+
+            // Ajouter l'arête entre le dépôt et le premier nœud de la route
+            String LastNodeId = copiedList.get(1).getIdName();
+            Node node1 = graph.addNode(LastNodeId);
+            node1.setAttribute("xy", copiedList.get(1).getX(), copiedList.get(1).getY());
+            node1.setAttribute("ui.label", copiedList.get(1).getIdName());
+            String edgeId = "route_" + Integer.toString(routeId);
+            graph.addEdge(edgeId, depotNode.getId(), LastNodeId);
+
+            // Ajouter les noeuds des clients
+            for (Client client : route.getListClient()) {
+                Node clientNode = graph.addNode(client.getIdName());
+                clientNode.setAttribute("ui.label", "    " + client.getIdName());
+                clientNode.setAttribute("xy", client.getX(), client.getY());
+                clientNode.setAttribute("ui.style", "fill-color: rgb(255,0,0); size: 10 px;");
             }
 
-            // Dessine les arcs entre les clients
-            for (int j = 0; j < route.getListClient().size() -1; j++) {
-                Client from = route.getListClient().get(j);
-                Client to = route.getListClient().get(j+1);
-                int x1 = (int) from.getX();
-                int y1 = (int) from.getY();
-                int x2 = (int) to.getX();
-                int y2 = (int) to.getY();
-                g.drawLine(x1, y1, x2, y2);
-            }
+
+
+            Viewer viewer = graph.display();
+            viewer.disableAutoLayout();
         }
+
     }
 
-    public static void show(ArrayList<Transport> transports) {
-        Visualisation panel = new Visualisation(transports);
-        JFrame frame = new JFrame();
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
-        frame.add(panel);
-        frame.setSize(500, 500);
-        frame.setVisible(true);
+    public void updateGraph(ArrayList<Route> routes) {
+
+        for (int i = graph.getEdgeCount()-1; i >= 0; i--) {
+            graph.removeEdge(i);
+        }
+
+        // Ajouter les arêtes représentant les chemins des véhicules
+        int colorIndex = 0;
+        for (Route route : routes) {
+            ArrayList<Client> vehicleClients = route.getListClient();
+            String color = "rgb(" + (colorIndex % 256) + ", " + (255 - colorIndex % 256) + ", " + (colorIndex % 128) + ")";
+            for (int i = 0; i < vehicleClients.size() - 1; i++) {
+                Node node1 = graph.getNode(vehicleClients.get(i).getIdName());
+                Node node2 = graph.getNode(vehicleClients.get(i + 1).getIdName());
+                Edge edge = graph.addEdge(node1.getId() + "-" + node2.getId(), node1, node2);
+                if (edge != null) {
+                    edge.setAttribute("vehicle", route.getId());
+                    edge.setAttribute("ui.style", "fill-color: " + color + "; size: 1px;");
+                }
+            }
+            colorIndex += 100;
+        }
+
     }
 }

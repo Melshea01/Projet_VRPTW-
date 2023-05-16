@@ -37,12 +37,10 @@ public class Visualisation2 {
         Node depotNode = graph.addNode(depot.getIdName());
         depotNode.setAttribute("xy", depot.getX(), depot.getY());
         depotNode.setAttribute("ui.label", depot.getIdName());
-        depotNode.setAttribute("ui.style", "fill-color: rgb(255,0,0); size: 1px;");
         copiedList.remove(depot);
 
         // Ajouter les autres clients en tant que noeuds et les routes en tant qu'arêtes
         int routeId = 0;
-        Map<String, String> routeColors = new HashMap<>();
 
         for (Route route : routes) {
             copiedList = route.getListClient();
@@ -75,7 +73,6 @@ public class Visualisation2 {
             }
             routeId++;
         }
-
 
 
         graph.setAttribute("ui.stylesheet", "node { size: 20px; text-size: 15; fill-color: red; text-color: black; } "

@@ -51,16 +51,15 @@ public class Solution {
     public void setRoutes(ArrayList routes) {
         this.routes = routes;
     }
-    public Solution replaceRoute(Solution solution, Route newRoute) {
-        ArrayList<Route> routes = solution.getRoutes();
-        for (int i = 0; i < routes.size(); i++) {
-            if (routes.get(i) == newRoute) {
-                routes.set(i, newRoute);
-                break;
-            }
-        }
-        solution.setRoutes(routes);
-        return solution;
+
+    //Utiliser l'id
+    public Solution replaceRoute(Route newRoute, int indice) {
+        //On récupère les routes de la soltuion
+        ArrayList<Route> routes = getRoutes();
+        //On l'a change dans cette solution
+        routes.set(indice,newRoute);
+        this.setRoutes(routes);
+        return this;
     }
 
 }

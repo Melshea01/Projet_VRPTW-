@@ -74,6 +74,7 @@ public class SolutionAleatoire extends Solution{
                     distances.clear();}
 
                 }
+            transportUsed.route.addDestination(toDeliver.get(0));
             solution.addRoute(transportUsed.route);
             solution.addTransport(transportUsed);
 
