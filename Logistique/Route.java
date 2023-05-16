@@ -2,15 +2,16 @@ package Logistique;
 
 import java.awt.*;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.concurrent.atomic.AtomicInteger;
 
 public class Route {
-static int id;
-static int  nextId;
-//Distance total
 public double distance ;
 public ArrayList<Client> clients = new ArrayList<>();
-//Stocke les emplacement des clients
-public ArrayList<Point> coordonnees= new ArrayList<Point>();
+//TODO : Peut être utilisé une hashmap
+HashMap<Client, Point> hashMap = new HashMap<>();
+private static final AtomicInteger ID_FACTORY = new AtomicInteger();
+private final int id;
 
 
     /*Logistique.Route à faire
@@ -19,36 +20,23 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
 * */
 
     public Route() {
-        this.id = generateId();;
+        this.id = ID_FACTORY.getAndIncrement();
         this.distance = 0;
         this.clients = clients;
-        this.coordonnees = coordonnees;
     }
 
-    public Route( ArrayList<Client> clients,ArrayList<Point> coordonnees ) {
-        this.id = generateId();;
-        this.distance = 0;
-        this.clients = clients;
-        this.coordonnees = coordonnees;
-    }
 
-    public static int getId() {
-        return id;
-    }
+
 
     public  void addDestination (Client Destination) {
         clients.add(Destination);
-        Point point = new Point(Destination.getX(), Destination.getY());
-        this.coordonnees.add((point));
     }
 
     public void removeDestination (Client Destination){
-        Point point = new Point(Destination.getX(), Destination.getY());
-        this.coordonnees.remove(point);
         clients.remove(Destination);
     }
 
-    public ArrayList<Client> getRoute() {
+    public ArrayList<Client> getListClient() {
         return clients;
     }
 
@@ -67,38 +55,40 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
         return distance;
     }
 
+    public final int getId() {
+        return id;
+    }
+
     /*
     Ajout de la distance parcourue
      */
-    public void addDistance(Double d) {
-        distance += d;
-    }
     public void addRouteDistance(Double d) {
         this.distance += d;
     }
 
-    public ArrayList<Point> getCoordonnees() {
-        return coordonnees;
-    }
 
+    //clone un objet route
     public Route cloneRoute(Route originalRoute) {
         Route newRoute = new Route();
-        for (Client client : originalRoute.getRoute()) {
+        for (Client client : originalRoute.getListClient()) {
             newRoute.addDestination(client);
         }
         return newRoute;
     }
 
-    private static synchronized int generateId() {
-        return nextId++;
+
+    //Modifier un objet route
+    public Route setRoute(ArrayList<Client> newClients) {
+        Route newRoute = new Route();
+        for (Client client : newClients) {
+            newRoute.addDestination(client);
+        }
+        return newRoute;
     }
 
-    public Client getRandomClient() {
-        int index = (int) (Math.random() * clients.size());
-        return clients.get(index);
-    }
 
-    public double calculateArrivalTime(Route route, Client prevClient, Client currClient) {
+
+    public double calculateArrivalTime(Client prevClient, Client currClient) {
         double distance = Math.sqrt(Math.pow(currClient.getX() - prevClient.getX(), 2) + Math.pow(currClient.getY() - prevClient.getY(), 2));
         double arrivalTime = prevClient.getService() + distance;
         if (arrivalTime < currClient.getReadyTime()) {
@@ -111,7 +101,7 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
     }
 
     //fonction relocate capable d'ajouter un client d'une route vers une autre
-    public boolean addClient(Route route, Client client, int capacity) {
+    public boolean addRelocationClient(Route route, Client client, int capacity) {
         // Vérifier si la demande du client dépasse la capacité restante de la route
         if (route.getTotalDemandRoute()+ client.getDemand() > capacity) {
             return false;
@@ -121,10 +111,10 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
         int positionToInsert = -1;
         double bestScore = Double.MAX_VALUE;
 
-        for (int i = 1; i <= route.getRoute().size(); i++) {
-            route.getRoute().add(i, client);
+        for (int i = 1; i <= route.getListClient().size(); i++) {
+            route.getListClient().add(i, client);
             //Calcul du temps d'arrivée entre l'ancien client et le nouveau
-            double arrivalTime = route.calculateArrivalTime(route, route.getRoute().get(i-1),   route.getRoute().get(i));
+            double arrivalTime = route.calculateArrivalTime( route.getListClient().get(i-1),   route.getListClient().get(i));
             //Ajout temporaire du client
             if (client.isFeasible(arrivalTime)) {
                 //calcule le score d'un client à une position donnée dans une route en fonction de sa contrainte de temps,
@@ -136,11 +126,11 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
                 }
             }
             //On enlève le client si aucun placement n'est possible
-            route.getRoute().remove(i);
+            route.getListClient().remove(i);
         }
 
         if (positionToInsert != -1) {
-            route.getRoute().add(positionToInsert, client);
+            route.getListClient().add(positionToInsert, client);
             return true;
         } else {
             return false;
@@ -156,23 +146,23 @@ public ArrayList<Point> coordonnees= new ArrayList<Point>();
         return distance;
     }
 
-    //TODO : correction à effectuer sur la contrainte de temps
-    public boolean isFeasible(Route route) {
+    public boolean isFeasible() {
         int currentTime = 0; // On commence à l'entrepôt à l'heure 0
-        for (int i = 1; i < route.getRoute().size(); i++) { // On parcourt la route (en ignorant l'entrepôt)
-            Client currentClient = route.getRoute().get(i);
-            double travelTime = getDistanceBetweenTwoClient(route.getRoute().get(i - 1), currentClient); // Temps de trajet entre les clients i-1 et i
+        for (int i = 1; i < getListClient().size(); i++) { // On parcourt la route (en ignorant l'entrepôt)
+            Client currentClient = getListClient().get(i);
+            double travelTime = getDistanceBetweenTwoClient(getListClient().get(i - 1), currentClient); // Temps de trajet entre les clients i-1 et i
             currentTime += travelTime; // On ajoute le temps de trajet au temps actuel + le temps de la livraison
 
             // Vérification de la contrainte de temps
             if (currentTime < currentClient.getReadyTime()) { // On arrive trop tôt
                 currentTime = currentClient.getReadyTime()+currentClient.getService(); // On attend jusqu'à l'heure de début de la fenêtre de temps
             } else if (currentTime > currentClient.getDueTime()) { // On arrive trop tard
-                return false; // La route n'est pas faisable
+                return false; // La route n'est pas réalisable
             }
         }
-        return true; // La route est faisable
+        return true; // La route est réalisable
     }
+
 
 
 }

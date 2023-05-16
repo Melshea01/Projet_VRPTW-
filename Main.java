@@ -1,8 +1,10 @@
+import Graphique.Visualisation;
 import Graphique.Visualisation2;
 import Logistique.*;
 import Solution.Solution;
 import Solution.SolutionAleatoire;
 import Solution.Operateur;
+import org.graphstream.graph.Graph;
 
 import java.util.ArrayList;
 
@@ -55,8 +57,6 @@ public class Main {
 
 
 
-
-        Visualisation2.show(solution1.getRoutes(),instanceVRP);
 
 
         System.out.println("nombre de transport final " + solution1.getRoutes().size());

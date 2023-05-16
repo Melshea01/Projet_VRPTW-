@@ -1,12 +1,10 @@
 package Solution;
 
 import Logistique.Route;
-import Logistique.Transport;
 import Logistique.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
-import java.util.List;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -20,10 +18,10 @@ public class Operateur {
         boolean improve = true;
         while (improve){
             improve = false;
-            Client clientinitial = route.getRoute().get(0);
+            Client clientinitial = route.getListClient().get(0);
             //Pour tous les clients de la route
-            for (Client c : route.getRoute()){
-                int index = route.getRoute().indexOf(c);
+            for (Client c : route.getListClient()){
+                int index = route.getListClient().indexOf(c);
                 //Essayer de le placer sur toutes les ok
                 //pour tous les clients ayant un index différent de i+1 et i-1 et de 0
             }
@@ -33,26 +31,31 @@ public class Operateur {
         return newroute;
     }
 
+    //TODO : Renvoyer une solution
     public Route twoOptSameRoute(Route route) {
-        int size = route.getRoute().size();
-        Route newRoute= route.cloneRoute(route);
+        int size = route.getListClient().size();
+        Route newRoute = route.cloneRoute(route);
         boolean improved = true;
         while (improved) {
             improved = false;
             for (int i = 1; i < size - 2; i++) {
                 for (int j = i + 1; j < size - 1; j++) {
-                        //Vérification contrainte de temps
-                        Collections.reverse(newRoute.getRoute().subList(i, j+2));
-                        if(newRoute.isFeasible(newRoute)){
-                            //On inverse les élements entre l'index de début de et de fin
-                            improved = true;
-                            return newRoute;
-                        }
+                    Route tempRoute = newRoute.cloneRoute(newRoute);
+                    Collections.reverse(tempRoute.getListClient().subList(i, j + 1));
+                    if (tempRoute.isFeasible()) {
+                        newRoute = tempRoute;
+                        improved = true;
                     }
                 }
+                if (improved) {
+                    break;
+                }
             }
-
-        return null;
+            if (improved) {
+                break;
+            }
+        }
+        return newRoute;
     }
 
 
@@ -82,10 +85,10 @@ public class Operateur {
         int positionToInsert = -1;
         double bestScore = Double.MAX_VALUE;
 
-        for (int i = 1; i <= route.getRoute().size(); i++) {
-            route.getRoute().add(i, client);
+        for (int i = 1; i <= route.getListClient().size(); i++) {
+            route.getListClient().add(i, client);
             //Calcul du temps d'arrivée entre l'ancien client et le nouveau
-            double arrivalTime = route.calculateArrivalTime(route, route.getRoute().get(i-1),   route.getRoute().get(i));
+            double arrivalTime = route.calculateArrivalTime(route.getListClient().get(i-1), route.getListClient().get(i));
             //Ajout temporaire du client si la fenetre de temps est respectée
             if (client.isFeasible(arrivalTime)) {
                 //calcule le score d'un client à une position donnée dans une route en fonction de sa contrainte de temps,
@@ -97,23 +100,24 @@ public class Operateur {
                 }
             }
             //On enlève le client si aucun placement n'est possible
-            route.getRoute().remove(i);
+            route.getListClient().remove(i);
         }
 
         if (positionToInsert != -1) {
-            route.getRoute().add(positionToInsert, client);
+            route.getListClient().add(positionToInsert, client);
             return route;
         } else {
             return null;
         }
     }
 
-    //TODO : Finir l'opérateur, exchange qui va échanger de place deux client entre deux routes (Ajouter les fenetres de temps)
+    //TODO : Retourner une solution pour stocker les deux nouvelles routes
+
     public static boolean exchangeInter(Client c1, Client c2, Route route1, Route route2,int capacity) {
 
         //On récupère une liste client de chaque route
-        ArrayList<Client> clientroute1 = route1.getRoute();
-        ArrayList<Client> clientroute2 = route2.getRoute();
+        ArrayList<Client> clientroute1 = route1.getListClient();
+        ArrayList<Client> clientroute2 = route2.getListClient();
 
         int demand1 = route1.getTotalDemandRoute();
         int demand2 = route2.getTotalDemandRoute();

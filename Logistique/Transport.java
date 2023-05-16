@@ -1,35 +1,23 @@
 package Logistique;
 
-import Logistique.Client;
-import Logistique.Route;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class Transport {
-    private static int nextId = 1;
-    private int id;
-    public int chargement;
-    int x_vehicule;
-    int y_vehicule;
+    private int chargement;
+    private int x_vehicule;
+    private int y_vehicule;
 
-    double distance;
-
+    private double distance;
     public Route route = new Route();
-
     public Route getRoute() {
         return route;
     }
 
+    private ArrayList<Client> clientlivre;
 
-    private ArrayList<Integer> clientlivre;
-
-    public int getId() {
-        return id;
-    }
 
     public Transport(){
-        this.id = generateId();;
         this.chargement = 0;
         this.x_vehicule =0;
         this.y_vehicule=0;
@@ -41,10 +29,10 @@ public class Transport {
         return chargement;
     }
 
-    public void livrerClient(int idClient) {
-        clientlivre.add(idClient);
+    public void livrerClient(Client client) {
+        clientlivre.add(client);
     }
-    public List<Integer> getClientlivre() {
+    public List<Client> getClientlivre() {
         return clientlivre;
     }
 
@@ -77,20 +65,9 @@ public class Transport {
         this.chargement += chargement;
     }
 
-    public void setClientlivre(ArrayList<Integer> clientlivre) {
+    public void setClientlivre(ArrayList<Client> clientlivre) {
         this.clientlivre = clientlivre;
     }
-
-    public void reinitializeTransport(){
-           this.setY_vehicule(0);
-           this.setX_vehicule(0);
-    }
-
-    //Garantie que chaque véhicule aura un ID unique
-    private static synchronized int generateId() {
-        return nextId++;
-    }
-
 
 
 

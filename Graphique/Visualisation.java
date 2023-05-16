@@ -38,17 +38,17 @@ public class Visualisation extends JPanel {
             g.setColor(colors[i % colors.length]);
 
             // Dessine les clients visités
-            for (int j = 0; j < route.getRoute().size() -1; j++) {
-                Client client = route.getRoute().get(j);
+            for (int j = 0; j < route.getListClient().size() -1; j++) {
+                Client client = route.getListClient().get(j);
                 int x = (int) client.getX();
                 int y = (int) client.getY();
                 g.fillOval(x - 5, y - 5, 10, 10);
             }
 
             // Dessine les arcs entre les clients
-            for (int j = 0; j < route.getRoute().size() -1; j++) {
-                Client from = route.getRoute().get(j);
-                Client to = route.getRoute().get(j+1);
+            for (int j = 0; j < route.getListClient().size() -1; j++) {
+                Client from = route.getListClient().get(j);
+                Client to = route.getListClient().get(j+1);
                 int x1 = (int) from.getX();
                 int y1 = (int) from.getY();
                 int x2 = (int) to.getX();

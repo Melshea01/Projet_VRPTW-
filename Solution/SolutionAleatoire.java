@@ -12,11 +12,7 @@ import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
 
 public class SolutionAleatoire extends Solution{
-    ArrayList <Transport> transports;
 
-    public SolutionAleatoire() {
-        this.transports = new ArrayList<>();
-    }
 
     //Fonction qui prend en paramètre l'instance VRP
     public Solution generateRandomSolution(InstanceVRP VRP) {
@@ -39,7 +35,7 @@ public class SolutionAleatoire extends Solution{
             transportUsed.route.addDestination(toDeliver.get(0));
 
             //Remplissage du camion
-            while (time <= max_time && transportUsed.chargement <= VRP.getCapacity() ){
+            while (time <= max_time && transportUsed.getChargement() <= VRP.getCapacity() ){
                 //Calculer les clients potentiel
                 for (int i = 1; i < toDeliver.size(); i++) {
                     //la distance entre le véhicule et le client
@@ -54,7 +50,7 @@ public class SolutionAleatoire extends Solution{
                 if(potentials.isEmpty()  ){
                     time += 1;
                     }
-                else {         //Choisir une valeur random parmis les possibilités
+                else {         //Choisir une valeur random parmi les possibilités
                     Random r = new Random();
                     int choosen = r.nextInt(potentials.size());
 
@@ -80,7 +76,6 @@ public class SolutionAleatoire extends Solution{
                 }
             solution.addRoute(transportUsed.route);
             solution.addTransport(transportUsed);
-            this.transports.add(transportUsed);
 
             }
         return solution;

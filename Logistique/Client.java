@@ -19,7 +19,9 @@ public class Client {
         this.readyTime = readyTime;
         this.dueTime = dueTime;
         this.demand = demand;
+        //Temps de livraison
         this.service = service;
+        //Date de livraison
         this.livraisontime = 0;
     }
 
@@ -58,8 +60,6 @@ public class Client {
     public boolean isFeasible(double arrivalTime) {
         return arrivalTime >= readyTime && arrivalTime <= dueTime;
     }
-
-    //Permet de calculer la distance total entre les clients et les dépots
 
 
 }

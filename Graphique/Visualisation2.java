@@ -5,68 +5,70 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
 
-import Logistique.InstanceVRP;
 import org.graphstream.graph.Edge;
 import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
-import org.graphstream.graph.implementations.MultiGraph;
 import org.graphstream.graph.implementations.SingleGraph;
-import org.graphstream.ui.graphicGraph.stylesheet.StyleConstants;
-import org.graphstream.ui.spriteManager.Sprite;
-import org.graphstream.ui.spriteManager.SpriteManager;
-import org.graphstream.ui.layout.*;
 
 import Logistique.Client;
 import Logistique.Route;
-import Logistique.Transport;
 import org.graphstream.ui.view.View;
 import org.graphstream.ui.view.Viewer;
+import org.graphstream.ui.view.ViewerPipe;
 
 
 public class Visualisation2 {
 
 
-    public static void show(ArrayList<Route> routes, InstanceVRP VRP) {
-        Graph graph = new SingleGraph("VRPTW");
-        ArrayList<Client> Client = VRP.getClients();
+    private org.graphstream.graph.Graph graph;
+
+    public  Visualisation2(ArrayList<Route> routes, ArrayList<Client> Client){
+        ArrayList<Client> copiedList = new ArrayList<>(Client);
+
+        //Paramètre fenetre graph
+        graph = new SingleGraph("VRPTW");
+        graph.setAttribute("ui.stylesheet", "node { text-size: 20px; } edge { text-size: 20px; }");
+        graph.setAttribute("ui.quality");
+        graph.setAttribute("ui.antialias");
+        graph.setStrict(false);
 
         // Ajouter le premier client (dépôt) en tant que nœud
-        Client depot = VRP.getClients().get(0);
+        Client depot = copiedList.get(0);
         Node depotNode = graph.addNode(depot.getIdName());
         depotNode.setAttribute("xy", depot.getX(), depot.getY());
         depotNode.setAttribute("ui.label", depot.getIdName());
-        Client.remove(depot);
+        depotNode.setAttribute("ui.style", "fill-color: rgb(255,0,0); size: 1px;");
+        copiedList.remove(depot);
 
         // Ajouter les autres clients en tant que noeuds et les routes en tant qu'arêtes
         int routeId = 0;
         Map<String, String> routeColors = new HashMap<>();
 
         for (Route route : routes) {
-            ArrayList<Client> clients = route.getRoute();
-
+            copiedList = route.getListClient();
 
             // Ajouter l'arête entre le dépôt et le premier nœud de la route
-            String LastNodeId = clients.get(1).getIdName();
+            String LastNodeId = copiedList.get(1).getIdName();
             Node node1 = graph.addNode(LastNodeId);
-            node1.setAttribute("xy", clients.get(1).getX(), clients.get(1).getY());
-            node1.setAttribute("ui.label", clients.get(1).getIdName());
+            node1.setAttribute("xy", copiedList.get(1).getX(), copiedList.get(1).getY());
+            node1.setAttribute("ui.label", copiedList.get(1).getIdName());
             String edgeId = "route_" + Integer.toString(routeId);
             graph.addEdge(edgeId, depotNode.getId(),LastNodeId);
 
             // Ajouter les autres clients en tant que nœuds et les arêtes entre les nœuds
-            for (int i = 2; i < clients.size(); i++) {
-                Client client = clients.get(i);
+            for (int i = 2; i < copiedList.size(); i++) {
+                Client client = copiedList.get(i);
                 Node node = graph.addNode(client.getIdName());
                 node.setAttribute("xy", client.getX(), client.getY());
                 node.setAttribute("ui.label", client.getIdName() );
 
                 // Ajouter l'arête entre le dernier nœud et le nouveau nœud
                 edgeId = "route_" + Integer.toString(routeId) + "_" + Integer.toString(i);
-                graph.addEdge(edgeId, clients.get(i).getIdName(), LastNodeId);
-                LastNodeId = clients.get(i).getIdName();
+                graph.addEdge(edgeId, copiedList.get(i).getIdName(), LastNodeId);
+                LastNodeId = copiedList.get(i).getIdName();
 
                 //Retour du camion au dépot
-                if(i==clients.size()-1){
+                if(i==copiedList.size()-1){
                     edgeId = "route_" + Integer.toString(routeId)+ "_" + Integer.toString(i+1);
                     graph.addEdge(edgeId, LastNodeId, depotNode.getId());
                 }
@@ -80,31 +82,33 @@ public class Visualisation2 {
                 + "edge { size: 1px; } "
                 + "sprite.vehicle { shape: circle; size: 25px; fill-color: blue; }");
 
-
-        //Vérification que tous les points ont bien été ajouté
-        /*for (Node node : graph) {
-            if (node.getId().equals("c100")) {
-                System.out.println("Le client C100 a été ajouté avec succès au graphique.");
-                break;
-            }
-        }*/
-
-
-        Viewer viewer = graph.display(false);
-        System.out.println("nombre de noeud :"+ graph.getNodeCount());
-        View view = viewer.getDefaultView();
+        Viewer viewer = graph.display();
+        viewer.disableAutoLayout();
 
     }
 
-    //Attribuer une couleur
-    public static String getRandomHexColor() {
-        Random random = new Random();
-        // Générer trois valeurs aléatoires pour les composantes RGB
-        int r = random.nextInt(256);
-        int g = random.nextInt(256);
-        int b = random.nextInt(256);
-        // Convertir les valeurs en hexadécimal et les concaténer
-        String hex = String.format("#%02x%02x%02x", r, g, b);
-        return hex;
+    public void updateGraph(ArrayList<Route> routes) {
+
+        for (int i = graph.getEdgeCount()-1; i >= 0; i--) {
+            graph.removeEdge(i);
+        }
+
+        // Ajouter les arêtes représentant les chemins des véhicules
+        int colorIndex = 0;
+        for (Route route : routes) {
+            ArrayList<Client> vehicleClients = route.getListClient();
+            String color = "rgb(" + (colorIndex % 256) + ", " + (255 - colorIndex % 256) + ", " + (colorIndex % 128) + ")";
+            for (int i = 0; i < vehicleClients.size() - 1; i++) {
+                Node node1 = graph.getNode(vehicleClients.get(i).getIdName());
+                Node node2 = graph.getNode(vehicleClients.get(i + 1).getIdName());
+                Edge edge = graph.addEdge(node1.getId() + "-" + node2.getId(), node1, node2);
+                if (edge != null) {
+                    edge.setAttribute("vehicle", route.getId());
+                    edge.setAttribute("ui.style", "fill-color: " + color + "; size: 1px;");
+                }
+            }
+            colorIndex += 100;
+        }
+
     }
 }

@@ -1,5 +1,6 @@
 package Solution;
 
+import Logistique.InstanceVRP;
 import Logistique.Route;
 import Logistique.Transport;
 
@@ -13,9 +14,14 @@ public class Solution {
     private ArrayList<Route> routes;
     private ArrayList<Transport> transports;
 
+    private double distanceSolution ;
+
+    private InstanceVRP InstanceVRP;
+
     public Solution() {
         this.routes = new ArrayList<Route>();
         this.transports = new ArrayList<>();
+        distanceSolution = getTotalDistance();
     }
 
     public void addRoute(Route route) {
@@ -31,24 +37,30 @@ public class Solution {
     }
 
     public double getTotalDistance() {
-        double totalDistance = 0.0;
         for (Route route : this.routes) {
-            totalDistance += route.getDistance();
+            this.distanceSolution += route.getDistance();
             //On ajoute la distance entre le dernier client et le dépot
-            totalDistance += sqrt(pow(route.getRoute().get(route.getRoute().size()-1).getX() -route.getRoute().get(0).getX(), 2) + pow(route.getRoute().get(route.getRoute().size()-1).getY() -route.getRoute().get(0).getY(), 2));
+            this.distanceSolution += sqrt(pow(route.getListClient().get(route.getListClient().size()-1).getX() -route.getListClient().get(0).getX(), 2) + pow(route.getListClient().get(route.getListClient().size()-1).getY() -route.getListClient().get(0).getY(), 2));
 
         }
-        return totalDistance;
+        return this.distanceSolution;
     }
 
-    public Route getRandomRoute() {
-        int index = (int) (Math.random() * routes.size());
-        return routes.get(index);
-    }
 
-    public void removeRoute(Route route) {
-        routes.remove(route);
-        //Update les numéros des autres routes
+    //Modifie la liste des routes d'une solution
+    public void setRoutes(ArrayList routes) {
+        this.routes = routes;
+    }
+    public Solution replaceRoute(Solution solution, Route newRoute) {
+        ArrayList<Route> routes = solution.getRoutes();
+        for (int i = 0; i < routes.size(); i++) {
+            if (routes.get(i) == newRoute) {
+                routes.set(i, newRoute);
+                break;
+            }
+        }
+        solution.setRoutes(routes);
+        return solution;
     }
 
 }
