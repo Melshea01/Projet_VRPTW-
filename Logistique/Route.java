@@ -23,7 +23,6 @@ private final int id;
     public Route() {
         this.id = ID_FACTORY.getAndIncrement();
         this.distance = 0;
-        this.clients = clients;
     }
 
 
@@ -36,7 +35,8 @@ private final int id;
     }
 
     public void setClients(ArrayList<Client> clients) {
-        this.clients = clients;
+        this.clients.clear();
+        this.clients.addAll(clients);
     }
 
     public ArrayList<Client> getListClient() {

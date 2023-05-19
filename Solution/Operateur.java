@@ -116,7 +116,6 @@ public class Operateur {
 
     public Route relocateIntra23(Route route){
         Route newRoute = new Route();
-        Route tempRoute = new Route();
         int size = route.getListClient().size();
         ArrayList<Client> originalListClient = new ArrayList<>(route.getListClient());
         ArrayList<Client> ListClientTemp = new ArrayList<>();
@@ -124,13 +123,14 @@ public class Operateur {
 
         for (int i=1;i<size-1;i++){
             Client client = route.getListClient().get(i);
-            ListClientTemp.addAll(originalListClient);
-            //enlève le client concerné
-            ListClientTemp.remove(client);
-            for(int j=i+1; j < size-1;j++){
+            for(int j=i+1; j < size-2;j++){
+                ListClientTemp.addAll(originalListClient);
+                //enlève le client concerné
+                ListClientTemp.remove(i) ;
                 //Ajout du client dans la liste
-                ListClientTemp.add(i,client);
+                ListClientTemp.add(j,client);
                 //Modification de la route
+                Route tempRoute = new Route();
                 tempRoute.cloneRoute(route);
                 tempRoute.setClients(ListClientTemp);
                 //Calcule du temps d'arrivée
@@ -139,11 +139,8 @@ public class Operateur {
                     System.out.println("Taille route " + tempRoute.getListClient().size() + " i = "+i+" j = "+j );
                     routesPossibles.add(tempRoute);
                 }
-                //On enlève le client
-                ListClientTemp.remove(client);
-                if (j==size-2){
-                    ListClientTemp.clear();
-                }
+                //On enlève les client
+                ListClientTemp.clear();
             }
 
         }
