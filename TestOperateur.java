@@ -54,6 +54,45 @@ public class TestOperateur {
             }
         }*/
 
+        /*
+        *
+        * Test Opérateur Two opt Same Route
+        *
+        * */
+
+//        int i1 = 0;
+//        Route routetest = solution1.getRoutes().get(0);
+//        while (i1 < 5) {
+//            System.out.println("route de base " + routetest.clients);
+//            for (Client client : routetest.clients) {
+//                System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+//            }
+//            if (o.twoOptSameRoute(routetest) != null) {
+//                routetest = o.twoOptSameRoute(routetest);
+//                solution2 = solution1.replaceRoute(routetest,0);
+//                ArrayList<Client> clients = routetest.clients;
+//                System.out.println("route modifié :");
+//                for (Client client : clients) {
+//                    System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+//                }
+//                try {
+//                    visu.updateGraph(solution2.getRoutes());
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//            i1++;
+//        }
+
+
+        /*
+         *
+         * Test Opérateur RelocateIntra
+         *
+         * */
+
         int i1 = 0;
         Route routetest = solution1.getRoutes().get(0);
         while (i1 < 5) {
@@ -61,8 +100,8 @@ public class TestOperateur {
             for (Client client : routetest.clients) {
                 System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
             }
-            if (o.twoOptSameRoute(routetest) != null) {
-                routetest = o.twoOptSameRoute(routetest);
+            if (o.relocateIntra23(routetest) != null) {
+                routetest = o.relocateIntra23(routetest);
                 solution2 = solution1.replaceRoute(routetest,0);
                 ArrayList<Client> clients = routetest.clients;
                 System.out.println("route modifié :");
@@ -81,24 +120,5 @@ public class TestOperateur {
         }
 
 
-            //Test opérateur
-/*
-        for (int i=0; i<solution1.getRoutes().size(); i++ ){
-            Route routetest = solution1.getRoutes().get(i);
-            System.out.println("route de base "+ routetest.clients);
-            for (Client client : routetest.clients) {
-                System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime()+ ")");
-            }
-            if(o.twoOptSameRoute(routetest) != null){
-                routetest= o.twoOptSameRoute(routetest);
-                ArrayList<Client> clients = routetest.clients;
-                System.out.println("route modifié :");
-                for (Client client : clients) {
-                    System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime()+ ")");
-                }
-            }
-        }
-
- */
         }
     }

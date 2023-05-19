@@ -34,6 +34,10 @@ private final int id;
         clients.remove(Destination);
     }
 
+    public void setClients(ArrayList<Client> clients) {
+        this.clients = clients;
+    }
+
     public ArrayList<Client> getListClient() {
         return clients;
     }

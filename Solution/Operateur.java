@@ -5,6 +5,7 @@ import Logistique.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Random;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -35,26 +36,23 @@ public class Operateur {
     public Route twoOptSameRoute(Route route) {
         int size = route.getListClient().size();
         Route newRoute = route.cloneRoute(route);
-        boolean improved = true;
-        while (improved) {
-            improved = false;
-            for (int i = 1; i < size - 2; i++) {
-                for (int j = i + 1; j < size - 1; j++) {
-                    Route tempRoute = newRoute.cloneRoute(newRoute);
-                    Collections.reverse(tempRoute.getListClient().subList(i, j + 1));
-                    if (tempRoute.isFeasible()) {
-                        newRoute = tempRoute;
-                        improved = true;
-                    }
+        ArrayList<Route> routesPossibles = new ArrayList<>();
+
+        //Calcule de toutes les routes randoms
+        for (int i = 1; i < size - 2; i++) {
+            for (int j = i + 2; j < size - 1; j++) {
+                Route tempRoute = newRoute.cloneRoute(newRoute);
+                Collections.reverse(tempRoute.getListClient().subList(i, j));
+                if (tempRoute.isFeasible()) {
+                    routesPossibles.add(tempRoute);
                 }
-                if (improved) {
-                    break;
-                }
-            }
-            if (improved) {
-                break;
             }
         }
+
+        //Choix d'une route possible
+        Random random = new Random();
+        int randomIndex = random.nextInt(routesPossibles.size());
+        newRoute= route.cloneRoute(routesPossibles.get(randomIndex));
         return newRoute;
     }
 
@@ -79,36 +77,89 @@ public class Operateur {
     //Vérifie si l'échange entre deux clients est possible
     /*Si c'est le cas, elle calcule un score représentant l'écart entre
     l'heure d'arrivée et le début de la fenêtre de temps, et garde en mémoire la position où ce score est le plus faible.
-            Finalement, elle insère le client à cette position et retourne true, ou bien retourne false si l'ajout n'a pas été possible.*/
-    public Route relocateIntra(Route route, Client client){
-        //Verification de la contrainte de temps
-        int positionToInsert = -1;
-        double bestScore = Double.MAX_VALUE;
+      Finalement, elle insère le client à cette position et retourne true, ou bien retourne false si l'ajout n'a pas été possible.*/
+//    public Route relocateIntra(Route route){
+//        Route routeCopy = route.cloneRoute(route);
+//        ArrayList<Route> routesPossibles = new ArrayList<>();
+//        ArrayList <Client> temp = new ArrayList<>();
+//        temp = (ArrayList<Client>) route.getListClient().clone();
+//
+//        for (int i = 1; i <= route.getListClient().size(); i++){
+//            Client client = temp.get(i);
+//            temp.remove(client);
+//            for (int j = 1; j <= route.getListClient().size(); j++) {
+//                temp.add(j, client);
+//                Route tempRoute = route.cloneRoute(route);
+//                tempRoute.setClients(temp);
+//                //Calcul du temps d'arrivée entre l'ancien client et le nouveau
+//                double arrivalTime = tempRoute.calculateArrivalTime(temp.get(j-1), temp.get(j));
+//                //Ajout temporaire du client si la fenetre de temps est respectée
+//                if (client.isFeasible(arrivalTime) && i!=j) {
+//                    System.out.println("Taille route " + tempRoute.getListClient() .size() + " i = "+i+" j = "+j );
+//                    routesPossibles.add(tempRoute);
+//                }
+//                temp.remove(j);
+//            }
+//            temp = (ArrayList<Client>) route.getListClient().clone();
+//        }
+//
+//        if (routesPossibles.size() > 0 ) {
+//            Random random = new Random();
+//            System.out.println("taille de la route = " + routesPossibles.size());
+//            int randomIndex = random.nextInt(routesPossibles.size());
+//            System.out.println("randomIndex = " + randomIndex);
+//            Route newRoute= routesPossibles.get(randomIndex);
+//            return newRoute;
+//        } else {
+//            return null;
+//        }
+//    }
 
-        for (int i = 1; i <= route.getListClient().size(); i++) {
-            route.getListClient().add(i, client);
-            //Calcul du temps d'arrivée entre l'ancien client et le nouveau
-            double arrivalTime = route.calculateArrivalTime(route.getListClient().get(i-1), route.getListClient().get(i));
-            //Ajout temporaire du client si la fenetre de temps est respectée
-            if (client.isFeasible(arrivalTime)) {
-                //calcule le score d'un client à une position donnée dans une route en fonction de sa contrainte de temps,
-                // utilisé pour évaluer la qualité de l'insertion du client à cette position dans la route
-                double score = Math.abs(client.getReadyTime() - arrivalTime);
-                if (score < bestScore) {
-                    bestScore = score;
-                    positionToInsert = i;
+    public Route relocateIntra23(Route route){
+        Route newRoute = new Route();
+        Route tempRoute = new Route();
+        int size = route.getListClient().size();
+        ArrayList<Client> originalListClient = new ArrayList<>(route.getListClient());
+        ArrayList<Client> ListClientTemp = new ArrayList<>();
+        ArrayList<Route> routesPossibles = new ArrayList<>();
+
+        for (int i=1;i<size-1;i++){
+            Client client = route.getListClient().get(i);
+            ListClientTemp.addAll(originalListClient);
+            //enlève le client concerné
+            ListClientTemp.remove(client);
+            for(int j=i+1; j < size-1;j++){
+                //Ajout du client dans la liste
+                ListClientTemp.add(i,client);
+                //Modification de la route
+                tempRoute.cloneRoute(route);
+                tempRoute.setClients(ListClientTemp);
+                //Calcule du temps d'arrivée
+                double arrivalTime = tempRoute.calculateArrivalTime(ListClientTemp.get(j-1), ListClientTemp.get(j));
+                if (client.isFeasible(arrivalTime) && i!=j){
+                    System.out.println("Taille route " + tempRoute.getListClient().size() + " i = "+i+" j = "+j );
+                    routesPossibles.add(tempRoute);
+                }
+                //On enlève le client
+                ListClientTemp.remove(client);
+                if (j==size-2){
+                    ListClientTemp.clear();
                 }
             }
-            //On enlève le client si aucun placement n'est possible
-            route.getListClient().remove(i);
+
         }
 
-        if (positionToInsert != -1) {
-            route.getListClient().add(positionToInsert, client);
-            return route;
+        if (!routesPossibles.isEmpty() ) {
+            Random random = new Random();
+            System.out.println("taille de la route = " + routesPossibles.size());
+            int randomIndex = random.nextInt(routesPossibles.size());
+            System.out.println("randomIndex = " + randomIndex);
+            newRoute= routesPossibles.get(randomIndex);
+            return newRoute;
         } else {
             return null;
         }
+
     }
 
     //TODO : Retourner une solution pour stocker les deux nouvelles routes
