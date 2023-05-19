@@ -7,8 +7,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Random;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
+import static java.lang.Math.*;
 
 public class Operateur {
 
@@ -68,7 +67,7 @@ public class Operateur {
             return null;
         }
 
-        if(relocateIntra(route,client) == null ){
+        if(relocateIntra23(route) == null ){
             return null;
         }
         return route;

@@ -6,7 +6,8 @@ import java.util.HashMap;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Route {
-public double distance ;
+
+public double distance;
 public ArrayList<Client> clients = new ArrayList<>();
 //TODO : Peut être utilisé une hashmap
 HashMap<Client, Point> hashMap = new HashMap<>();

@@ -26,39 +26,40 @@ public class Client {
     }
 
     public String getIdName() {
-        return idName;
+        return this.idName;
     }
 
     public int getX() {
-        return x;
+        return this.x;
     }
 
     public int getY() {
-        return y;
+        return this.y;
     }
 
     public int getReadyTime() {
-        return readyTime;
+        return this.readyTime;
     }
 
     public int getDueTime() {
-        return dueTime;
+        return this.dueTime;
     }
 
 
     public int getDemand() {
-        return demand;
+        return this.demand;
     }
 
     public int getLivraisontime() {
-        return livraisontime;
+        return this.livraisontime;
     }
 
     public int getService() {
-        return service;
+        return this.service;
     }
+
     public boolean isFeasible(double arrivalTime) {
-        return arrivalTime >= readyTime && arrivalTime <= dueTime;
+        return arrivalTime >= this.readyTime && arrivalTime <= this.dueTime;
     }
 
 
