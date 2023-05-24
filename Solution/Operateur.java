@@ -61,60 +61,77 @@ public class Operateur {
     d'arrivée à cette position avec la méthode calculateArrivalTime. Ensuite, elle vérifie si l'heure d'arrivée respecte la
     contrainte de temps du client avec la méthode isFeasible. Elle ne renvoie rien si il n'y aucun changement*/
 
-    public Route RelocateInter(Route route, Client client, int capacity) {
-        // Vérifier si la demande du client dépasse la capacité restante de la route
-        if (route.getTotalDemandRoute()+ client.getDemand() > capacity ) {
-            return null;
-        }
+    /* Cette méthode va parcourir toutes les positions possibles d'insertion du client dans la route, puis calculer l'heure
+    d'arrivée à cette position avec la méthode calculateArrivalTime. Ensuite, elle vérifie si l'heure d'arrivée respecte la
+    contrainte de temps du client avec la méthode isFeasible. Elle ne renvoie rien si il n'y aucun changement*/
 
-        if(relocateIntra23(route) == null ){
-            return null;
+    /*
+     * Route1 : Route de d'origine du client
+     * Client à changer de route
+     * capacité de l'instance VRP
+     * */
+
+    //Retourner une solution avec deux routes modifier
+    public ArrayList<Route> relocateInter(Solution solution, Route routeOrigine, int capacity) {
+        ArrayList<Route> routes = solution.getRoutes();
+        Route newRouteArrive = new Route();
+        int indexRouteOrigine = routes.indexOf(routeOrigine);
+
+        // On copie la liste de clients liée à la route
+        ArrayList<Client> listClientsOrigine = new ArrayList<>(routeOrigine.getListClient());
+
+        //On choisit un client random dans la route1
+        if(routeOrigine.getListClient().size() < 3) {
+            return  null;
         }
-        return route;
+        Random random = new Random();
+        int randomIndex = random.nextInt(listClientsOrigine.size() - 2) + 1; // Génère un index aléatoire dans la plage valide
+        Client client = listClientsOrigine.get(randomIndex);
+
+
+        // Pour toutes les routes de la solution, on teste où on peut insérer le client
+        for (int i = 0; i < routes.size(); i++) {
+            //On saute la route d'origine
+            if (i == indexRouteOrigine) {
+                continue;
+            }
+            Route route = routes.get(i);
+
+            if (route.getTotalDemandRoute() + client.getDemand() > capacity ) {
+                return null;
+            } else {
+                //On copie la liste de client de la nouvelle route
+                ArrayList<Client> ListClientTemp = (ArrayList<Client>) new ArrayList<>(route.getListClient()).clone();
+
+                // On insère le client au début de la route
+                ListClientTemp.add(1, client);
+                newRouteArrive.setClients(ListClientTemp);
+
+                // On essaie d'insérer le client à une place
+                if (relocateIntra(newRouteArrive) != null) {
+                    newRouteArrive = relocateIntra(newRouteArrive);
+
+                    // On enlève le client de la première route
+                    listClientsOrigine.remove(client);
+                    routeOrigine.setClients(listClientsOrigine);
+
+                    // Remplacement des deux routes l'ArrayList 'routes'
+                    routes.set(i, newRouteArrive);
+                    return routes;
+                } else {
+                    return null;
+                }
+            }
+        }
+        return null;
     }
 
     //Vérifie si l'échange entre deux clients est possible
     /*Si c'est le cas, elle calcule un score représentant l'écart entre
     l'heure d'arrivée et le début de la fenêtre de temps, et garde en mémoire la position où ce score est le plus faible.
-      Finalement, elle insère le client à cette position et retourne true, ou bien retourne false si l'ajout n'a pas été possible.*/
-//    public Route relocateIntra(Route route){
-//        Route routeCopy = route.cloneRoute(route);
-//        ArrayList<Route> routesPossibles = new ArrayList<>();
-//        ArrayList <Client> temp = new ArrayList<>();
-//        temp = (ArrayList<Client>) route.getListClient().clone();
-//
-//        for (int i = 1; i <= route.getListClient().size(); i++){
-//            Client client = temp.get(i);
-//            temp.remove(client);
-//            for (int j = 1; j <= route.getListClient().size(); j++) {
-//                temp.add(j, client);
-//                Route tempRoute = route.cloneRoute(route);
-//                tempRoute.setClients(temp);
-//                //Calcul du temps d'arrivée entre l'ancien client et le nouveau
-//                double arrivalTime = tempRoute.calculateArrivalTime(temp.get(j-1), temp.get(j));
-//                //Ajout temporaire du client si la fenetre de temps est respectée
-//                if (client.isFeasible(arrivalTime) && i!=j) {
-//                    System.out.println("Taille route " + tempRoute.getListClient() .size() + " i = "+i+" j = "+j );
-//                    routesPossibles.add(tempRoute);
-//                }
-//                temp.remove(j);
-//            }
-//            temp = (ArrayList<Client>) route.getListClient().clone();
-//        }
-//
-//        if (routesPossibles.size() > 0 ) {
-//            Random random = new Random();
-//            System.out.println("taille de la route = " + routesPossibles.size());
-//            int randomIndex = random.nextInt(routesPossibles.size());
-//            System.out.println("randomIndex = " + randomIndex);
-//            Route newRoute= routesPossibles.get(randomIndex);
-//            return newRoute;
-//        } else {
-//            return null;
-//        }
-//    }
+     Finalement, elle insère le client à cette position et retourne true, ou bien retourne false si l'ajout n'a pas été possible.*/
 
-    public Route relocateIntra23(Route route){
+    public Route relocateIntra(Route route){
         Route newRoute = new Route();
         int size = route.getListClient().size();
         ArrayList<Client> originalListClient = new ArrayList<>(route.getListClient());

@@ -28,6 +28,7 @@ public class TestOperateur {
         Solution solution1 = solution.generateRandomSolution(instanceVRP1);
         Solution solution2 = new Solution();
         ArrayList<Route> routes = solution1.getRoutes();
+
         System.out.println(routes.size());
 
         Visualisation visu = new Visualisation(solution1.getRoutes(), instanceVRP2.getClients());
@@ -87,22 +88,58 @@ public class TestOperateur {
 //        }
 
 
+
         /*
          *
          * Test Opérateur RelocateIntra
          *
          * */
 
+//        int i1 = 0;
+//        Route routetest = solution1.getRoutes().get(0);
+//        while (i1 < 5) {
+//            System.out.println("route de base " + routetest.clients);
+//            for (Client client : routetest.clients) {
+//                System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+//            }
+//            if (o.relocateIntra23(routetest) != null) {
+//                routetest = o.relocateIntra23(routetest);
+//                solution2 = solution1.replaceRoute(routetest,0);
+//                ArrayList<Client> clients = routetest.clients;
+//                System.out.println("route modifié :");
+//                for (Client client : clients) {
+//                    System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+//                }
+//                try {
+//                    visu.updateGraph(solution2.getRoutes());
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//
+//            }
+//            i1++;
+//        }
+
+        /*
+         *
+         * Test Opérateur RelocateInter
+         *
+         * */
+
+        ArrayList<Route> routetemp = new ArrayList<>();
+
         int i1 = 0;
-        Route routetest = solution1.getRoutes().get(0);
+        Route routetest = solution1.getRoutes().get(1);
+        solution2.setRoutes(solution1.getRoutes());
         while (i1 < 5) {
             System.out.println("route de base " + routetest.clients);
             for (Client client : routetest.clients) {
                 System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
             }
-            if (o.relocateIntra23(routetest) != null) {
-                routetest = o.relocateIntra23(routetest);
-                solution2 = solution1.replaceRoute(routetest,0);
+            routetemp = o.relocateInter(solution2,routetest , instanceVRP1.getCapacity());
+            if (routetemp != null) {
+                solution2.setRoutes(routetemp);
                 ArrayList<Client> clients = routetest.clients;
                 System.out.println("route modifié :");
                 for (Client client : clients) {
@@ -114,8 +151,8 @@ public class TestOperateur {
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }
-
             }
+            else visu.updateGraph(solution2.getRoutes());
             i1++;
         }
 
