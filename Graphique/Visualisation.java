@@ -41,7 +41,6 @@ public class Visualisation {
 
             // Ajouter le noeud du dépôt
             Node depotNode = graph.addNode(depot.getIdName());
-            depotNode.setAttribute("ui.style", "fill-color: rgb(0,0,255); size: 10px;"); // Modifier la taille à 10px pour le dépôt
             depotNode.setAttribute("ui.label",  depot.getIdName());
             depotNode.setAttribute("xy", depot.getX(), depot.getY());
 
@@ -59,9 +58,8 @@ public class Visualisation {
                 Node clientNode = graph.addNode(client.getIdName());
                 clientNode.setAttribute("ui.label", "    " + client.getIdName());
                 clientNode.setAttribute("xy", client.getX(), client.getY());
-                clientNode.setAttribute("ui.style", "fill-color: rgb(255,0,0); size: 10 px;");
-            }
 
+            }
 
 
             Viewer viewer = graph.display();

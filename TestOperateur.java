@@ -127,35 +127,69 @@ public class TestOperateur {
          *
          * */
 
-        ArrayList<Route> routetemp = new ArrayList<>();
 
-        int i1 = 0;
-        Route routetest = solution1.getRoutes().get(1);
-        solution2.setRoutes(solution1.getRoutes());
-        while (i1 < 5) {
-            System.out.println("route de base " + routetest.clients);
-            for (Client client : routetest.clients) {
-                System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
-            }
-            routetemp = o.relocateInter(solution2,routetest , instanceVRP1.getCapacity());
-            if (routetemp != null) {
-                solution2.setRoutes(routetemp);
-                ArrayList<Client> clients = routetest.clients;
-                System.out.println("route modifié :");
-                for (Client client : clients) {
-                    System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
-                }
-                try {
-                    visu.updateGraph(solution2.getRoutes());
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-            }
-            else visu.updateGraph(solution2.getRoutes());
-            i1++;
-        }
+//        ArrayList<Route> routetemp = new ArrayList<>();
+//        int i1 = 0;
+//        Route routetest = solution1.getRoutes().get(1);
+//        solution2.setRoutes(solution1.getRoutes());
+//        while (i1 < 5) {
+//            System.out.println("route de base " + routetest.clients);
+//            for (Client client : routetest.clients) {
+//                System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+//            }
+//            routetemp = o.relocateInter(solution2,routetest , instanceVRP1.getCapacity());
+//            if (routetemp != null) {
+//                solution2.setRoutes(routetemp);
+//                ArrayList<Client> clients = routetest.clients;
+//                System.out.println("route modifié :");
+//                for (Client client : clients) {
+//                    System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+//                }
+//                try {
+//                    visu.updateGraph(solution2.getRoutes());
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            else visu.updateGraph(solution2.getRoutes());
+//            i1++;
+//        }
 
+        /*
+         *
+         * Test Opérateur ExchangeIntra
+         *
+         * */
+
+
+//        ArrayList<Route> routetemp = new ArrayList<>();
+//        int i1 = 0;
+//        Route routetest = solution1.getRoutes().get(0);
+//        solution2.setRoutes(solution1.getRoutes());
+//        while (i1 < 5) {
+//            System.out.println("route de base " + routetest.clients);
+//            for (Client client : routetest.clients) {
+//                System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+//            }
+//            routetemp = o.exchangeIntra(routes);
+//            if (routetemp != null) {
+//                solution2.setRoutes(routetemp);
+//                ArrayList<Client> clients = routetemp.get(0).getListClient();
+//                System.out.println("route modifié :");
+//                for (Client client : clients) {
+//                    System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+//                }
+//                try {
+//                    visu.updateGraph(solution2.getRoutes());
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            else visu.updateGraph(solution2.getRoutes());
+//            i1++;
+//        }
 
         }
     }

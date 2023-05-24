@@ -175,8 +175,63 @@ public class Operateur {
 
     }
 
-    //TODO : Retourner une solution pour stocker les deux nouvelles routes
+    /*
+    * Méthode qui échange deux client de la même route
+    * */
+    public ArrayList<Route> exchangeIntra(ArrayList<Route> routes) {
+        // On choisit une route au hasard parmi celles disponibles
+        Random random = new Random();
+        int indexAleatoire = random.nextInt(routes.size());
+        Route selectedRoute = routes.get(indexAleatoire);
 
+
+        // Liste des solutions possibles
+        ArrayList<Route> solutions = new ArrayList<>();
+
+        // On teste tous les clients de la route pour les échanges possibles
+        for (int i = 1; i <  selectedRoute.getListClient().size() - 1; i++) {
+            for (int j = i + 1; j <  selectedRoute.getListClient().size() - 1; j++) {
+
+                Route clonedRoute = selectedRoute.cloneRoute(selectedRoute);
+
+                // On effectue l'échange de place entre les clients
+                Client client1 = clonedRoute.getListClient().get(i);
+                Client client2 = clonedRoute.getListClient() .get(j);
+
+                // On échange les positions des clients dans la liste
+                clonedRoute.clients.set(i, client2);
+                clonedRoute.clients.set(j, client1);
+
+                // Si la solution est réalisable, on l'ajoute à la liste des solutions
+                if (clonedRoute.isFeasible()) {
+                    solutions.add(clonedRoute.cloneRoute(clonedRoute));
+                }
+
+                // On restaure l'ordre initial des clients
+                clonedRoute.clients.set(i, client2);
+                clonedRoute.clients.set(j, client1);
+            }
+        }
+
+        // Si des solutions sont disponibles, on en choisit une au hasard
+        if (!solutions.isEmpty()) {
+            Random random2 = new Random();
+            int randomIndex = random2.nextInt(solutions.size());
+            Route selectedSolution = solutions.get(randomIndex);
+            System.out.println("Index route modif " +  indexAleatoire);
+
+            // On remplace la route sélectionnée dans l'ArrayList d'origine par la solution choisie
+            routes.set(indexAleatoire, selectedSolution);
+            return routes;
+        }
+
+        // On null s'il n'y aucune modification
+        return null;
+
+    }
+
+
+    //TODO : Retourner une solution pour stocker les deux nouvelles routes
     public static boolean exchangeInter(Client c1, Client c2, Route route1, Route route2,int capacity) {
 
         //On récupère une liste client de chaque route
