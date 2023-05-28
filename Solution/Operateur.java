@@ -5,6 +5,7 @@ import Logistique.*;
 
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.List;
 import java.util.Random;
 
 import static java.lang.Math.*;
@@ -96,7 +97,6 @@ public class Operateur {
                 continue;
             }
             Route route = routes.get(i);
-
             if (route.getTotalDemandRoute() + client.getDemand() > capacity ) {
                 return null;
             } else {
@@ -230,48 +230,85 @@ public class Operateur {
 
     }
 
+    /*
+    * Vérifie l'échange de client  entre deux routes distinctes
+    * */
 
     //TODO : Retourner une solution pour stocker les deux nouvelles routes
-    public static boolean exchangeInter(Client c1, Client c2, Route route1, Route route2,int capacity) {
-
-        //On récupère une liste client de chaque route
-        ArrayList<Client> clientroute1 = route1.getListClient();
-        ArrayList<Client> clientroute2 = route2.getListClient();
-
-        int demand1 = route1.getTotalDemandRoute();
-        int demand2 = route2.getTotalDemandRoute();
-
-        //On verifie la contrainte de capacité, il faut qu'on calcule la somme des demandes pour chaque route qu'on enlève l'ancienne
-        //valeur et qu'on la remplace avec la nouvelle
-        if(demand1- c1.getDemand() + c2.getDemand()>capacity ){
-            return false ;
+    public ArrayList<Route> crossExchange(ArrayList<Route> routes) {
+        // Vérifier s'il y a au moins deux routes disponibles
+        if (routes.size() < 2) {
+            return null;
         }
 
-        if(demand2- c2.getDemand() + c1.getDemand()>capacity ){
-            return false ;
-        }
-        //Récupération de l'index de c1 et c2 pour récupérer le client avant eux dans la liste
-        int idC1 = clientroute1.indexOf(c1);
-        int idC2 = clientroute2.indexOf(c2);
-        //Contraintes de temps
-        //Calcul du temps d'arrivée du client 1 chez c2
-        double arrivaltime_c1 =sqrt(pow(clientroute1.get(idC1-1).getX() - c2.getX(), 2) + pow(clientroute1.get(idC1-1).getY()-c2.getY(), 2));
+        // Choisir deux routes au hasard parmi celles disponibles
+        Random random = new Random();
+        int indexRoute1 = random.nextInt(routes.size());
+        int indexRoute2 = random.nextInt(routes.size());
 
-        //Calcul du temps d'arrivée du client 2 chez c1
-        double arrivaltime_c2 =sqrt(pow(clientroute2.get(idC2-1).getX() - c1.getX(), 2) + pow(clientroute2.get(idC2-1).getY()-c1.getY(), 2));
-
-
-        if (c1.getDueTime() < arrivaltime_c2 || c2.getDueTime() < arrivaltime_c1) {
-            // l'échange n'est pas possible car les fenêtres de temps ne se chevauchent pas
-            return false ;
+        // S'assurer que les deux index de route sont différents
+        while (indexRoute2 == indexRoute1) {
+            indexRoute2 = random.nextInt(routes.size());
         }
 
-        if (c1.getReadyTime() > arrivaltime_c2 || c2.getReadyTime()> arrivaltime_c1) {
-            // l'échange n'est pas possible car les fenêtres de temps ne se chevauchent pas
-            return false ;
+        // Récupérer les deux routes sélectionnées de la liste temporaire
+        Route route1 = routes.get(indexRoute1).cloneRoute();
+        Route route2 = routes.get(indexRoute2).cloneRoute();
+
+        // Vérifier si les routes sélectionnées ont au moins deux clients
+        if (route1.getListClient().size() < 4 && route2.getListClient().size() < 4) {
+            return null;
         }
-        return true;
+
+        // Liste des solutions possibles
+        List<ArrayList<Route>> listeRoutes = new ArrayList<>();
+
+        // Générer aléatoirement les indices de début et de fin des parties à échanger
+        Random random2 = new Random();
+        int size1 = route1.getListClient().size();
+        int size2 = route2.getListClient().size();
+
+        // Parcourir toutes les sous-parties de la route 1
+        for (int startIndex1 = 1; startIndex1 < route1.getListClient().size() - 1; startIndex1++) {
+            for (int endIndex1 = startIndex1 + 2; endIndex1 < route1.getListClient().size() - 1; endIndex1++) {
+                // Parcourir toutes les sous-parties de la route 2
+                for (int startIndex2 = 1; startIndex2 < route2.getListClient().size() - 1; startIndex2++) {
+                    for (int endIndex2 = startIndex2 + 1; endIndex2 < route2.getListClient().size() - 1; endIndex2++) {
+                        // Extraire les parties des routes à échanger
+                        ArrayList<Client> part1 = new ArrayList<>(route1.getListClient().subList(startIndex1, endIndex1 + 1));
+                        ArrayList<Client> part2 = new ArrayList<>(route2.getListClient().subList(startIndex2, endIndex2 + 1));
+
+                        // Échanger les parties entre les deux routes
+                        Route newRoute1 = route1.cloneRoute();
+                        newRoute1.getListClient().subList(startIndex1, endIndex1 + 1).clear();
+                        newRoute1.getListClient().addAll(startIndex1, part2);
+
+                        Route newRoute2 = route2.cloneRoute();
+                        newRoute2.getListClient().subList(startIndex2, endIndex2 + 1).clear();
+                        newRoute2.getListClient().addAll(startIndex2, part1);
+
+                        // Vérifier si les nouvelles routes sont réalisables
+                        if (newRoute1.isFeasible() && newRoute2.isFeasible()) {
+                            // Créer une nouvelle solution contenant les routes modifiées
+                            ArrayList<Route> solution = new ArrayList<>(routes);
+                            solution.set(indexRoute1, newRoute1);
+                            solution.set(indexRoute2, newRoute2);
+                            // Ajouter la solution à la liste des solutions
+                            listeRoutes.add(solution);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Si des solutions sont disponibles, en choisir une au hasard
+        if (!listeRoutes.isEmpty()) {
+            int randomIndex = random.nextInt(listeRoutes.size());
+            return listeRoutes.get(randomIndex);
+        }
+
+        // Aucun échange réalisable, retourner null
+        return null;
     }
-
 
 }

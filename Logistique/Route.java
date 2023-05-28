@@ -79,6 +79,13 @@ private final int id;
         return newRoute;
     }
 
+    public Route cloneRoute() {
+        Route newRoute = new Route();
+        for (Client client : this.getListClient()) {
+            newRoute.addDestination(client);
+        }
+        return newRoute;
+    }
 
     //Modifier un objet route
     public Route setRoute(ArrayList<Client> newClients) {

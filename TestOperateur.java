@@ -4,6 +4,7 @@ import Logistique.*;
 import Solution.Operateur;
 import Solution.Solution;
 import Solution.SolutionAleatoire;
+import org.apache.commons.math3.util.Pair;
 import org.graphstream.graph.Graph;
 
 import java.util.ArrayList;
@@ -21,8 +22,8 @@ public class TestOperateur {
 
         //Choix du fichier
         //TODO : Correction Solution generate random consomme les données de Instance VRP d'ou des erreurs, corriger cette erreur
-        InstanceVRP instanceVRP1 = Parsing.ParsingClientsFromFile("Data/datatest.vrp");
-        InstanceVRP instanceVRP2 = Parsing.ParsingClientsFromFile("Data/datatest.vrp");
+        InstanceVRP instanceVRP1 = Parsing.ParsingClientsFromFile("Data/datatestcross.vrp");
+        InstanceVRP instanceVRP2 = Parsing.ParsingClientsFromFile("Data/datatestcross.vrp");
 
         //Instanciation de la solution 1
         Solution solution1 = solution.generateRandomSolution(instanceVRP1);
@@ -56,9 +57,7 @@ public class TestOperateur {
         }*/
 
         /*
-        *
         * Test Opérateur Two opt Same Route
-        *
         * */
 
 //        int i1 = 0;
@@ -90,9 +89,7 @@ public class TestOperateur {
 
 
         /*
-         *
          * Test Opérateur RelocateIntra
-         *
          * */
 
 //        int i1 = 0;
@@ -122,9 +119,7 @@ public class TestOperateur {
 //        }
 
         /*
-         *
          * Test Opérateur RelocateInter
-         *
          * */
 
 
@@ -157,11 +152,8 @@ public class TestOperateur {
 //        }
 
         /*
-         *
          * Test Opérateur ExchangeIntra
-         *
          * */
-
 
 //        ArrayList<Route> routetemp = new ArrayList<>();
 //        int i1 = 0;
@@ -190,6 +182,84 @@ public class TestOperateur {
 //            else visu.updateGraph(solution2.getRoutes());
 //            i1++;
 //        }
+
+        /*
+        * Opérateur Exchange Inter
+        * */
+
+//        ArrayList<Route> routetemp = new ArrayList<>();
+//        int i1 = 0;
+//        Route routetest = solution1.getRoutes().get(0);
+//        solution2.setRoutes(solution1.getRoutes());
+//        while (i1 < 5) {
+//            System.out.println("route de base " + routetest.clients);
+//            for (Client client : routetest.clients) {
+//                System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+//            }
+//
+//            routetemp = o.exchangeInter(routes);
+//            if (routetemp != null) {
+//                solution2.setRoutes(routetemp);
+//                for(int i =0; i<solution2.getRoutes().size(); i++){
+//                    ArrayList<Client> clients = routetemp.get(i).getListClient();
+//                    System.out.println("route modifié :" + i );
+//                    for (Client client : clients) {
+//                        System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+//                    }
+//                }
+//
+//                //Visualisation
+//                try {
+//                    visu.updateGraph(solution2.getRoutes());
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            else visu.updateGraph(solution2.getRoutes());
+//            i1++;
+//        }
+
+        /*
+         * Opérateur CrossExchange
+         * */
+
+        ArrayList<Route> routetemp = new ArrayList<>();
+        int i1 = 0;
+
+        solution2.setRoutes(solution1.getRoutes());
+        while (i1 < 10) {
+            for(int i =0; i<solution2.getRoutes().size(); i++){
+                ArrayList<Client> clients = solution2.getRoutes().get(i).getListClient();
+                System.out.println("route base :" + i );
+                for (Client client : clients) {
+                    System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+                }
+            }
+            routetemp = o.crossExchange(routes);
+            if (routetemp != null) {
+                solution2.setRoutes(routetemp);
+                for(int i =0; i<solution2.getRoutes().size(); i++){
+                    ArrayList<Client> clients = routetemp.get(i).getListClient();
+                    System.out.println("route modifié :" + i );
+                    for (Client client : clients) {
+                        System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+                    }
+                }
+
+                //Visualisation
+                try {
+                    visu.updateGraph(solution2.getRoutes());
+                    Thread.sleep(3000);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
+            else visu.updateGraph(solution2.getRoutes());
+            i1++;
+        }
+
+        System.out.println("Finish");
 
         }
     }
