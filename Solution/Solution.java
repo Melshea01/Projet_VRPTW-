@@ -5,6 +5,7 @@ import Logistique.Route;
 import Logistique.Transport;
 
 import java.util.ArrayList;
+import java.util.Random;
 
 import static java.lang.Math.pow;
 import static java.lang.Math.sqrt;
@@ -35,7 +36,10 @@ public class Solution {
     public ArrayList<Route> getRoutes() {
         return this.routes;
     }
-
+    public Route getRouteIndex(int index) {
+        Route route = (Route) this.routes.toArray()[index];
+        return route;
+    }
     public double getTotalDistance() {
         for (Route route : this.routes) {
             this.distanceSolution += route.getDistance();
@@ -61,6 +65,20 @@ public class Solution {
         this.setRoutes(routes);
         return this;
     }
+
+    //TODO update le max du random avec nb opérateurs
+//    public Solution modifySolution() {
+//        Random rand = new Random();
+//        Operateur operateur = new Operateur();
+//        int randomOperator = rand.nextInt(3);
+//        switch (randomOperator) {
+//            case 0:
+//                operateur.twoOptSameRoute();
+//        }
+//
+//
+//        return null;
+//    }
 
 }
 
