@@ -18,12 +18,19 @@ public class Solution {
 
     private double distanceSolution ;
 
-    private InstanceVRP InstanceVRP;
+    protected static InstanceVRP instanceVRP;
+
+    private int nbClients;
 
     public Solution() {
         this.routes = new ArrayList<Route>();
         this.transports = new ArrayList<>();
-        distanceSolution = getTotalDistance();
+    }
+
+    public Solution(InstanceVRP instance) {
+        this.routes = new ArrayList<Route>();
+        this.transports = new ArrayList<>();
+        this.instanceVRP = instance;
     }
 
     public void addRoute(Route route) {
@@ -41,6 +48,11 @@ public class Solution {
         Route route = (Route) this.routes.toArray()[index];
         return route;
     }
+
+    public static InstanceVRP getInstanceVRP() {
+        return instanceVRP;
+    }
+
     public double getTotalDistance() {
         for (Route route : this.routes) {
             this.distanceSolution += route.getDistance();
@@ -51,11 +63,16 @@ public class Solution {
         return this.distanceSolution;
     }
 
+    public int getNbClients() {
+        for (Route route : this.routes) {
+            this.nbClients += route.getListClient().size()-2;
+        }
+        return this.nbClients;
+    }
 
     //Modifie la liste des routes d'une solution
     public void setRoutes(ArrayList routes) {
         this.routes = routes;
-        this.distanceSolution = this.getTotalDistance();
     }
 
     //Utiliser l'id
@@ -71,7 +88,7 @@ public class Solution {
     //TODO update le max du random avec nb opérateurs
     public Pair<ArrayList<Route>, ArrayList<String>> modifySolution() {
         Random rand = new Random();
-        Operateur operateur = new Operateur();
+        Operateur operateur = new Operateur(this.instanceVRP.getCapacity());
         int randomOperator = rand.nextInt(3);
         ArrayList<Route> routesToModify = new ArrayList<>(this.getRoutes());
         Pair<ArrayList<Route>, ArrayList<String>> modifiedRoutes;

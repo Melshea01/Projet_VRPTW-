@@ -14,10 +14,14 @@ import static java.lang.Math.sqrt;
 public class SolutionAleatoire extends Solution{
 
 
+    public SolutionAleatoire(InstanceVRP vrp) {
+        super(vrp);
+    }
+
     //Fonction qui prend en paramètre l'instance VRP
-    public Solution generateRandomSolution(InstanceVRP VRP) {
+    public Solution generateRandomSolution() {
         Solution solution = new Solution();
-        ArrayList<Client> toDeliver = VRP.getClients();
+        ArrayList<Client> toDeliver = solution.instanceVRP.getClients();
         ArrayList<Double> distances = new ArrayList<>();
         ArrayList<Client> potentials = new ArrayList<>();
         int x_depot = toDeliver.get(0).getX();
@@ -35,7 +39,7 @@ public class SolutionAleatoire extends Solution{
             transportUsed.route.addDestination(toDeliver.get(0));
 
             //Remplissage du camion
-            while (time <= max_time && transportUsed.getChargement() <= VRP.getCapacity() ){
+            while (time <= max_time && transportUsed.getChargement() <= solution.instanceVRP.getCapacity() ){
                 //Calculer les clients potentiel
                 for (int i = 1; i < toDeliver.size(); i++) {
                     //la distance entre le véhicule et le client

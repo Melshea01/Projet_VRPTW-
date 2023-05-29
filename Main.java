@@ -15,8 +15,6 @@ public class Main {
         System.setProperty("org.graphstream.ui", "swing");
 
         Parsing p = new Parsing();
-        SolutionAleatoire solution = new SolutionAleatoire();
-        Operateur o = new Operateur();
 
         int total_poid = 0;
         int nb_camion = 0;
@@ -25,12 +23,14 @@ public class Main {
         InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data101.vrp");
         InstanceVRP instanceVRP2 = Parsing.ParsingClientsFromFile("Data/data101.vrp");
 
-
         /*Calcul de la capacité totale demandée par les clients*/
         for(Client c : instanceVRP.clients)
         {
             total_poid += c.getDemand();
         }
+        SolutionAleatoire solution = new SolutionAleatoire(instanceVRP);
+
+        //Operateur o = new Operateur(instanceVRP.getCapacity());
 
         /*Calcul du nombre minimum de véhicule nécessaire pour répondre aux besoins des clients*/
         if(nb_camion % instanceVRP.getCapacity() == 1){
@@ -53,16 +53,16 @@ public class Main {
         System.out.println("nb route aléatoire" + routes.size());
 
 
-//        SolutionTabou solutionTabou = new SolutionTabou(solution1, 5);
-//        Solution solutionUpgrade = solutionTabou.Tabu_search();
+        SolutionTabou solutionTabou = new SolutionTabou(solution1, 5, Solution.getInstanceVRP());
+        Solution solutionUpgrade = solutionTabou.Tabu_search();
 //        try {
 //            visu.updateGraph(solutionUpgrade.getRoutes());
 //            Thread.sleep(3000);
 //        } catch (InterruptedException e) {
 //            e.printStackTrace();
 //        }
-//        ArrayList<Route> routesTabou = solutionUpgrade.getRoutes();
-//        System.out.println("nb route tabou" + routesTabou.size());
+        ArrayList<Route> routesTabou = solutionUpgrade.getRoutes();
+        System.out.println("nb route tabou" + routesTabou.size());
 
 
         /*
@@ -84,8 +84,8 @@ public class Main {
 //        System.out.println("nombre de transport final " + solution1.getRoutes().size());
 //        System.out.println("distance final " + solution1.getTotalDistance()) ;
 
-//        System.out.println("nombre de transport final " + solutionUpgrade.getRoutes().size());
-//        System.out.println("distance final " + solutionUpgrade.getTotalDistance()) ;
+        System.out.println("nombre de transport final " + solutionUpgrade.getRoutes().size());
+        System.out.println("distance final " + solutionUpgrade.getTotalDistance()) ;
     }
 
 }

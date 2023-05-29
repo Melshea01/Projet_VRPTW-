@@ -1,5 +1,6 @@
 package Solution;
 
+import Logistique.InstanceVRP;
 import Logistique.Route;
 
 import java.util.ArrayList;
@@ -12,11 +13,12 @@ public class SimulatedAnnealing extends Solution{
 
     private double decrease;
 
-    public SimulatedAnnealing(Solution initialSolution, double finalTemperature, int movesAtTTemp, double decrease) {
+    public SimulatedAnnealing(Solution initialSolution, double finalTemperature, int movesAtTTemp, double decrease, InstanceVRP vrp) {
         this.initialSolution = initialSolution;
         this.finalTemperature = finalTemperature;
         this.movesAtTTemp = movesAtTTemp;
         this.decrease = decrease;
+        Solution.instanceVRP = vrp;
     }
 
     //On calcule la température initiale telle que la probabilité d'accepter une solution moins bonnesoit de 0.8

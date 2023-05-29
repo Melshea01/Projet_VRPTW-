@@ -1,5 +1,6 @@
 package Solution;
 
+import Logistique.InstanceVRP;
 import Logistique.Route;
 import org.apache.commons.math3.util.Pair;
 
@@ -11,9 +12,10 @@ public class SolutionTabou extends Solution {
     private Solution initialSolution;
     private int sizeTabu;
 
-    public SolutionTabou(Solution initialSolution, int sizeTabu) {
+    public SolutionTabou(Solution initialSolution, int sizeTabu, InstanceVRP vrp) {
         this.initialSolution = initialSolution;
         this.sizeTabu = sizeTabu;
+        Solution.instanceVRP = vrp;
     }
 
     public Solution Tabu_search(){
@@ -40,14 +42,8 @@ public class SolutionTabou extends Solution {
             Solution solutionToTest = new Solution();
             solutionToTest.setRoutes(modificationToTest.getFirst());
             ArrayList<String> actionToTest= new ArrayList<>(modificationToTest.getSecond());
-            int nbClients = 0;
-            for (Route route : solutionToTest.getRoutes()) {
-                int clientparroute = route.getListClient().size();
-                System.out.println("clients parroute " + clientparroute);
-                nbClients += clientparroute;
-            }
-            System.out.println("client " + nbClients);
             double modifiedDistance = solutionToTest.getTotalDistance();
+            int modifiedCliet = solutionToTest.getNbClients();
             //si la solution qui vient d'être calculée est meilleure
             if (modifiedDistance < bestDistance) {
                 bestDistance = modifiedDistance;

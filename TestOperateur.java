@@ -14,8 +14,6 @@ public class TestOperateur {
         //Logistique
         System.setProperty("org.graphstream.ui", "swing");
         Parsing p = new Parsing();
-        SolutionAleatoire solution = new SolutionAleatoire();
-        Operateur o = new Operateur();
         int total_poid = 0;
         int nb_camion = 0;
         ArrayList<Transport> distance;
@@ -24,9 +22,11 @@ public class TestOperateur {
         //TODO : Correction Solution generate random consomme les données de Instance VRP d'ou des erreurs, corriger cette erreur
         InstanceVRP instanceVRP1 = Parsing.ParsingClientsFromFile("Data/datatestcross.vrp");
         InstanceVRP instanceVRP2 = Parsing.ParsingClientsFromFile("Data/datatestcross.vrp");
+        Operateur o = new Operateur(instanceVRP1.getCapacity());
+        SolutionAleatoire solution = new SolutionAleatoire(instanceVRP1);
 
         //Instanciation de la solution 1
-        Solution solution1 = solution.generateRandomSolution(instanceVRP1);
+        Solution solution1 = solution.generateRandomSolution();
         Solution solution2 = new Solution();
         ArrayList<Route> routes = solution1.getRoutes();
 

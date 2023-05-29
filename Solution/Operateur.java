@@ -12,9 +12,12 @@ import java.util.Random;
 import static java.lang.Math.*;
 
 public class Operateur {
+    private int capacity;
 
 
-
+    public Operateur(int capacity) {
+        this.capacity = capacity;
+    }
 
     /*
     * Opérateur qui va echanger deux arêtes de la route
@@ -42,7 +45,7 @@ public class Operateur {
             for (int j = i + 2; j < size - 1; j++) {
                 Route tempRoute = newRoute.cloneRoute(newRoute);
                 Collections.reverse(tempRoute.getListClient().subList(i, j));
-                if (tempRoute.isFeasible()) {
+                if (tempRoute.isFeasible(this.capacity)) {
                     routesPossibles.add(tempRoute);
                     clientsExchanged.add(new Pair<>(Integer.toString(i), Integer.toString(j)));
                 }
@@ -285,7 +288,7 @@ public class Operateur {
                 clonedRoute.clients.set(j, client1);
 
                 // Si la solution est réalisable, on l'ajoute à la liste des solutions
-                if (clonedRoute.isFeasible()) {
+                if (clonedRoute.isFeasible(this.capacity)) {
                     solutions.add(clonedRoute.cloneRoute(clonedRoute));
                     listeMouvement.add("Opérateur : ExchangeIntra ; "+"Route : "+ indexAleatoire +" ; Clients  "+client1.getIdName()+" et "+client2.getIdName() );
                 }
@@ -365,7 +368,7 @@ public class Operateur {
                 clonedRoute2.getListClient().set(j, client1);
 
                 // Vérifier si les nouvelles routes sont réalisables
-                if (clonedRoute1.isFeasible() && clonedRoute2.isFeasible()) {
+                if (clonedRoute1.isFeasible(this.capacity) && clonedRoute2.isFeasible(this.capacity)) {
                     // Créer une nouvelle solution contenant les routes modifiées
                     ArrayList<Route> solution = new ArrayList<>(routes);
                     solution.set(indexRoute1, clonedRoute1);
@@ -452,7 +455,7 @@ public class Operateur {
                         newRoute2.getListClient().addAll(startIndex2, part1);
 
                         // Vérifier si les nouvelles routes sont réalisables
-                        if (newRoute1.isFeasible() && newRoute2.isFeasible()) {
+                        if (newRoute1.isFeasible(this.capacity) && newRoute2.isFeasible(this.capacity)) {
                             // Créer une nouvelle solution contenant les routes modifiées
                             ArrayList<Route> solution = new ArrayList<>(routes);
                             solution.set(indexRoute1, newRoute1);

@@ -156,8 +156,9 @@ private final int id;
         return distance;
     }
 
-    public boolean isFeasible() {
+    public boolean isFeasible(int capacity) {
         int currentTime = 0; // On commence à l'entrepôt à l'heure 0
+        int totalDemand = 0;
         for (int i = 1; i < getListClient().size(); i++) { // On parcourt la route (en ignorant l'entrepôt)
             Client currentClient = getListClient().get(i);
             double travelTime = getDistanceBetweenTwoClient(getListClient().get(i - 1), currentClient); // Temps de trajet entre les clients i-1 et i
@@ -166,11 +167,14 @@ private final int id;
             // Vérification de la contrainte de temps
             if (currentTime <= currentClient.getReadyTime()) { // On arrive trop tôt
                 currentTime = currentClient.getReadyTime()+currentClient.getService(); // On attend jusqu'à l'heure de début de la fenêtre de temps
+                totalDemand += currentClient.getDemand();
             } else if (currentTime > currentClient.getDueTime()) { // On arrive trop tard
                 return false; // La route n'est pas réalisable
             }
         }
-        return true; // La route est réalisable
+        if(totalDemand <= capacity) {
+            return true; // La route est réalisable
+        } else { return false;}
     }
 
 
