@@ -91,7 +91,7 @@ public class Solution {
         Operateur operateur = new Operateur(this.instanceVRP.getCapacity());
         int randomOperator = rand.nextInt(3);
         ArrayList<Route> routesToModify = new ArrayList<>(this.getRoutes());
-        Pair<ArrayList<Route>, ArrayList<String>> modifiedRoutes;
+        Pair<ArrayList<Route>, ArrayList<String>> modifiedRoutes = new Pair<>(null, null);
         modifiedRoutes = operateur.exchangeInter(routesToModify);
 //        switch (randomOperator) {
 //            case 0:

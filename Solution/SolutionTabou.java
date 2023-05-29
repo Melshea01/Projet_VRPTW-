@@ -43,7 +43,7 @@ public class SolutionTabou extends Solution {
             solutionToTest.setRoutes(modificationToTest.getFirst());
             ArrayList<String> actionToTest= new ArrayList<>(modificationToTest.getSecond());
             double modifiedDistance = solutionToTest.getTotalDistance();
-            int modifiedCliet = solutionToTest.getNbClients();
+            System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee " + solutionToTest.getRoutes().size());
             //si la solution qui vient d'être calculée est meilleure
             if (modifiedDistance < bestDistance) {
                 bestDistance = modifiedDistance;

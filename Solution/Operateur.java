@@ -387,6 +387,10 @@ public class Operateur {
             action.add(clientsExchanged.get(randomIndex).getFirst());
             action.add(Integer.toString(indexRoute2));
             action.add(clientsExchanged.get(randomIndex).getSecond());
+            Solution chosenSolution = new Solution();
+            chosenSolution.setRoutes(listeRoutes.get(randomIndex));
+            System.out.println("distance route modif "+chosenSolution.getTotalDistance());
+            System.out.println(listeRoutes);
             return new Pair<>(listeRoutes.get(randomIndex), action);
         }
 
