@@ -23,6 +23,8 @@ public class Main {
         ArrayList<Transport> distance;
 
         InstanceVRP instanceVRP = p.ParsingClientsFromFile("Data/data101.vrp");
+        InstanceVRP instanceVRP2 = Parsing.ParsingClientsFromFile("Data/data101.vrp");
+
 
         /*Calcul de la capacité totale demandée par les clients*/
         for(Client c : instanceVRP.clients)
@@ -38,6 +40,9 @@ public class Main {
         System.out.println("nombre de camion nécessaire :"+ nb_camion + " Poids total transporté :" + total_poid);
 
         Solution solution1 = solution.generateRandomSolution(instanceVRP);
+        //Visualition de la situation initiale
+        //Visualisation visu = new Visualisation(solution1.getRoutes(), instanceVRP2.getClients());
+
         ArrayList<Route> routes = solution1.getRoutes();
         int nbclients1 = 0;
         for (Route route: routes) {

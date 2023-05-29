@@ -14,6 +14,8 @@ import static java.lang.Math.*;
 public class Operateur {
 
 
+
+
     /*
     * Opérateur qui va echanger deux arêtes de la route
     * */
@@ -85,19 +87,22 @@ public class Operateur {
      * capacité de l'instance VRP
      * */
 
-    public ArrayList<Route> relocateInter(Solution solution, Route routeOrigine, int capacity) {
-        ArrayList<Route> routes = solution.getRoutes();
+    public ArrayList<Route> relocateInter( ArrayList<Route>  routes, int capacity) {
         Route newRouteArrive = new Route();
-        int indexRouteOrigine = routes.indexOf(routeOrigine);
+
+        //On choisit au hasard une route origine
+        Random random = new Random();
+        int indexRouteOrigine = random.nextInt(routes.size());
+        Route selectedRoute = routes.get(indexRouteOrigine);
 
         // On copie la liste de clients liée à la route
-        ArrayList<Client> listClientsOrigine = new ArrayList<>(routeOrigine.getListClient());
+        ArrayList<Client> listClientsOrigine = new ArrayList<>(selectedRoute.getListClient());
 
         //On choisit un client random dans la route1
-        if(routeOrigine.getListClient().size() < 3) {
+        if(selectedRoute.getListClient().size() < 3) {
             return  null;
         }
-        Random random = new Random();
+
         int randomIndex = random.nextInt(listClientsOrigine.size() - 2) + 1; // Génère un index aléatoire dans la plage valide
         Client client = listClientsOrigine.get(randomIndex);
 
@@ -125,7 +130,7 @@ public class Operateur {
 
                     // On enlève le client de la première route
                     listClientsOrigine.remove(client);
-                    routeOrigine.setClients(listClientsOrigine);
+                    selectedRoute.setClients(listClientsOrigine);
 
                     // Remplacement des deux routes l'ArrayList 'routes'
                     routes.set(i, newRouteArrive);
