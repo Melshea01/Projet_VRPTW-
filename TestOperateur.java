@@ -33,6 +33,7 @@ public class TestOperateur {
         System.out.println(routes.size());
 
         Visualisation visu = new Visualisation(solution1.getRoutes(), instanceVRP2.getClients());
+
         /*
          * Test Opérateur sur jeu de données
          * */

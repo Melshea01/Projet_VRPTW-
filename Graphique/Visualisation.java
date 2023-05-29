@@ -62,9 +62,10 @@ public class Visualisation {
             }
 
 
-            Viewer viewer = graph.display();
-            viewer.disableAutoLayout();
         }
+
+        Viewer viewer = graph.display();
+        viewer.disableAutoLayout();
 
     }
 

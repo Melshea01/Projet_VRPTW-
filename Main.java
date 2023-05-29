@@ -39,9 +39,10 @@ public class Main {
 
         System.out.println("nombre de camion nécessaire :"+ nb_camion + " Poids total transporté :" + total_poid);
 
-        Solution solution1 = solution.generateRandomSolution(instanceVRP);
-        //Visualition de la situation initiale
-        //Visualisation visu = new Visualisation(solution1.getRoutes(), instanceVRP2.getClients());
+        Solution solution1 = solution.generateRandomSolution();
+//        Visualition de la situation initiale
+//        Visualisation visu = new Visualisation(solution1.getRoutes(), instanceVRP.getClients());
+//        visu.updateGraph(solution1.getRoutes());
 
         ArrayList<Route> routes = solution1.getRoutes();
         int nbclients1 = 0;
