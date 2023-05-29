@@ -42,7 +42,7 @@ public class TestOperateur {
         int i1 = 0;
 
         solution2.setRoutes(solution1.getRoutes());
-        while (i1 < 10) {
+        while (i1 < 100) {
             for(int i =0; i<solution2.getRoutes().size(); i++){
                 ArrayList<Client> clients = solution2.getRoutes().get(i).getListClient();
                 System.out.println("route base :" + i );

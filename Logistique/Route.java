@@ -110,42 +110,23 @@ private final int id;
         }
     }
 
-    //fonction relocate capable d'ajouter un client d'une route vers une autre
-    public boolean addRelocationClient(Route route, Client client, int capacity) {
-        // Vérifier si la demande du client dépasse la capacité restante de la route
-        if (route.getTotalDemandRoute()+ client.getDemand() > capacity) {
-            return false;
-        }
+    public double calculateDistance() {
+        double distance = 0.0;
 
-        //Verification de la contrainte de temps
-        int positionToInsert = -1;
-        double bestScore = Double.MAX_VALUE;
+        for (int i = 0; i < clients.size() - 1; i++) {
+            Client currentClient = clients.get(i);
+            Client nextClient = clients.get(i + 1);
 
-        for (int i = 1; i <= route.getListClient().size(); i++) {
-            route.getListClient().add(i, client);
-            //Calcul du temps d'arrivée entre l'ancien client et le nouveau
-            double arrivalTime = route.calculateArrivalTime( route.getListClient().get(i-1),   route.getListClient().get(i));
-            //Ajout temporaire du client
-            if (client.isFeasible(arrivalTime)) {
-                //calcule le score d'un client à une position donnée dans une route en fonction de sa contrainte de temps,
-                // utilisé pour évaluer la qualité de l'insertion du client à cette position dans la route
-                double score = Math.abs(client.getReadyTime() - arrivalTime);
-                if (score < bestScore) {
-                    bestScore = score;
-                    positionToInsert = i;
-                }
-            }
-            //On enlève le client si aucun placement n'est possible
-            route.getListClient().remove(i);
-        }
+            // Calculer la distance entre le client actuel et le client suivant
+            double clientDistance = getDistanceBetweenTwoClient(currentClient,nextClient);
 
-        if (positionToInsert != -1) {
-            route.getListClient().add(positionToInsert, client);
-            return true;
-        } else {
-            return false;
+            distance += clientDistance;
+
         }
+        this.distance= distance;
+        return distance;
     }
+    //fonction relocate capable d'ajouter un client d'une route vers une autre
 
     public double getDistanceBetweenTwoClient(Client c1, Client c2){
         double x1 = c1.getX();

@@ -100,14 +100,17 @@ public class Operateur {
 
         // On copie la liste de clients liée à la route
         ArrayList<Client> listClientsOrigine = new ArrayList<>(selectedRoute.getListClient());
+        ArrayList<String> action = new ArrayList<>();
 
         //On choisit un client random dans la route1
         if(selectedRoute.getListClient().size() < 3) {
+            action.add(0,"Pas assez de clients dans les routes selectionnées");
             return  null;
         }
 
         int randomIndex = random.nextInt(listClientsOrigine.size() - 2) + 1; // Génère un index aléatoire dans la plage valide
         Client client = listClientsOrigine.get(randomIndex);
+        ArrayList<Pair<String, String>> clientsNewIndex = new ArrayList<>();
 
 
         // Pour toutes les routes de la solution, on teste où on peut insérer le client
@@ -204,15 +207,19 @@ public class Operateur {
         Random random = new Random();
         int indexAleatoire = random.nextInt(routes.size());
         Route selectedRoute = routes.get(indexAleatoire);
+        ArrayList<String> action = new ArrayList<>();
 
         int size = selectedRoute.getListClient().size();
         ArrayList<Client> originalListClient = new ArrayList<>(selectedRoute.getListClient());
         ArrayList<Client> ListClientTemp = new ArrayList<>();
         ArrayList<Route> routesPossibles = new ArrayList<>();
         List<String> listeMouvement = new ArrayList<>();
+        ArrayList<Pair<String, String>> clientsExchanged = new ArrayList<>();
+
 
         // Vérifier si la route sélectionnée a au moins deux clients
         if (selectedRoute.getListClient().size() < 4) {
+            action.add(0,"Pas assez de clients dans les routes selectionnées");
             return new Pair<>(null, "Pas assez de clients dans les routes selectionnées");
         }
 
@@ -233,6 +240,7 @@ public class Operateur {
                 double arrivalTime = tempRoute.calculateArrivalTime(ListClientTemp.get(j-1), ListClientTemp.get(j));
                 if (client.isFeasible(arrivalTime) && i!=j){
                     routesPossibles.add(tempRoute);
+                    clientsExchanged.add(new Pair<>(Integer.toString(i), Integer.toString(j)));
                     listeMouvement.add("Opérateur : RelocateIntra ; "+"Route : "+ indexAleatoire +" ; Clients  "+client.getIdName());
 
                 }
@@ -245,6 +253,10 @@ public class Operateur {
             int randomIndex = random.nextInt(routesPossibles.size());
             Route newRoute = routesPossibles.get(randomIndex);
             routes.set(indexAleatoire, newRoute);
+            action.add("relocateIntra");
+            action.add(Integer.toString(indexAleatoire));
+            action.add(client);
+            action.add(client2);
             System.out.println(listeMouvement.get(randomIndex));
             return new Pair<>(routes, listeMouvement.get(randomIndex));
         } else {
@@ -291,6 +303,7 @@ public class Operateur {
                 if (clonedRoute.isFeasible(this.capacity)) {
                     solutions.add(clonedRoute.cloneRoute(clonedRoute));
                     listeMouvement.add("Opérateur : ExchangeIntra ; "+"Route : "+ indexAleatoire +" ; Clients  "+client1.getIdName()+" et "+client2.getIdName() );
+
                 }
 
                 // On restaure l'ordre initial des clients
@@ -376,6 +389,8 @@ public class Operateur {
                     clientsExchanged.add(new Pair(Integer.toString(i), Integer.toString(j)));
                     listeRoutes.add(solution);
                 }
+
+
             }
         }
 
