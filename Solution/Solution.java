@@ -3,6 +3,7 @@ package Solution;
 import Logistique.InstanceVRP;
 import Logistique.Route;
 import Logistique.Transport;
+import org.apache.commons.math3.util.Pair;
 
 import java.util.ArrayList;
 import java.util.Random;
@@ -54,6 +55,7 @@ public class Solution {
     //Modifie la liste des routes d'une solution
     public void setRoutes(ArrayList routes) {
         this.routes = routes;
+        this.distanceSolution = this.getTotalDistance();
     }
 
     //Utiliser l'id
@@ -67,18 +69,18 @@ public class Solution {
     }
 
     //TODO update le max du random avec nb opérateurs
-//    public Solution modifySolution() {
-//        Random rand = new Random();
-//        Operateur operateur = new Operateur();
-//        int randomOperator = rand.nextInt(3);
+    public Pair<ArrayList<Route>, ArrayList<String>> modifySolution() {
+        Random rand = new Random();
+        Operateur operateur = new Operateur();
+        int randomOperator = rand.nextInt(3);
+        ArrayList<Route> routesToModify = new ArrayList<>(this.getRoutes());
+        Pair<ArrayList<Route>, ArrayList<String>> modifiedRoutes;
+        modifiedRoutes = operateur.exchangeInter(routesToModify);
 //        switch (randomOperator) {
 //            case 0:
 //                operateur.twoOptSameRoute();
 //        }
-//
-//
-//        return null;
-//    }
-
+        return modifiedRoutes;
+    }
 }
 

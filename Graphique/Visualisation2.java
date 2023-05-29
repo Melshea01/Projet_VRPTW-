@@ -22,7 +22,7 @@ public class Visualisation2 {
 
     private org.graphstream.graph.Graph graph;
 
-    public  Visualisation2(ArrayList<Route> routes, ArrayList<Client> Client){
+    public Visualisation2(ArrayList<Route> routes, ArrayList<Client> Client){
         ArrayList<Client> copiedList = new ArrayList<>(Client);
 
         //Paramètre fenetre graph

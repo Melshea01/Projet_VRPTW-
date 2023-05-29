@@ -17,21 +17,23 @@ public class Operateur {
     /*
     * Opérateur qui va echanger deux arêtes de la route
     * */
-    public Pair<ArrayList<Route>, String>  twoOptSameRoute(ArrayList<Route> routes) {
+    public Pair<ArrayList<Route>, ArrayList<String>>  twoOptSameRoute(ArrayList<Route> routes) {
         // On choisit une route au hasard parmi celles disponibles
         Random random = new Random();
         int indexAleatoire = random.nextInt(routes.size());
         Route selectedRoute = routes.get(indexAleatoire);
+        ArrayList<String> action = new ArrayList<>();
 
         // Vérifier si la route sélectionnée a au moins deux clients
-        if (selectedRoute.getListClient().size() < 4) {
-            return new Pair<>(null, "Pas assez de clients dans les routes selectionnées");
+        if (selectedRoute.getListClient().size() < 5) {
+            action.add(0,"Pas assez de clients dans les routes selectionnées");
+            return new Pair<>(null, action);
         }
 
         int size = selectedRoute.getListClient().size();
         Route newRoute = selectedRoute.cloneRoute();
         ArrayList<Route> routesPossibles = new ArrayList<>();
-        List<String> listeMouvement = new ArrayList<>();
+        ArrayList<Pair<String, String>> clientsExchanged = new ArrayList<>();
 
         //Calcule de toutes les routes randoms
         for (int i = 1; i < size - 2; i++) {
@@ -40,7 +42,7 @@ public class Operateur {
                 Collections.reverse(tempRoute.getListClient().subList(i, j));
                 if (tempRoute.isFeasible()) {
                     routesPossibles.add(tempRoute);
-                    listeMouvement.add("Opérateur : TwoOpt ; "+"Route : "+ indexAleatoire );
+                    clientsExchanged.add(new Pair<>(Integer.toString(i), Integer.toString(j)));
                 }
             }
         }
@@ -50,11 +52,19 @@ public class Operateur {
             int randomIndex = random.nextInt(routesPossibles.size());
             newRoute = routesPossibles.get(randomIndex);
             routes.set(indexAleatoire, newRoute);
-            System.out.println(listeMouvement.get(randomIndex));
-            return new Pair<>(routes, listeMouvement.get(randomIndex));
+            //System.out.println(listeMouvement.get(randomIndex));
+            String client1 = clientsExchanged.get(indexAleatoire).getKey();
+            String client2 = clientsExchanged.get(indexAleatoire).getValue();
+            action.add("TwoOptSameRoute");
+            action.add(Integer.toString(indexAleatoire));
+            action.add(client1);
+            action.add(client2);
+
+            return new Pair<>(routes, action);
         } else {
             // On retourne null s'il n'y aucune modification
-            return new Pair<>(routes, "Aucun échange réalisable");
+            action.add(0,"Aucun échange réalisable");
+            return new Pair<>(routes, action);
         }
 
     }
@@ -301,10 +311,13 @@ public class Operateur {
     * Vérifie l'échange de client entre deux routes distinctes
     * */
 
-    public Pair<ArrayList<Route>, String> exchangeInter(ArrayList<Route> routes) {
+    public Pair<ArrayList<Route>, ArrayList<String>> exchangeInter(ArrayList<Route> routes) {
+        ArrayList<String> action = new ArrayList<>();
+
         // Vérifier s'il y a au moins deux routes disponibles
         if (routes.size() < 2) {
-            return new Pair<>(null, "Pas assez de routes disponibles");
+            action.add(0,"Pas assez de routes disponibles");
+            return new Pair<>(null, action);
         }
 
         // Choisir deux routes au hasard parmi celles disponibles
@@ -323,12 +336,13 @@ public class Operateur {
 
         // Vérifier si les routes sélectionnées ont au moins un client
         if (route1.getListClient().size() < 3 || route2.getListClient().size() < 3) {
-            return new Pair<>(null, "Pas assez de clients dans les routes disponibles");
+            action.add(0,"Pas assez de clients dans les routes selectionnées");
+            return new Pair<>(null, action);
         }
 
         // Liste des solutions possibles
         List<ArrayList<Route>> listeRoutes = new ArrayList<>();
-        List<String> listeMouvement = new ArrayList<>();
+        ArrayList<Pair<String, String>> clientsExchanged = new ArrayList<>();
 
         // Parcourir tous les clients de la route1 pour les échanges possibles
         for (int i = 1; i < route1.getListClient().size() - 1; i++) {
@@ -351,7 +365,7 @@ public class Operateur {
                     ArrayList<Route> solution = new ArrayList<>(routes);
                     solution.set(indexRoute1, clonedRoute1);
                     solution.set(indexRoute2, clonedRoute2);
-                    listeMouvement.add("Opérateur : InterExchange ; Route " + indexRoute1 + " client : "+client1.getIdName() +"; Route " + indexRoute2 + " client : "+client2.getIdName());
+                    clientsExchanged.add(new Pair(Integer.toString(i), Integer.toString(j)));
                     listeRoutes.add(solution);
                 }
             }
@@ -360,12 +374,17 @@ public class Operateur {
         // Si des solutions sont disponibles, choisir une solution au hasard
         if (!listeRoutes.isEmpty()) {
             int randomIndex = random.nextInt(listeRoutes.size());
-            System.out.println( listeMouvement.get(randomIndex));
-            return new Pair<>(listeRoutes.get(randomIndex), listeMouvement.get(randomIndex));
+            action.add("ExchangeInter");
+            action.add(Integer.toString(indexRoute1));
+            action.add(clientsExchanged.get(randomIndex).getFirst());
+            action.add(Integer.toString(indexRoute2));
+            action.add(clientsExchanged.get(randomIndex).getSecond());
+            return new Pair<>(listeRoutes.get(randomIndex), action);
         }
 
         // Aucun échange réalisable, retourner null
-        return new Pair<>(null, "Pas d'échanges possibles");
+        action.add("Pas d'échange possible");
+        return new Pair<>(null, action);
     }
 
 

@@ -3,6 +3,7 @@ import Graphique.Visualisation2;
 import Logistique.*;
 import Solution.Solution;
 import Solution.SolutionAleatoire;
+import Solution.SolutionTabou;
 import Solution.Operateur;
 import org.graphstream.graph.Graph;
 
@@ -38,7 +39,25 @@ public class Main {
 
         Solution solution1 = solution.generateRandomSolution(instanceVRP);
         ArrayList<Route> routes = solution1.getRoutes();
-        System.out.println(routes.size());
+        int nbclients1 = 0;
+        for (Route route: routes) {
+            nbclients1 += route.getListClient().size();
+        }
+        System.out.println("nb de client au total = "+ nbclients1);
+        System.out.println("nb route aléatoire" + routes.size());
+
+
+//        SolutionTabou solutionTabou = new SolutionTabou(solution1, 5);
+//        Solution solutionUpgrade = solutionTabou.Tabu_search();
+//        try {
+//            visu.updateGraph(solutionUpgrade.getRoutes());
+//            Thread.sleep(3000);
+//        } catch (InterruptedException e) {
+//            e.printStackTrace();
+//        }
+//        ArrayList<Route> routesTabou = solutionUpgrade.getRoutes();
+//        System.out.println("nb route tabou" + routesTabou.size());
+
 
         /*
         //Vérification des routes
@@ -56,11 +75,11 @@ public class Main {
         */
 
 
+//        System.out.println("nombre de transport final " + solution1.getRoutes().size());
+//        System.out.println("distance final " + solution1.getTotalDistance()) ;
 
-
-
-        System.out.println("nombre de transport final " + solution1.getRoutes().size());
-        System.out.println("distance final " + solution1.getTotalDistance()) ;
+//        System.out.println("nombre de transport final " + solutionUpgrade.getRoutes().size());
+//        System.out.println("distance final " + solutionUpgrade.getTotalDistance()) ;
     }
 
 }

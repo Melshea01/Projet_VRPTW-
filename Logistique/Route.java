@@ -164,7 +164,7 @@ private final int id;
             currentTime += travelTime; // On ajoute le temps de trajet au temps actuel + le temps de la livraison
 
             // Vérification de la contrainte de temps
-            if (currentTime < currentClient.getReadyTime()) { // On arrive trop tôt
+            if (currentTime <= currentClient.getReadyTime()) { // On arrive trop tôt
                 currentTime = currentClient.getReadyTime()+currentClient.getService(); // On attend jusqu'à l'heure de début de la fenêtre de temps
             } else if (currentTime > currentClient.getDueTime()) { // On arrive trop tard
                 return false; // La route n'est pas réalisable
