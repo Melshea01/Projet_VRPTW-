@@ -22,15 +22,11 @@ public class TestOperateur {
         //TODO : Correction Solution generate random consomme les données de Instance VRP d'ou des erreurs, corriger cette erreur
         InstanceVRP instanceVRP1 = Parsing.ParsingClientsFromFile("Data/datatestcross.vrp");
         InstanceVRP instanceVRP2 = Parsing.ParsingClientsFromFile("Data/datatestcross.vrp");
-        Operateur o = new Operateur(instanceVRP1.getCapacity());
-        SolutionAleatoire solution = new SolutionAleatoire(instanceVRP1);
-
+        Operateur o = new Operateur(instanceVRP1);
+        SolutionAleatoire initSolution = new SolutionAleatoire();
         //Instanciation de la solution 1
-        Solution solution1 = solution.generateRandomSolution();
+        Solution solution1 = initSolution.generateRandomSolution(instanceVRP1);
         Solution solution2 = new Solution();
-        ArrayList<Route> routes = solution1.getRoutes();
-
-        System.out.println(routes.size());
 
         Visualisation visu = new Visualisation(solution1.getRoutes(), instanceVRP2.getClients());
 
@@ -38,11 +34,28 @@ public class TestOperateur {
          * Test Opérateur sur jeu de données
          * */
 
+        ArrayList<Pair<Solution, ArrayList<String>>> neighbors = new ArrayList<>();
+        neighbors = o.exchange(solution1);
+        Solution soltemp = new Solution();
+
+        if (!neighbors.isEmpty()) {
+            for(int i = 0 ; i < neighbors.size() ; i++) {
+                double disttemp = soltemp.getTotalDistance();
+                double distNeighbor = neighbors.get(i).getFirst().getTotalDistance();
+                if(distNeighbor < disttemp) {
+                    soltemp = neighbors.get(i).getFirst();
+                }
+            }
+        } else {
+            soltemp = null;
+        }
+
+
         ArrayList<Route> routetemp = new ArrayList<>();
         int i1 = 0;
 
         solution2.setRoutes(solution1.getRoutes());
-        while (i1 < 10) {
+        while (i1 < 100) {
             for(int i =0; i<solution2.getRoutes().size(); i++){
                 ArrayList<Client> clients = solution2.getRoutes().get(i).getListClient();
                 System.out.println("route base :" + i );
@@ -54,7 +67,7 @@ public class TestOperateur {
             //routetemp = o.exchangeIntra(routes).getFirst();
             //routetemp = o.relocateIntra(routes).getFirst();
             //routetemp = o.twoOptSameRoute(routes).getFirst();
-            routetemp = o.exchangeInter(routes).getFirst();
+            routetemp = soltemp.getRoutes();
             if (routetemp != null) {
                 solution2.setRoutes(routetemp);
 
@@ -80,7 +93,7 @@ public class TestOperateur {
 
         System.out.println("Finish");
 
-        }
+    }
 
     /*
      * Test Opérateur RelocateInter
@@ -114,7 +127,5 @@ public class TestOperateur {
 //            else visu.updateGraph(solution2.getRoutes());
 //            i1++;
 //        }
-
-
 
 }

@@ -43,6 +43,16 @@ private final int id;
         return clients;
     }
 
+    public int getIndexOfClient(Client searchClient) {
+        int index = 0;
+        for (int i = 0 ; i < this.getListClient().size()-1 ; i++) {
+            if(this.getListClient().get(i).getIdName().equals(searchClient.getIdName())) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
     public int getTotalDemandRoute() {
         int totaldemand = 0;
         for (int i =0; i<clients.size(); i++){
@@ -96,6 +106,30 @@ private final int id;
         return newRoute;
     }
 
+    public boolean routesAreEquals(Route routeToCompare) {
+        ArrayList<String> routeNameClients = new ArrayList<>();
+        ArrayList<String> routeToCompareNameClients = new ArrayList<>();
+        boolean areEquals = true;
+
+        if(this.getListClient().size() != routeToCompare.getListClient().size()) {
+            areEquals = false;
+            return areEquals;
+        } else {
+            for (Client client1: this.getListClient()) {
+                routeNameClients.add(client1.getIdName());
+            }
+            for (Client client2: routeToCompare.getListClient()) {
+                routeToCompareNameClients.add(client2.getIdName());
+            }
+            for(int i = 0 ; i < this.getListClient().size() ; i++) {
+                if(! routeNameClients.get(i).equals(routeToCompareNameClients.get(i))) {
+                    areEquals = false;
+                    return areEquals;
+                }
+            }
+        }
+        return areEquals;
+    }
 
 
     public double calculateArrivalTime(Client prevClient, Client currClient) {

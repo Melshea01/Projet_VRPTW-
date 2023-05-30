@@ -18,7 +18,7 @@ public class SimulatedAnnealing extends Solution{
         this.finalTemperature = finalTemperature;
         this.movesAtTTemp = movesAtTTemp;
         this.decrease = decrease;
-        Solution.instanceVRP = vrp;
+        this.instanceVRP = vrp;
     }
 
     //On calcule la température initiale telle que la probabilité d'accepter une solution moins bonnesoit de 0.8

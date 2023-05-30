@@ -15,7 +15,7 @@ public class SolutionTabou extends Solution {
     public SolutionTabou(Solution initialSolution, int sizeTabu, InstanceVRP vrp) {
         this.initialSolution = initialSolution;
         this.sizeTabu = sizeTabu;
-        Solution.instanceVRP = vrp;
+        this.instanceVRP = vrp;
     }
 
     public Solution Tabu_search(){

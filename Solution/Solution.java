@@ -1,5 +1,6 @@
 package Solution;
 
+import Logistique.Client;
 import Logistique.InstanceVRP;
 import Logistique.Route;
 import Logistique.Transport;
@@ -18,7 +19,7 @@ public class Solution {
 
     private double distanceSolution ;
 
-    protected static InstanceVRP instanceVRP;
+    InstanceVRP instanceVRP;
 
     private int nbClients;
 
@@ -49,8 +50,19 @@ public class Solution {
         return route;
     }
 
-    public static InstanceVRP getInstanceVRP() {
-        return instanceVRP;
+    public int getIndexOfRoute(Route searchRoute) {
+        int index = 0;
+        for (int i = 0 ; i < this.getRoutes().size()-1 ; i++) {
+            Route route = this.getRoutes().get(i);
+            if(searchRoute.routesAreEquals(route)) {
+                index = i;
+            }
+        }
+        return index;
+    }
+
+    public InstanceVRP getInstanceVRP() {
+        return this.instanceVRP;
     }
 
     public double getTotalDistance() {
@@ -88,16 +100,16 @@ public class Solution {
     //TODO update le max du random avec nb opérateurs
     public Pair<ArrayList<Route>, ArrayList<String>> modifySolution() {
         Random rand = new Random();
-        Operateur operateur = new Operateur(this.instanceVRP.getCapacity());
+        Operateur operateur = new Operateur(this.instanceVRP);
         int randomOperator = rand.nextInt(3);
         ArrayList<Route> routesToModify = new ArrayList<>(this.getRoutes());
-        Pair<ArrayList<Route>, ArrayList<String>> modifiedRoutes = new Pair<>(null, null);
-        modifiedRoutes = operateur.exchangeInter(routesToModify);
+        ArrayList<Pair<Solution, ArrayList<String>>> modifiedRoutes = new ArrayList<>();
+        modifiedRoutes = operateur.exchange(this);
 //        switch (randomOperator) {
 //            case 0:
 //                operateur.twoOptSameRoute();
 //        }
-        return modifiedRoutes;
+        return null;
     }
 }
 

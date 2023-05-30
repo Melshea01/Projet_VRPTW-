@@ -14,14 +14,10 @@ import static java.lang.Math.sqrt;
 public class SolutionAleatoire extends Solution{
 
 
-    public SolutionAleatoire(InstanceVRP vrp) {
-        super(vrp);
-    }
-
     //Fonction qui prend en paramètre l'instance VRP
-    public Solution generateRandomSolution() {
-        Solution solution = new Solution();
-        ArrayList<Client> toDeliver = solution.instanceVRP.getClients();
+    public Solution generateRandomSolution(InstanceVRP vrp) {
+        Solution solution = new Solution(vrp);
+        ArrayList<Client> toDeliver = (ArrayList<Client>) solution.instanceVRP.getClients().clone();
         ArrayList<Double> distances = new ArrayList<>();
         ArrayList<Client> potentials = new ArrayList<>();
         int x_depot = toDeliver.get(0).getX();

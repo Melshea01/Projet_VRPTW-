@@ -28,7 +28,7 @@ public class Main {
         {
             total_poid += c.getDemand();
         }
-        SolutionAleatoire solution = new SolutionAleatoire(instanceVRP);
+        SolutionAleatoire solution = new SolutionAleatoire();
 
         //Operateur o = new Operateur(instanceVRP.getCapacity());
 
@@ -39,7 +39,7 @@ public class Main {
 
         System.out.println("nombre de camion nécessaire :"+ nb_camion + " Poids total transporté :" + total_poid);
 
-        Solution solution1 = solution.generateRandomSolution();
+        Solution solution1 = solution.generateRandomSolution(instanceVRP);
 //        Visualition de la situation initiale
 //        Visualisation visu = new Visualisation(solution1.getRoutes(), instanceVRP.getClients());
 //        visu.updateGraph(solution1.getRoutes());
@@ -53,7 +53,7 @@ public class Main {
         System.out.println("nb route aléatoire" + routes.size());
 
 
-        SolutionTabou solutionTabou = new SolutionTabou(solution1, 5, Solution.getInstanceVRP());
+        SolutionTabou solutionTabou = new SolutionTabou(solution1, 5, solution.getInstanceVRP());
         Solution solutionUpgrade = solutionTabou.Tabu_search();
 //        try {
 //            visu.updateGraph(solutionUpgrade.getRoutes());

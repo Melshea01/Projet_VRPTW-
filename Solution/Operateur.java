@@ -12,11 +12,13 @@ import java.util.Random;
 import static java.lang.Math.*;
 
 public class Operateur {
-    private int capacity;
 
 
-    public Operateur(int capacity) {
-        this.capacity = capacity;
+    private InstanceVRP vrp;
+
+
+    public Operateur(InstanceVRP vrp) {
+        this.vrp = vrp;
     }
 
     /*
@@ -45,7 +47,7 @@ public class Operateur {
             for (int j = i + 2; j < size - 1; j++) {
                 Route tempRoute = newRoute.cloneRoute(newRoute);
                 Collections.reverse(tempRoute.getListClient().subList(i, j));
-                if (tempRoute.isFeasible(this.capacity)) {
+                if (tempRoute.isFeasible(this.vrp.getCapacity())) {
                     routesPossibles.add(tempRoute);
                     clientsExchanged.add(new Pair<>(Integer.toString(i), Integer.toString(j)));
                 }
@@ -199,204 +201,156 @@ public class Operateur {
     * change de place un client d'une des routes choisie aléaoirement parmis celle d'une solution
     * */
 
-    public Pair<ArrayList<Route>, String> relocateIntra(ArrayList<Route> routes){
-        // On choisit une route au hasard parmi celles disponibles
-        Random random = new Random();
-        int indexAleatoire = random.nextInt(routes.size());
-        Route selectedRoute = routes.get(indexAleatoire);
+    public ArrayList<Pair<Solution, ArrayList<String>>> relocate(Solution solution){
+        ArrayList<Pair <Solution, ArrayList<String>>> neighbors = new ArrayList<>();
 
-        int size = selectedRoute.getListClient().size();
-        ArrayList<Client> originalListClient = new ArrayList<>(selectedRoute.getListClient());
-        ArrayList<Client> ListClientTemp = new ArrayList<>();
-        ArrayList<Route> routesPossibles = new ArrayList<>();
-        List<String> listeMouvement = new ArrayList<>();
-
-        // Vérifier si la route sélectionnée a au moins deux clients
-        if (selectedRoute.getListClient().size() < 4) {
-            return new Pair<>(null, "Pas assez de clients dans les routes selectionnées");
-        }
-
-
-        for (int i=1;i<size-1;i++){
-            Client client = selectedRoute.getListClient().get(i);
-            for(int j=i+1; j < size-2;j++){
-                ListClientTemp.addAll(originalListClient);
-                //enlève le client concerné
-                ListClientTemp.remove(i) ;
-                //Ajout du client dans la liste
-                ListClientTemp.add(j,client);
-                //Modification de la route
-                Route tempRoute = new Route();
-                tempRoute.cloneRoute(selectedRoute);
-                tempRoute.setClients(ListClientTemp);
-                //Calcule du temps d'arrivée
-                double arrivalTime = tempRoute.calculateArrivalTime(ListClientTemp.get(j-1), ListClientTemp.get(j));
-                if (client.isFeasible(arrivalTime) && i!=j){
-                    routesPossibles.add(tempRoute);
-                    listeMouvement.add("Opérateur : RelocateIntra ; "+"Route : "+ indexAleatoire +" ; Clients  "+client.getIdName());
+        for (Client client : solution.getInstanceVRP().getClients()) {
+            for (Route route: solution.getRoutes()) {
+                for(int i = 1 ; i < route.getListClient().size()-1 ; i++) {
 
                 }
-                //On enlève les client
-                ListClientTemp.clear();
             }
+
         }
 
-        if (!routesPossibles.isEmpty() ) {
-            int randomIndex = random.nextInt(routesPossibles.size());
-            Route newRoute = routesPossibles.get(randomIndex);
-            routes.set(indexAleatoire, newRoute);
-            System.out.println(listeMouvement.get(randomIndex));
-            return new Pair<>(routes, listeMouvement.get(randomIndex));
-        } else {
-            // On retourne null s'il n'y aucune modification
-            return new Pair<>(routes, "Aucun échange réalisable");
-        }
 
-    }
-
-    /*
-    * Méthode qui échange deux client de la même route
-    * */
-    public Pair<ArrayList<Route>, String> exchangeIntra(ArrayList<Route> routes) {
-        // On choisit une route au hasard parmi celles disponibles
-        Random random = new Random();
-        int indexAleatoire = random.nextInt(routes.size());
-        Route selectedRoute = routes.get(indexAleatoire);
-
-
-        // Vérifier si la route sélectionnée a au moins deux clients
-        if (selectedRoute.getListClient().size() < 4) {
-            return new Pair<>(null, "Pas assez de clients dans les routes selectionnées");
-        }
-
-        // Liste des solutions possibles
-        ArrayList<Route> solutions = new ArrayList<>();
-        List<String> listeMouvement = new ArrayList<>();
-
-        // On teste tous les clients de la route pour les échanges possibles
-        for (int i = 1; i <  selectedRoute.getListClient().size() - 1; i++) {
-            for (int j = i + 1; j <  selectedRoute.getListClient().size() - 1; j++) {
-
-                Route clonedRoute = selectedRoute.cloneRoute(selectedRoute);
-
-                // On effectue l'échange de place entre les clients
-                Client client1 = clonedRoute.getListClient().get(i);
-                Client client2 = clonedRoute.getListClient() .get(j);
-
-                // On échange les positions des clients dans la liste
-                clonedRoute.clients.set(i, client2);
-                clonedRoute.clients.set(j, client1);
-
-                // Si la solution est réalisable, on l'ajoute à la liste des solutions
-                if (clonedRoute.isFeasible(this.capacity)) {
-                    solutions.add(clonedRoute.cloneRoute(clonedRoute));
-                    listeMouvement.add("Opérateur : ExchangeIntra ; "+"Route : "+ indexAleatoire +" ; Clients  "+client1.getIdName()+" et "+client2.getIdName() );
-                }
-
-                // On restaure l'ordre initial des clients
-                clonedRoute.clients.set(i, client2);
-                clonedRoute.clients.set(j, client1);
-            }
-        }
-
-        // Si des solutions sont disponibles, on en choisit une au hasard
-        if (!solutions.isEmpty()) {
-            Random random2 = new Random();
-            int randomIndex = random2.nextInt(solutions.size());
-            Route selectedSolution = solutions.get(randomIndex);
-            // On remplace la route sélectionnée dans l'ArrayList d'origine par la solution choisie
-            routes.set(indexAleatoire, selectedSolution);
-            System.out.println(listeMouvement.get(randomIndex));
-            return new Pair<>(routes, listeMouvement.get(randomIndex));
-        }
-
-        // On null s'il n'y aucune modification
-        return new Pair<>(routes, "Aucun échange réalisable");
+//        // On choisit une route au hasard parmi celles disponibles
+//        Random random = new Random();
+//        int indexAleatoire = random.nextInt(routes.size());
+//        Route selectedRoute = routes.get(indexAleatoire);
+//
+//        int size = selectedRoute.getListClient().size();
+//        ArrayList<Client> originalListClient = new ArrayList<>(selectedRoute.getListClient());
+//        ArrayList<Client> ListClientTemp = new ArrayList<>();
+//        ArrayList<Route> routesPossibles = new ArrayList<>();
+//        List<String> listeMouvement = new ArrayList<>();
+//
+//        // Vérifier si la route sélectionnée a au moins deux clients
+//        if (selectedRoute.getListClient().size() < 4) {
+//            return new Pair<>(null, "Pas assez de clients dans les routes selectionnées");
+//        }
+//
+//
+//        for (int i=1;i<size-1;i++){
+//            Client client = selectedRoute.getListClient().get(i);
+//            for(int j=i+1; j < size-2;j++){
+//                ListClientTemp.addAll(originalListClient);
+//                //enlève le client concerné
+//                ListClientTemp.remove(i) ;
+//                //Ajout du client dans la liste
+//                ListClientTemp.add(j,client);
+//                //Modification de la route
+//                Route tempRoute = new Route();
+//                tempRoute.cloneRoute(selectedRoute);
+//                tempRoute.setClients(ListClientTemp);
+//                //Calcule du temps d'arrivée
+//                double arrivalTime = tempRoute.calculateArrivalTime(ListClientTemp.get(j-1), ListClientTemp.get(j));
+//                if (client.isFeasible(arrivalTime) && i!=j){
+//                    routesPossibles.add(tempRoute);
+//                    listeMouvement.add("Opérateur : RelocateIntra ; "+"Route : "+ indexAleatoire +" ; Clients  "+client.getIdName());
+//
+//                }
+//                //On enlève les client
+//                ListClientTemp.clear();
+//            }
+//        }
+//
+//        if (!routesPossibles.isEmpty() ) {
+//            int randomIndex = random.nextInt(routesPossibles.size());
+//            Route newRoute = routesPossibles.get(randomIndex);
+//            routes.set(indexAleatoire, newRoute);
+//            System.out.println(listeMouvement.get(randomIndex));
+//            return new Pair<>(routes, listeMouvement.get(randomIndex));
+//        } else {
+//            // On retourne null s'il n'y aucune modification
+//            return new Pair<>(routes, "Aucun échange réalisable");
+//        }
+    return null;
     }
 
 
     /*
-    * Vérifie l'échange de client entre deux routes distinctes
+    * Méthode qui renvoie tous les échange entre deux clients possibles
     * */
+    public ArrayList<Pair<Solution, ArrayList<String>>> exchange(Solution solution) {
+        ArrayList<Pair<Client, Client>> clientPair = new ArrayList<>();
+        ArrayList<Pair <Solution, ArrayList<String>>> neighbors = new ArrayList<>();
 
-    public Pair<ArrayList<Route>, ArrayList<String>> exchangeInter(ArrayList<Route> routes) {
-        ArrayList<String> action = new ArrayList<>();
-
-        // Vérifier s'il y a au moins deux routes disponibles
-        if (routes.size() < 2) {
-            action.add(0,"Pas assez de routes disponibles");
-            return new Pair<>(null, action);
+        // On génère toutes les paires de clients possibles
+        for (int i = 1; i < solution.getInstanceVRP().getNb_client()-1; i++) {
+            for(int j = 2 ; j < solution.getInstanceVRP().getNb_client() ; j++){
+                clientPair.add(new Pair<>(solution.getInstanceVRP().getClientByIndex(i), solution.getInstanceVRP().getClientByIndex(j)));
+            }
         }
 
-        // Choisir deux routes au hasard parmi celles disponibles
-        Random random = new Random();
-        int indexRoute1 = random.nextInt(routes.size());
-        int indexRoute2 = random.nextInt(routes.size());
+        for (Pair pair : clientPair) {
+            Client client1 = (Client) pair.getFirst();
+            Client client2 = (Client) pair.getSecond();
+            Route route1 = null;
+            Route route2 = null;
 
-        // S'assurer que les deux index de route sont différents
-        while (indexRoute2 == indexRoute1) {
-            indexRoute2 = random.nextInt(routes.size());
-        }
+            // On récupère l'index des routes dans la solution
+            int indexRoute1 = 0;
+            int indexRoute2 = 0;
 
-        // Récupérer les deux routes sélectionnées
-        Route route1 = routes.get(indexRoute1);
-        Route route2 = routes.get(indexRoute2);
+            // On retrouve les routes de chaque client dans la solution
+            for(int i = 0 ; i<solution.getRoutes().size(); i++) {
+                Route route = solution.getRoutes().get(i);
+                if (route.getListClient().contains(client1)) {
+                    route1 = route.cloneRoute();
+                    indexRoute1 = i;
+                } if (route.getListClient().contains(client2)) {
+                    route2 = route.cloneRoute();
+                    indexRoute2 = i;
+                }
+            }
 
-        // Vérifier si les routes sélectionnées ont au moins un client
-        if (route1.getListClient().size() < 3 || route2.getListClient().size() < 3) {
-            action.add(0,"Pas assez de clients dans les routes selectionnées");
-            return new Pair<>(null, action);
-        }
-
-        // Liste des solutions possibles
-        List<ArrayList<Route>> listeRoutes = new ArrayList<>();
-        ArrayList<Pair<String, String>> clientsExchanged = new ArrayList<>();
-
-        // Parcourir tous les clients de la route1 pour les échanges possibles
-        for (int i = 1; i < route1.getListClient().size() - 1; i++) {
-            Client client1 = route1.getListClient().get(i);
-            // Parcourir tous les clients de la route2 pour les échanges possibles
-            for (int j = 1; j < route2.getListClient().size() - 1; j++) {
-                Client client2 = route2.getListClient().get(j);
-
-                // Créer des clones des routes sélectionnées
-                Route clonedRoute1 = route1.cloneRoute();
-                Route clonedRoute2 = route2.cloneRoute();
+            if (route1 != null && route2 != null) {
+                // On récupère l'index des clients dans les routes
+                int indexClient1 = route1.getIndexOfClient(client1);
+                int indexClient2 = route2.getIndexOfClient(client2);
 
                 // Échanger les clients entre les routes
-                clonedRoute1.getListClient().set(i, client2);
-                clonedRoute2.getListClient().set(j, client1);
-
-                // Vérifier si les nouvelles routes sont réalisables
-                if (clonedRoute1.isFeasible(this.capacity) && clonedRoute2.isFeasible(this.capacity)) {
-                    // Créer une nouvelle solution contenant les routes modifiées
-                    ArrayList<Route> solution = new ArrayList<>(routes);
-                    solution.set(indexRoute1, clonedRoute1);
-                    solution.set(indexRoute2, clonedRoute2);
-                    clientsExchanged.add(new Pair(Integer.toString(i), Integer.toString(j)));
-                    listeRoutes.add(solution);
+                if(route1.routesAreEquals(route2)) {
+                    route1.getListClient().set(indexClient1, client2);
+                    route1.getListClient().set(indexClient2, client1);
+                    route2 = route1;
+                } else {
+                    route1.getListClient().set(indexClient1, client2);
+                    route2.getListClient().set(indexClient2, client1);
                 }
+
+                if (route1.isFeasible(solution.getInstanceVRP().getNb_client()) && route2.isFeasible(solution.getInstanceVRP().getNb_client())) {
+                    // On génère la nouvelle liste de route
+                    ArrayList<Route> newRoutes = new ArrayList<>();
+                    newRoutes = (ArrayList<Route>) solution.getRoutes().clone();
+
+                    newRoutes.set(indexRoute1, route1);
+                    newRoutes.set(indexRoute2, route2);
+
+                    Solution newNeighbor = new Solution();
+                    newNeighbor.setRoutes(newRoutes);
+
+                    // On génère l'action correspondante
+                    ArrayList<String> action = new ArrayList<>();
+                    action.add("Exchange");
+                    action.add(Integer.toString(indexRoute1));
+                    action.add(Integer.toString(indexClient1));
+                    action.add(Integer.toString(indexRoute2));
+                    action.add(Integer.toString(indexClient2));
+
+                    // On ajoute la nouvelle solution et l'action à la liste de voisins
+                    neighbors.add(new Pair(newNeighbor, action));
+                }
+            } else {
+                return null;
             }
         }
-
-        // Si des solutions sont disponibles, choisir une solution au hasard
-        if (!listeRoutes.isEmpty()) {
-            int randomIndex = random.nextInt(listeRoutes.size());
-            action.add("ExchangeInter");
-            action.add(Integer.toString(indexRoute1));
-            action.add(clientsExchanged.get(randomIndex).getFirst());
-            action.add(Integer.toString(indexRoute2));
-            action.add(clientsExchanged.get(randomIndex).getSecond());
-            Solution chosenSolution = new Solution();
-            chosenSolution.setRoutes(listeRoutes.get(randomIndex));
-            System.out.println("distance route modif "+chosenSolution.getTotalDistance());
-            System.out.println(listeRoutes);
-            return new Pair<>(listeRoutes.get(randomIndex), action);
+        if (!neighbors.isEmpty()) {
+            return neighbors;
+        } else {
+            return null;
         }
-
-        // Aucun échange réalisable, retourner null
-        action.add("Pas d'échange possible");
-        return new Pair<>(null, action);
     }
 
 
@@ -459,7 +413,7 @@ public class Operateur {
                         newRoute2.getListClient().addAll(startIndex2, part1);
 
                         // Vérifier si les nouvelles routes sont réalisables
-                        if (newRoute1.isFeasible(this.capacity) && newRoute2.isFeasible(this.capacity)) {
+                        if (newRoute1.isFeasible(this.vrp.getCapacity()) && newRoute2.isFeasible(this.vrp.getCapacity())) {
                             // Créer une nouvelle solution contenant les routes modifiées
                             ArrayList<Route> solution = new ArrayList<>(routes);
                             solution.set(indexRoute1, newRoute1);
