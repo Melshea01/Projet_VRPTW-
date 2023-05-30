@@ -74,6 +74,15 @@ public class SolutionTabou extends Solution {
                                     break;
                                 }
                             }
+                        }else if (actionToTest.get(0).equals("RelocateInter")) {
+                            if ((actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(3).equals(tabuAction.get(3))) ||
+                                    (actionToTest.get(1).equals(tabuAction.get(3)) && actionToTest.get(3).equals(tabuAction.get(1)))) {
+                                if ((actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(4).equals(tabuAction.get(4))) ||
+                                        (actionToTest.get(2).equals(tabuAction.get(4)) && actionToTest.get(4).equals(tabuAction.get(2)))) {
+                                    actionInTabuList = true;
+                                    break;
+                                }
+                            }
                         }
                     }
                 }

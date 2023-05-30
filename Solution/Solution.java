@@ -66,13 +66,12 @@ public class Solution {
     }
 
     public double getTotalDistance() {
-        for (Route route : this.routes) {
-            this.distanceSolution += route.getDistance();
-            //On ajoute la distance entre le dernier client et le dépot
-            this.distanceSolution += sqrt(pow(route.getListClient().get(route.getListClient().size()-1).getX() -route.getListClient().get(0).getX(), 2) + pow(route.getListClient().get(route.getListClient().size()-1).getY() -route.getListClient().get(0).getY(), 2));
-
+        double totalDistance = 0.0;
+        for (Route route : routes) {
+            totalDistance += route.calculateDistance();
         }
-        return this.distanceSolution;
+        this.distanceSolution = totalDistance;
+        return distanceSolution;
     }
 
     public int getNbClients() {
@@ -85,6 +84,7 @@ public class Solution {
     //Modifie la liste des routes d'une solution
     public void setRoutes(ArrayList routes) {
         this.routes = routes;
+        this.distanceSolution = this.getTotalDistance();
     }
 
     //Utiliser l'id
@@ -111,5 +111,22 @@ public class Solution {
 //        }
         return null;
     }
+
+    protected Route getRandomRoute() {
+        Random rand = new Random();
+        int randomIndex = rand.nextInt(routes.size());
+        return routes.get(randomIndex);
+    }
+
+    public Solution cloneSolution() {
+        Solution clonedSolution = new Solution();
+
+        // Copier les propriétés de l'autre solution
+        clonedSolution.setRoutes(new ArrayList<>(this.getRoutes()));
+        // Assurez-vous de copier en profondeur les objets imbriqués si nécessaire
+
+        return clonedSolution;
+    }
+
 }
 

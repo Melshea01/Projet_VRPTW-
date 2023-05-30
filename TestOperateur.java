@@ -35,8 +35,25 @@ public class TestOperateur {
          * */
 
         ArrayList<Pair<Solution, ArrayList<String>>> neighbors = new ArrayList<>();
-        neighbors = o.exchange(solution1);
+        //neighbors = o.crossExchange(solution1);
+        //neighbors = o.twoOpt(solution1);
+        //neighbors = o.exchange(solution1);
+        //neighbors = o.relocateIntra(solution1);
+        neighbors = o.relocateInter(solution1);
         Solution soltemp = new Solution();
+        soltemp = solution1.cloneSolution();
+
+        for(Route route: solution1.getRoutes()) {
+            System.out.println("route base :");
+            for (Client client : route.clients) {
+                System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+            }
+            System.out.println(" ");
+        }
+
+        if(neighbors == null){
+            System.out.println("Pas de voisin");
+        }
 
         if (!neighbors.isEmpty()) {
             for(int i = 0 ; i < neighbors.size() ; i++) {
@@ -44,52 +61,72 @@ public class TestOperateur {
                 double distNeighbor = neighbors.get(i).getFirst().getTotalDistance();
                 if(distNeighbor < disttemp) {
                     soltemp = neighbors.get(i).getFirst();
-                }
-            }
-        } else {
-            soltemp = null;
-        }
-
-
-        ArrayList<Route> routetemp = new ArrayList<>();
-        int i1 = 0;
-
-        solution2.setRoutes(solution1.getRoutes());
-        while (i1 < 100) {
-            for(int i =0; i<solution2.getRoutes().size(); i++){
-                ArrayList<Client> clients = solution2.getRoutes().get(i).getListClient();
-                System.out.println("route base :" + i );
-                for (Client client : clients) {
-                    System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
-                }
-            }
-            //routetemp = o.crossExchange(routes).getFirst();
-            //routetemp = o.exchangeIntra(routes).getFirst();
-            //routetemp = o.relocateIntra(routes).getFirst();
-            //routetemp = o.twoOptSameRoute(routes).getFirst();
-            routetemp = soltemp.getRoutes();
-            if (routetemp != null) {
-                solution2.setRoutes(routetemp);
-
-                for(int i =0; i<solution2.getRoutes().size(); i++){
-                    ArrayList<Client> clients = routetemp.get(i).getListClient();
-                    System.out.println("route modifié :" + i );
-                    for (Client client : clients) {
-                        System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+                    System.out.println(neighbors.get(i).getSecond());
+                    for(Route route: soltemp.getRoutes()) {
+                        System.out.println("route base :");
+                        for (Client client : route.clients) {
+                            System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+                        }
+                        System.out.println(" ");
+                    }
+                    try {
+                        visu.updateGraph(soltemp.getRoutes());
+                        Thread.sleep(3000);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
                     }
                 }
-
-                //Visualisation
-                try {
-                    visu.updateGraph(solution2.getRoutes());
-                    Thread.sleep(3000);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+                else {
+                    visu.updateGraph(soltemp.getRoutes());
+                    for(Route route: soltemp.getRoutes()) {
+                        System.out.println("route modif :");
+                        for (Client client : route.clients) {
+                            System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+                        }
+                        System.out.println(" ");
+                    }
                 }
             }
-            else visu.updateGraph(solution2.getRoutes());
-            i1++;
         }
+
+//        ArrayList<Route> routetemp = new ArrayList<>();
+//        int i1 = 0;
+//        solution2.setRoutes(soltemp.getRoutes());
+//        while (i1 < 100) {
+//            for(int i =0; i<solution2.getRoutes().size(); i++){
+//                ArrayList<Client> clients = solution2.getRoutes().get(i).getListClient();
+//                System.out.println("route base :" + i );
+////                for (Client client : clients) {
+////                    System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+////                }
+//            }
+//            //routetemp = o.crossExchange(routes).getFirst();
+//            //routetemp = o.exchangeIntra(routes).getFirst();
+//            //routetemp = o.relocateIntra(routes).getFirst();
+//            //routetemp = o.twoOptSameRoute(routes).getFirst();
+//            routetemp = soltemp.getRoutes();
+//            if (routetemp != null) {
+//                solution2.setRoutes(routetemp);
+//
+////                for(int i =0; i<solution2.getRoutes().size(); i++){
+////                    ArrayList<Client> clients = routetemp.get(i).getListClient();
+////                    System.out.println("route modifié :" + i );
+////                    for (Client client : clients) {
+////                        System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
+////                    }
+////                }
+//
+//                //Visualisation
+//                try {
+//                    visu.updateGraph(soltemp.getRoutes());
+//                    Thread.sleep(3000);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+//            else visu.updateGraph(solution2.getRoutes());
+//            i1++;
+//        }
 
         System.out.println("Finish");
 
