@@ -61,7 +61,6 @@ public class Visualisation {
 
             }
 
-
         }
 
         Viewer viewer = graph.display();

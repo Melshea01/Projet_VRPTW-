@@ -18,80 +18,83 @@ public class SolutionTabou extends Solution {
         this.instanceVRP = vrp;
     }
 
-    public Solution Tabu_search(){
+    public Solution Tabu_search() {
         Solution bestSolution = this.initialSolution;
         double bestDistance = this.initialSolution.getTotalDistance();
         Solution currentSolution = this.initialSolution;
         ArrayList<ArrayList<String>> tabuList = new ArrayList<>();
-        ArrayList<Solution> visitedSolution = new ArrayList<>();
+        ArrayList<Solution> visitedSolutions = new ArrayList<>();
 
-        while(!visitedSolution.contains(currentSolution)) {
-            visitedSolution.add(currentSolution);
-            //On modifie la solution et on récupère l'action qui a été faite
-            Pair<ArrayList<Route>, ArrayList<String>> modificationToTest;
-            modificationToTest = currentSolution.modifySolution();
+        while (!visitedSolutions.contains(currentSolution)) {
+            visitedSolutions.add(currentSolution);
+
+            Pair<ArrayList<Route>, ArrayList<String>> modificationToTest = new Pair<>(null,null);
             int tryModification = 0;
-            while(modificationToTest.getFirst() == null) {
+
+            do {
                 modificationToTest = currentSolution.modifySolution();
-                System.out.println("modify");
-                tryModification ++;
-                if(tryModification == 100) {
+
+                //Renvoie null à partir d'un moment
+                tryModification++;
+                if (tryModification == 100) {
                     return bestSolution;
                 }
-            }
+            } while (modificationToTest.getFirst() == null);
+
+
             Solution solutionToTest = new Solution();
             solutionToTest.setRoutes(modificationToTest.getFirst());
-            ArrayList<String> actionToTest= new ArrayList<>(modificationToTest.getSecond());
+            ArrayList<String> actionToTest = new ArrayList<>(modificationToTest.getSecond());
             double modifiedDistance = solutionToTest.getTotalDistance();
-            System.out.println("eeeeeeeeeeeeeeeeeeeeeeeeeeeeeeee " + solutionToTest.getRoutes().size());
-            //si la solution qui vient d'être calculée est meilleure
+
+
             if (modifiedDistance < bestDistance) {
                 bestDistance = modifiedDistance;
                 bestSolution = solutionToTest;
                 currentSolution = solutionToTest;
-
-            //si la solution qui vient d'être calculée est moins bonne
-            } else if(modifiedDistance > bestDistance) {
-                //On vérifie que la modification n'est pas dans la liste tabou
+            } else if (modifiedDistance > bestDistance) {
                 boolean actionInTabuList = false;
-                for (ArrayList<String> tabouAction : tabuList) {
-                    if(actionToTest.get(0).equals(tabouAction.get(0))) {
-                        //si l'opérateur est twoOpt
-                        if(actionToTest.get(0).equals("TwoOptSameRoute")) {
-                            if(actionToTest.get(1).equals(tabouAction.get(1))){
-                                if((actionToTest.get(2).equals(tabouAction.get(2)) || actionToTest.get(2).equals(tabouAction.get(3)))
-                                        && (actionToTest.get(3)==tabouAction.get(2) || actionToTest.get(3).equals(tabouAction.get(3)))) {
+
+                for (ArrayList<String> tabuAction : tabuList) {
+                    if (actionToTest.get(0).equals(tabuAction.get(0))) {
+                        if (actionToTest.get(0).equals("TwoOptSameRoute")) {
+                            if (actionToTest.get(1).equals(tabuAction.get(1))) {
+                                if ((actionToTest.get(2).equals(tabuAction.get(2)) || actionToTest.get(2).equals(tabuAction.get(3))) &&
+                                        (actionToTest.get(3).equals(tabuAction.get(2)) || actionToTest.get(3).equals(tabuAction.get(3)))) {
                                     actionInTabuList = true;
+                                    break;
                                 }
                             }
-                        //si l'opérateur est exchange inter
                         } else if (actionToTest.get(0).equals("ExchangeInter")) {
-                            if((actionToTest.get(1).equals(tabouAction.get(1)) && actionToTest.get(3).equals(tabouAction.get(3)))
-                            ||(actionToTest.get(1).equals(tabouAction.get(3)) && actionToTest.get(3).equals(tabouAction.get(1)))) {
-                                if ((actionToTest.get(2).equals(tabouAction.get(2)) && actionToTest.get(4).equals(tabouAction.get(4)))
-                                        ||(actionToTest.get(2).equals(tabouAction.get(4)) && actionToTest.get(4).equals(tabouAction.get(2)))) {
+                            if ((actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(3).equals(tabuAction.get(3))) ||
+                                    (actionToTest.get(1).equals(tabuAction.get(3)) && actionToTest.get(3).equals(tabuAction.get(1)))) {
+                                if ((actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(4).equals(tabuAction.get(4))) ||
+                                        (actionToTest.get(2).equals(tabuAction.get(4)) && actionToTest.get(4).equals(tabuAction.get(2)))) {
                                     actionInTabuList = true;
+                                    break;
                                 }
                             }
                         }
                     }
                 }
-                //si l'action n'est pas dans la liste
-                if(!actionInTabuList) {
+
+                if (!actionInTabuList) {
                     currentSolution = solutionToTest;
-                    // on ajoute l'action à la liste tabou
-                    if(tabuList.size() == this.sizeTabu) {
-                        tabuList.remove(tabuList.size()-1);
+
+                    if (tabuList.size() == this.sizeTabu) {
+                        tabuList.remove(tabuList.size() - 1);
                     }
+
                     tabuList.add(0, actionToTest);
                 }
-
-            //si la solution qui vient d'être calculée est équivalente
-            } else if (modifiedDistance == bestDistance) {
+            } else {
                 currentSolution = solutionToTest;
             }
+
             System.out.println(bestDistance);
         }
+
         return bestSolution;
     }
+
 }
