@@ -39,7 +39,7 @@ public class TestOperateur {
         //neighbors = o.twoOpt(solution1);
         //neighbors = o.exchange(solution1);
         //neighbors = o.relocateIntra(solution1);
-        neighbors = o.relocateInter(solution1);
+        //neighbors = o.relocateInter(solution1);
         Solution soltemp = new Solution();
         soltemp = solution1.cloneSolution();
 
