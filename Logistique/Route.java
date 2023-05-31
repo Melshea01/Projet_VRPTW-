@@ -82,10 +82,6 @@ private final int id;
 
     //clone un objet route
     public void cloneRoute(Route originalRoute) {
-//        Route newRoute = new Route();
-//        for (Client client : originalRoute.getListClient()) {
-//            newRoute.addDestination(client);
-//        }
         this.clients = (ArrayList<Client>) originalRoute.getListClient().clone();
     }
 

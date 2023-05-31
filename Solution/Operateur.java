@@ -70,7 +70,7 @@ public class Operateur {
 
 
         //Pour toutes les routes de la solution
-        for(int i = 0;i < solution.getRoutes().size() ; i++){
+        for(int i = 0;i < solution.getRoutes().size()-1 ; i++){
             //On copie la liste de de client de la route
              Route route1 = solution.getRoutes().get(i).cloneRoute();
             if(solution.getRoutes().get(i).getListClient().size()<3){
@@ -404,8 +404,8 @@ public class Operateur {
         ArrayList<Pair <Solution, ArrayList<String>>> neighbors = new ArrayList<>();
 
         //Pour toutes les routes de solutions
-        for(int i =0;i < solution.getRoutes().size()-1 ; i++){
-            for(int j =i+1 ; j< solution.getRoutes().size(); j++){
+        for(int i =0 ; i < solution.getRoutes().size()-1 ; i++){
+            for(int j =i+1 ; j < solution.getRoutes().size() ; j++){
 
                 // Récupérer les deux routes sélectionnées de la liste temporaire
                 Route route1 = solution.getRoutes().get(i).cloneRoute();
@@ -421,25 +421,30 @@ public class Operateur {
                     for (int endIndex1 = startIndex1 + 2; endIndex1 < route1.getListClient().size() - 1; endIndex1++) {
                         // Parcourir toutes les sous-parties de la route 2
                         for (int startIndex2 = 1; startIndex2 < route2.getListClient().size() - 1; startIndex2++) {
-                            for (int endIndex2 = startIndex2 + 1; endIndex2 < route2.getListClient().size() - 1; endIndex2++) {
+                            for (int endIndex2 = startIndex2 + 2; endIndex2 < route2.getListClient().size() - 1; endIndex2++) {
                                 // Extraire les parties des routes à échanger
-                                ArrayList<Client> part1 = new ArrayList<>(route1.getListClient().subList(startIndex1, endIndex1 + 1));
-                                ArrayList<Client> part2 = new ArrayList<>(route2.getListClient().subList(startIndex2, endIndex2 + 1));
+                                ArrayList<Client> listClientTemp1 = (ArrayList<Client>) new ArrayList<>(route1.getListClient()).clone();
+                                ArrayList<Client> ListClientTemp2 = (ArrayList<Client>) new ArrayList<>(route2.getListClient()).clone();
+
+                                ArrayList<Client> part1 = new ArrayList<>(listClientTemp1.subList(startIndex1, endIndex1 + 1));
+                                ArrayList<Client> part2 = new ArrayList<>(ListClientTemp2.subList(startIndex2, endIndex2 + 1));
 
                                 // Échanger les parties entre les deux routes
-                                Route newRoute1 = route1.cloneRoute();
+                                Route newRoute1 = new Route();
+                                newRoute1.cloneRoute(route1);
                                 newRoute1.getListClient().subList(startIndex1, endIndex1 + 1).clear();
                                 newRoute1.getListClient().addAll(startIndex1, part2);
 
 
-                                Route newRoute2 = route2.cloneRoute();
+                                Route newRoute2 = new Route();
+                                newRoute2.cloneRoute(route2);
                                 newRoute2.getListClient().subList(startIndex2, endIndex2 + 1).clear();
                                 newRoute2.getListClient().addAll(startIndex2, part1);
                                 //Vérifier si les routes sont réalisable
                                 if (newRoute1.isFeasible(this.vrp.getCapacity()) && newRoute2.isFeasible(this.vrp.getCapacity())) {
                                     // Créer une nouvelle solution contenant les routes modifiées
                                     Solution newNeighbor = new Solution();
-                                    solution.cloneSolution();
+                                    newNeighbor = solution.cloneSolution();
                                     newNeighbor.getRoutes().set(i, newRoute1);
                                     newNeighbor.getRoutes().set(j, newRoute2);
 
