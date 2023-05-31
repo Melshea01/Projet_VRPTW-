@@ -33,19 +33,27 @@ public class SolutionTabou extends Solution {
             Operateur o = new Operateur();
             ArrayList<Pair<Solution, ArrayList<String>>> neighbors = new ArrayList<>();
 
-            do {
-                // On génère tous les voisins
+            // On génère tous les voisins
+            if(o.twoOpt(currentSolution).get(0).getFirst() != null) {
                 neighbors.addAll(o.twoOpt(currentSolution));
+            }
+            if(o.relocateIntra(currentSolution).get(0).getFirst() != null) {
                 neighbors.addAll(o.relocateIntra(currentSolution));
+            }
+            if(o.relocateInter(currentSolution).get(0).getFirst() != null) {
                 neighbors.addAll(o.relocateInter(currentSolution));
+            }
+            if(o.exchange(currentSolution).get(0).getFirst() != null) {
                 neighbors.addAll(o.exchange(currentSolution));
+            }
+            if(o.crossExchange(currentSolution).get(0).getFirst() != null) {
                 neighbors.addAll(o.crossExchange(currentSolution));
+            }
 
-                //Renvoie null à partir d'un moment
-                if(neighbors.isEmpty()) {
-                    return bestSolution;
-                }
-            } while (neighbors.get(0).getFirst() == null);
+            //Renvoie null à partir d'un moment
+            if(neighbors.get(0).getFirst() == null) {
+                return bestSolution;
+            }
 
             Solution solutionToTest = new Solution();
             ArrayList<String> actionToTest = new ArrayList<>();

@@ -87,15 +87,6 @@ public class Solution {
         this.distanceSolution = this.getTotalDistance();
     }
 
-    //Utiliser l'id
-    public Solution replaceRoute(Route newRoute, int indice) {
-        //On récupère les routes de la soltuion
-        ArrayList<Route> routes = getRoutes();
-        //On l'a change dans cette solution
-        routes.set(indice,newRoute);
-        this.setRoutes(routes);
-        return this;
-    }
 
     protected Route getRandomRoute() {
         Random rand = new Random();

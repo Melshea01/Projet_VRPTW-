@@ -299,7 +299,8 @@ public class Operateur {
         if (!neighbors.isEmpty()) {
             return neighbors;
         } else {
-            return null;
+            neighbors.add(new Pair(null, null));
+            return  neighbors;
         }
 
     }
@@ -385,7 +386,8 @@ public class Operateur {
         if (!neighbors.isEmpty()) {
             return neighbors;
         } else {
-            return null;
+            neighbors.add(new Pair(null, null));
+            return neighbors;
         }
     }
 
@@ -432,9 +434,6 @@ public class Operateur {
                                     // Créer une nouvelle solution contenant les routes modifiées
                                     Solution newNeighbor = solution.cloneSolution();
                                     newNeighbor.getRoutes().set(i, newRoute1);
-                                    for (Client client : newNeighbor.getRoutes().get(i).clients) {
-                                        System.out.println(" newRoute 1 solution: Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
-                                    }
                                     newNeighbor.getRoutes().set(j, newRoute2);
 
                                     // On génère l'action correspondante

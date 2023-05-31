@@ -20,9 +20,9 @@ public class TestOperateur {
 
         //Choix du fichier
         //TODO : Correction Solution generate random consomme les données de Instance VRP d'ou des erreurs, corriger cette erreur
-        InstanceVRP instanceVRP1 = Parsing.ParsingClientsFromFile("Data/datatestcross.vrp");
-        InstanceVRP instanceVRP2 = Parsing.ParsingClientsFromFile("Data/datatestcross.vrp");
-        Operateur o = new Operateur();
+        InstanceVRP instanceVRP1 = Parsing.ParsingClientsFromFile("Data/data101.vrp");
+        InstanceVRP instanceVRP2 = Parsing.ParsingClientsFromFile("Data/data101.vrp");
+        Operateur o = new Operateur(instanceVRP1);
         SolutionAleatoire initSolution = new SolutionAleatoire();
         //Instanciation de la solution 1
         Solution solution1 = initSolution.generateRandomSolution(instanceVRP1);
@@ -51,11 +51,11 @@ public class TestOperateur {
             System.out.println(" ");
         }
 
-        if(neighbors == null){
+        if(neighbors.get(0).getFirst() == null){
             System.out.println("Pas de voisin");
         }
 
-        if (!neighbors.isEmpty()) {
+        if (neighbors.get(0).getFirst() != null) {
             for(int i = 0 ; i < neighbors.size() ; i++) {
                 double disttemp = soltemp.getTotalDistance();
                 double distNeighbor = neighbors.get(i).getFirst().getTotalDistance();
