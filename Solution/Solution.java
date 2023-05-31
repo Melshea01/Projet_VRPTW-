@@ -19,7 +19,7 @@ public class Solution {
 
     private double distanceSolution ;
 
-    InstanceVRP instanceVRP;
+    public InstanceVRP instanceVRP;
 
     private int nbClients;
 
@@ -95,21 +95,6 @@ public class Solution {
         routes.set(indice,newRoute);
         this.setRoutes(routes);
         return this;
-    }
-
-    //TODO update le max du random avec nb opérateurs
-    public Pair<ArrayList<Route>, ArrayList<String>> modifySolution() {
-        Random rand = new Random();
-        Operateur operateur = new Operateur(this.instanceVRP);
-        int randomOperator = rand.nextInt(3);
-        ArrayList<Route> routesToModify = new ArrayList<>(this.getRoutes());
-        ArrayList<Pair<Solution, ArrayList<String>>> modifiedRoutes = new ArrayList<>();
-        modifiedRoutes = operateur.exchange(this);
-//        switch (randomOperator) {
-//            case 0:
-//                operateur.twoOptSameRoute();
-//        }
-        return null;
     }
 
     protected Route getRandomRoute() {

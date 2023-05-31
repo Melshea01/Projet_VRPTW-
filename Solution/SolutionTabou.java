@@ -22,73 +22,107 @@ public class SolutionTabou extends Solution {
         Solution bestSolution = this.initialSolution;
         double bestDistance = this.initialSolution.getTotalDistance();
         Solution currentSolution = this.initialSolution;
+        ArrayList<String> currentAction = new ArrayList<>();
         ArrayList<ArrayList<String>> tabuList = new ArrayList<>();
-        ArrayList<Solution> visitedSolutions = new ArrayList<>();
+        ArrayList<Pair<Solution, ArrayList<String>>> visitedSolutions = new ArrayList<>();
+        Pair<Solution, ArrayList<String>> currentPair = new Pair<>(currentSolution, currentAction);
 
-        while (!visitedSolutions.contains(currentSolution)) {
-            visitedSolutions.add(currentSolution);
+        while (!visitedSolutions.contains(currentPair)) {
+            visitedSolutions.add(new Pair<>(currentSolution, currentAction));
 
-            Pair<ArrayList<Route>, ArrayList<String>> modificationToTest = new Pair<>(null,null);
-            int tryModification = 0;
+            Operateur o = new Operateur();
+            ArrayList<Pair<Solution, ArrayList<String>>> neighbors = new ArrayList<>();
 
             do {
-                modificationToTest = currentSolution.modifySolution();
+                // On génère tous les voisins
+                neighbors.addAll(o.twoOpt(currentSolution));
+                neighbors.addAll(o.relocateIntra(currentSolution));
+                neighbors.addAll(o.relocateInter(currentSolution));
+                neighbors.addAll(o.exchange(currentSolution));
+                neighbors.addAll(o.crossExchange(currentSolution));
 
                 //Renvoie null à partir d'un moment
-                tryModification++;
-                if (tryModification == 100) {
+                if(neighbors.isEmpty()) {
                     return bestSolution;
                 }
-            } while (modificationToTest.getFirst() == null);
-
+            } while (neighbors.get(0).getFirst() == null);
 
             Solution solutionToTest = new Solution();
-            solutionToTest.setRoutes(modificationToTest.getFirst());
-            ArrayList<String> actionToTest = new ArrayList<>(modificationToTest.getSecond());
-            double modifiedDistance = solutionToTest.getTotalDistance();
+            ArrayList<String> actionToTest = new ArrayList<>();
+            double modifiedDistance = neighbors.get(0).getFirst().getTotalDistance();
+
+            // On récupère le meilleur voisin
+            for(int i = 0; i< neighbors.size() ; i++) {
+                double neighborDistance = neighbors.get(i).getFirst().getTotalDistance();
+                if(neighborDistance < modifiedDistance) {
+                    modifiedDistance = neighborDistance;
+                    solutionToTest = neighbors.get(i).getFirst();
+                    actionToTest = neighbors.get(i).getSecond();
+                }
+            }
 
 
             if (modifiedDistance < bestDistance) {
                 bestDistance = modifiedDistance;
                 bestSolution = solutionToTest;
                 currentSolution = solutionToTest;
+                currentAction.addAll(actionToTest);
+                currentPair = new Pair<>(currentSolution, currentAction);
+
             } else if (modifiedDistance > bestDistance) {
                 boolean actionInTabuList = false;
-
                 for (ArrayList<String> tabuAction : tabuList) {
-                    if (actionToTest.get(0).equals(tabuAction.get(0))) {
-                        if (actionToTest.get(0).equals("TwoOptSameRoute")) {
-                            if (actionToTest.get(1).equals(tabuAction.get(1))) {
-                                if ((actionToTest.get(2).equals(tabuAction.get(2)) || actionToTest.get(2).equals(tabuAction.get(3))) &&
-                                        (actionToTest.get(3).equals(tabuAction.get(2)) || actionToTest.get(3).equals(tabuAction.get(3)))) {
-                                    actionInTabuList = true;
-                                    break;
+                    if (actionToTest.size() == tabuAction.size()) {
+                        if (actionToTest.get(0).equals(tabuAction.get(0))) {
+                            switch (actionToTest.get(0)) {
+                                case "TwoOptSameRoute":
+                                    if (actionToTest.get(1).equals(tabuAction.get(1))) {
+                                        if ((actionToTest.get(2).equals(tabuAction.get(2)) || actionToTest.get(2).equals(tabuAction.get(3))) &&
+                                                (actionToTest.get(3).equals(tabuAction.get(2)) || actionToTest.get(3).equals(tabuAction.get(3)))) {
+                                            actionInTabuList = true;
+                                            break;
+                                        }
+                                    }
+                                case "Exchange":
+                                    if ((actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(3).equals(tabuAction.get(3))) ||
+                                            (actionToTest.get(1).equals(tabuAction.get(3)) && actionToTest.get(3).equals(tabuAction.get(1)))) {
+                                        if ((actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(4).equals(tabuAction.get(4))) ||
+                                                (actionToTest.get(2).equals(tabuAction.get(4)) && actionToTest.get(4).equals(tabuAction.get(2)))) {
+                                            actionInTabuList = true;
+                                            break;
+                                        }
+                                    }
+                                case "Relocate":
+                                    if(actionToTest.get(1).equals(actionToTest.get(3))) {
+                                        //cas d'un relocate intra route
+                                        if (actionToTest.get(4).equals(tabuAction.get(2)) && actionToTest.get(2).equals(tabuAction.get(4))) {
+                                            actionInTabuList = true;
+                                            break;
+                                        }
+                                        //cas d'un relocate inter route
+                                        if (actionToTest.get(3).equals(tabuAction.get(1)) && actionToTest.get(4).equals(tabuAction.get(2))) {
+                                            actionInTabuList = true;
+                                            break;
+                                        }
+                                    }
+                                case "CrossExchange" :
+                                    if(actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(4).equals(tabuAction.get(4))) {
+                                        if(actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(5).equals(tabuAction.get(5))){
+                                            if(actionToTest.get(3).equals(tabuAction.get(3)) && actionToTest.get(6).equals(tabuAction.get(6))){
+                                                actionInTabuList = true;
+                                                break;
+                                            }
+                                        }
+                                    }
                                 }
-                            }
-                        } else if (actionToTest.get(0).equals("ExchangeInter")) {
-                            if ((actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(3).equals(tabuAction.get(3))) ||
-                                    (actionToTest.get(1).equals(tabuAction.get(3)) && actionToTest.get(3).equals(tabuAction.get(1)))) {
-                                if ((actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(4).equals(tabuAction.get(4))) ||
-                                        (actionToTest.get(2).equals(tabuAction.get(4)) && actionToTest.get(4).equals(tabuAction.get(2)))) {
-                                    actionInTabuList = true;
-                                    break;
-                                }
-                            }
-                        }else if (actionToTest.get(0).equals("RelocateInter")) {
-                            if ((actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(3).equals(tabuAction.get(3))) ||
-                                    (actionToTest.get(1).equals(tabuAction.get(3)) && actionToTest.get(3).equals(tabuAction.get(1)))) {
-                                if ((actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(4).equals(tabuAction.get(4))) ||
-                                        (actionToTest.get(2).equals(tabuAction.get(4)) && actionToTest.get(4).equals(tabuAction.get(2)))) {
-                                    actionInTabuList = true;
-                                    break;
-                                }
-                            }
+
                         }
                     }
                 }
-
                 if (!actionInTabuList) {
                     currentSolution = solutionToTest;
+                    currentAction.addAll(actionToTest);
+                    currentPair = new Pair<>(currentSolution, currentAction);
 
                     if (tabuList.size() == this.sizeTabu) {
                         tabuList.remove(tabuList.size() - 1);
@@ -98,6 +132,8 @@ public class SolutionTabou extends Solution {
                 }
             } else {
                 currentSolution = solutionToTest;
+                currentAction.addAll(actionToTest);
+                currentPair = new Pair<>(currentSolution, currentAction);
             }
 
             System.out.println(bestDistance);

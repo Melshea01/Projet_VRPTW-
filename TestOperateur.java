@@ -22,7 +22,7 @@ public class TestOperateur {
         //TODO : Correction Solution generate random consomme les données de Instance VRP d'ou des erreurs, corriger cette erreur
         InstanceVRP instanceVRP1 = Parsing.ParsingClientsFromFile("Data/datatestcross.vrp");
         InstanceVRP instanceVRP2 = Parsing.ParsingClientsFromFile("Data/datatestcross.vrp");
-        Operateur o = new Operateur(instanceVRP1);
+        Operateur o = new Operateur();
         SolutionAleatoire initSolution = new SolutionAleatoire();
         //Instanciation de la solution 1
         Solution solution1 = initSolution.generateRandomSolution(instanceVRP1);
