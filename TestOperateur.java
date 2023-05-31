@@ -39,7 +39,7 @@ public class TestOperateur {
         //neighbors = o.twoOpt(solution1);
         //neighbors = o.exchange(solution1);
         //neighbors = o.relocateIntra(solution1);
-        //neighbors = o.relocateInter(solution1);
+        neighbors = o.relocateInter(solution1);
         Solution soltemp = new Solution();
         soltemp = solution1.cloneSolution();
 
@@ -54,15 +54,18 @@ public class TestOperateur {
         if(neighbors.get(0).getFirst() == null){
             System.out.println("Pas de voisin");
         }
+        int i1 =0;
+        while ( i1<1000){
 
+            neighbors = o.relocateInter(soltemp);
         if (neighbors.get(0).getFirst() != null) {
-            for(int i = 0 ; i < neighbors.size() ; i++) {
+            for (int i = 0; i < neighbors.size(); i++) {
                 double disttemp = soltemp.getTotalDistance();
                 double distNeighbor = neighbors.get(i).getFirst().getTotalDistance();
-                if(distNeighbor < disttemp) {
+                if (distNeighbor < disttemp) {
                     soltemp = neighbors.get(i).getFirst();
                     System.out.println(neighbors.get(i).getSecond());
-                    for(Route route: soltemp.getRoutes()) {
+                    for (Route route : soltemp.getRoutes()) {
                         System.out.println("route base :");
                         for (Client client : route.clients) {
                             System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
@@ -75,10 +78,9 @@ public class TestOperateur {
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
-                }
-                else {
+                } else {
                     visu.updateGraph(soltemp.getRoutes());
-                    for(Route route: soltemp.getRoutes()) {
+                    for (Route route : soltemp.getRoutes()) {
                         System.out.println("route modif :");
                         for (Client client : route.clients) {
                             System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
@@ -87,7 +89,10 @@ public class TestOperateur {
                     }
                 }
             }
+            i1 ++;
         }
+        }
+
 
 //        ArrayList<Route> routetemp = new ArrayList<>();
 //        int i1 = 0;

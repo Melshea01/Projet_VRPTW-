@@ -62,7 +62,7 @@ public class Main {
             e.printStackTrace();
         }
         ArrayList<Route> routesTabou = solutionUpgrade.getRoutes();
-        System.out.println("nb route tabou" + routesTabou.size());
+        System.out.println("nb route tabou : " + routesTabou.size());
 
 
         /*

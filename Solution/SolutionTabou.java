@@ -67,11 +67,11 @@ public class SolutionTabou extends Solution {
                 int clientsTotExchange = neighbors.get(neighbors.size()-1).getKey().getNbClients();
 //                System.out.println("ddddddddddddEXC"+clientsTotExchange);
             }
-            if(o.crossExchange(currentSolution).get(0).getFirst() != null) {
-                neighbors.addAll(o.crossExchange(currentSolution));
-                int clientsTotCrossExchange = neighbors.get(neighbors.size()-1).getKey().getNbClients();
-//                System.out.println("ddddddddddddCROSSEXCH"+clientsTotCrossExchange);
-            }
+//            if(o.crossExchange(currentSolution).get(0).getFirst() != null) {
+//                neighbors.addAll(o.crossExchange(currentSolution));
+//                int clientsTotCrossExchange = neighbors.get(neighbors.size()-1).getKey().getNbClients();
+////                System.out.println("ddddddddddddCROSSEXCH"+clientsTotCrossExchange);
+//            }
 
             //Renvoie null à partir d'un moment
             if(neighbors.isEmpty()) {
