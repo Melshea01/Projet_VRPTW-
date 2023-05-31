@@ -75,6 +75,7 @@ public class Solution {
     }
 
     public int getNbClients() {
+        this.nbClients =0;
         for (Route route : this.routes) {
             this.nbClients += route.getListClient().size()-2;
         }

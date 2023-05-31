@@ -6,6 +6,7 @@ import org.apache.commons.math3.util.Pair;
 
 import java.sql.SQLOutput;
 import java.util.ArrayList;
+import java.util.Iterator;
 
 public class SolutionTabou extends Solution {
 
@@ -28,7 +29,18 @@ public class SolutionTabou extends Solution {
         ArrayList<Pair<Solution, ArrayList<String>>> visitedSolutions = new ArrayList<>();
         Pair<Solution, ArrayList<String>> currentPair = new Pair<>(currentSolution, currentAction);
 
+        // Si une route a été vidée, on la supprime
         while (!visitedSolutions.contains(currentPair)) {
+//            System.out.println("clients avant while"+currentSolution.getNbClients());
+            Iterator<Route> iterator = currentSolution.getRoutes().iterator();
+            while (iterator.hasNext()) {
+                Route route = iterator.next();
+                if (route.getListClient().size() < 3) {
+                    iterator.remove(); // Utilisation de la méthode remove() de l'itérateur pour supprimer les routes vides
+                }
+            }
+//            System.out.println("clients après while"+currentSolution.getNbClients());
+
             visitedSolutions.add(new Pair<>(currentSolution, currentAction));
 
             Operateur o = new Operateur(vrp);
@@ -37,39 +49,51 @@ public class SolutionTabou extends Solution {
             // On génère tous les voisins
             if(o.twoOpt(currentSolution).get(0).getFirst() != null) {
                 neighbors.addAll(o.twoOpt(currentSolution));
+                int clientsTottwoOpt = neighbors.get(neighbors.size()-1).getKey().getNbClients();
+//                System.out.println("ddddddddddddTO"+clientsTottwoOpt);
             }
             if(o.relocateIntra(currentSolution).get(0).getFirst() != null) {
                 neighbors.addAll(o.relocateIntra(currentSolution));
+                int clientsTotrelocateIntra = neighbors.get(neighbors.size()-1).getKey().getNbClients();
+//                System.out.println("ddddddddddddRIntra"+clientsTotrelocateIntra);
             }
             if(o.relocateInter(currentSolution).get(0).getFirst() != null) {
                 neighbors.addAll(o.relocateInter(currentSolution));
+                int clientsTotrelocateInter = neighbors.get(neighbors.size()-1).getKey().getNbClients();
+//                System.out.println("ddddddddddddRinter"+clientsTotrelocateInter);
             }
             if(o.exchange(currentSolution).get(0).getFirst() != null) {
                 neighbors.addAll(o.exchange(currentSolution));
+                int clientsTotExchange = neighbors.get(neighbors.size()-1).getKey().getNbClients();
+//                System.out.println("ddddddddddddEXC"+clientsTotExchange);
             }
             if(o.crossExchange(currentSolution).get(0).getFirst() != null) {
                 neighbors.addAll(o.crossExchange(currentSolution));
+                int clientsTotCrossExchange = neighbors.get(neighbors.size()-1).getKey().getNbClients();
+//                System.out.println("ddddddddddddCROSSEXCH"+clientsTotCrossExchange);
             }
 
             //Renvoie null à partir d'un moment
-            if(neighbors.get(0).getFirst() == null) {
+            if(neighbors.isEmpty()) {
                 return bestSolution;
             }
-
+            int clientssss = neighbors.get(neighbors.size()-1).getKey().getNbClients();
             Solution solutionToTest = new Solution();
             ArrayList<String> actionToTest = new ArrayList<>();
             double modifiedDistance = neighbors.get(0).getFirst().getTotalDistance();
 
             // On récupère le meilleur voisin
             for(int i = 0; i< neighbors.size() ; i++) {
-                double neighborDistance = neighbors.get(i).getFirst().getTotalDistance();
-                if(neighborDistance < modifiedDistance) {
-                    modifiedDistance = neighborDistance;
-                    solutionToTest = neighbors.get(i).getFirst();
-                    actionToTest = neighbors.get(i).getSecond();
+                if(neighbors.get(i).getFirst() != null) {
+                    double neighborDistance = neighbors.get(i).getKey().getTotalDistance();
+                    if(neighborDistance < modifiedDistance) {
+                        modifiedDistance = neighborDistance;
+                        solutionToTest = neighbors.get(i).getFirst();
+                        actionToTest = neighbors.get(i).getSecond();
+                    }
                 }
             }
-
+            int clientsTot = solutionToTest.getNbClients();
 
             if (modifiedDistance < bestDistance) {
                 bestDistance = modifiedDistance;

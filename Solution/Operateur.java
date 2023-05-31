@@ -34,7 +34,8 @@ public class Operateur {
                 //Calcule de toutes les routes randoms
                 for (int i = 1; i < size - 2; i++) {
                     for (int j = i + 2; j < size - 1; j++) {
-                        Route tempRoute = newRoute.cloneRoute(newRoute);
+                        Route tempRoute = newRoute;
+                        tempRoute.cloneRoute(newRoute);
                         tempRoute = newRoute.setRoute(getReversedList(tempRoute.getListClient(),i,j));
                         if (tempRoute.isFeasible(this.vrp.getCapacity())) {
                             ArrayList<String> action = new ArrayList<>();
@@ -62,26 +63,29 @@ public class Operateur {
 
 
     public ArrayList<Pair<Solution, ArrayList<String>>>  relocateInter(Solution solution){
+        System.out.println("route initiale" + solution.getNbClients());
         ArrayList<Pair <Solution, ArrayList<String>>> neighbors = new ArrayList<>();
         //Suppression du client dans la route d'origine
         Route newRouteOrigine = new Route();
 
 
         //Pour toutes les routes de la solution
-        for(int i =0;i < solution.getRoutes().size()-1 ; i++){
+        for(int i = 0;i < solution.getRoutes().size() ; i++){
             //On copie la liste de de client de la route
             Route route1 = solution.getRoutes().get(i).cloneRoute();
-            ArrayList<Client> ListClientTemp1 = (ArrayList<Client>) new ArrayList<>(route1.getListClient()).clone();
+            ArrayList<Client> listClientTemp1 = (ArrayList<Client>) new ArrayList<>(route1.getListClient()).clone();
             if(solution.getRoutes().get(i).getListClient().size()<3){
                 break;
             }
 
             //Pour tous les clients de cette route
-            for(int numClient = 1; numClient < ListClientTemp1.size()-1; numClient++){
-               Client client = ListClientTemp1.get(numClient) ;
+            for(int numClient = 1; numClient < route1.getListClient().size()-1; numClient++){
+               Client client = route1.getListClient().get(numClient) ;
+                System.out.println("nouveau i");
 
                 // Pour toutes les routes de la solution, on teste où on peut insérer le client
                 for (int j = i+1; j < solution.getRoutes().size(); j++) {
+                    System.out.println("nouveau j");
                     Route route2 = solution.getRoutes().get(j).cloneRoute();
 
                     if(solution.getRoutes().get(j).getListClient().size()<3){
@@ -102,8 +106,9 @@ public class Operateur {
                         newRouteArrive = relocateIntra(newRouteArrive);
 
                         newRouteOrigine = route1.cloneRoute();
-                        ListClientTemp1.remove(client);
-                        newRouteOrigine.setClients(ListClientTemp1);
+
+                        listClientTemp1.remove(client);
+                        newRouteOrigine.setClients(listClientTemp1);
 
                         //Insertion de la solution dans la liste
                         ArrayList<String> action = new ArrayList<>();
@@ -111,8 +116,10 @@ public class Operateur {
                         newNeighbor = solution.cloneSolution();
                         //route d'origine
                         newNeighbor.getRoutes().set(i, newRouteOrigine);
+                        System.out.println("route avant" +newNeighbor.getNbClients());
                         //route d'arrivée
                         newNeighbor.getRoutes().set(j, newRouteArrive);
+                        System.out.println("route après" +newNeighbor.getNbClients());
 
                         int indexArrivee = newRouteArrive.getIndexOfClient(client);
 
