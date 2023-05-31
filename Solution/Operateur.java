@@ -9,11 +9,16 @@ import java.util.Random;
 
 public class Operateur {
 
+    private InstanceVRP vrp;
+
+
+    public Operateur(InstanceVRP vrp) {
+        this.vrp = vrp;
+    }
 
     /*
     * Opérateur qui va echanger deux arêtes de la route
     * */
-
     public ArrayList<Pair<Solution, ArrayList<String>>>  twoOpt(Solution solution){
         ArrayList<Pair <Solution, ArrayList<String>>> neighbors = new ArrayList<>();
 
@@ -31,7 +36,7 @@ public class Operateur {
                     for (int j = i + 2; j < size - 1; j++) {
                         Route tempRoute = newRoute.cloneRoute(newRoute);
                         tempRoute = newRoute.setRoute(getReversedList(tempRoute.getListClient(),i,j));
-                        if (tempRoute.isFeasible(solution.instanceVRP.getCapacity())) {
+                        if (tempRoute.isFeasible(this.vrp.getCapacity())) {
                             ArrayList<String> action = new ArrayList<>();
                             Solution newNeighbor = new Solution();
                             newNeighbor = solution.cloneSolution();
@@ -276,7 +281,7 @@ public class Operateur {
                     tempRoute.setClients(ListClientTemp);
                     //Calcule du temps d'arrivée
                     double arrivalTime = tempRoute.calculateArrivalTime(ListClientTemp.get(j-1), ListClientTemp.get(j));
-                    if (client.isFeasible(arrivalTime) && i!=j && tempRoute.isFeasible(solution.getInstanceVRP().getCapacity())){
+                    if (client.isFeasible(arrivalTime) && i!=j && tempRoute.isFeasible(this.vrp.getCapacity())){
                         ArrayList<String> action = new ArrayList<>();
                         Solution newNeighbor = new Solution();
                         newNeighbor = solution.cloneSolution();
@@ -314,9 +319,9 @@ public class Operateur {
         ArrayList<Pair <Solution, ArrayList<String>>> neighbors = new ArrayList<>();
 
         // On génère toutes les paires de clients possibles
-        for (int i = 1; i < solution.getInstanceVRP().getNb_client()-1; i++) {
-            for(int j = 2 ; j < solution.getInstanceVRP().getNb_client() ; j++){
-                clientPair.add(new Pair<>(solution.getInstanceVRP().getClientByIndex(i), solution.getInstanceVRP().getClientByIndex(j)));
+        for (int i = 1; i < this.vrp.getNb_client()-1; i++) {
+            for(int j = 2 ; j < this.vrp.getNb_client() ; j++){
+                clientPair.add(new Pair<>(this.vrp.getClientByIndex(i), this.vrp.getClientByIndex(j)));
             }
         }
 
@@ -357,7 +362,7 @@ public class Operateur {
                     route2.getListClient().set(indexClient2, client1);
                 }
 
-                if (route1.isFeasible(solution.getInstanceVRP().getNb_client()) && route2.isFeasible(solution.getInstanceVRP().getNb_client())) {
+                if (route1.isFeasible(this.vrp.getNb_client()) && route2.isFeasible(this.vrp.getNb_client())) {
                     // On génère la nouvelle liste de route
                     ArrayList<Route> newRoutes = new ArrayList<>();
                     newRoutes = (ArrayList<Route>) solution.getRoutes().clone();
@@ -380,7 +385,8 @@ public class Operateur {
                     neighbors.add(new Pair(newNeighbor, action));
                 }
             } else {
-                return null;
+                neighbors.add(new Pair(null, null));
+                return  neighbors;
             }
         }
         if (!neighbors.isEmpty()) {
@@ -430,7 +436,7 @@ public class Operateur {
                                 newRoute2.getListClient().subList(startIndex2, endIndex2 + 1).clear();
                                 newRoute2.getListClient().addAll(startIndex2, part1);
                                 //Vérifier si les routes sont réalisable
-                                if (newRoute1.isFeasible(solution.getInstanceVRP().getCapacity()) && newRoute2.isFeasible(solution.getInstanceVRP().getCapacity())) {
+                                if (newRoute1.isFeasible(this.vrp.getCapacity()) && newRoute2.isFeasible(this.vrp.getCapacity())) {
                                     // Créer une nouvelle solution contenant les routes modifiées
                                     Solution newNeighbor = solution.cloneSolution();
                                     newNeighbor.getRoutes().set(i, newRoute1);
@@ -458,7 +464,8 @@ public class Operateur {
         if (!neighbors.isEmpty()) {
             return neighbors;
         } else {
-            return null;
+            neighbors.add(new Pair(null, null));
+            return  neighbors;
         }
     }
 

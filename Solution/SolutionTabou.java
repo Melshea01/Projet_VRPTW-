@@ -19,6 +19,7 @@ public class SolutionTabou extends Solution {
     }
 
     public Solution Tabu_search() {
+        InstanceVRP vrp = initialSolution.getInstanceVRP();
         Solution bestSolution = this.initialSolution;
         double bestDistance = this.initialSolution.getTotalDistance();
         Solution currentSolution = this.initialSolution;
@@ -30,7 +31,7 @@ public class SolutionTabou extends Solution {
         while (!visitedSolutions.contains(currentPair)) {
             visitedSolutions.add(new Pair<>(currentSolution, currentAction));
 
-            Operateur o = new Operateur();
+            Operateur o = new Operateur(vrp);
             ArrayList<Pair<Solution, ArrayList<String>>> neighbors = new ArrayList<>();
 
             // On génère tous les voisins
