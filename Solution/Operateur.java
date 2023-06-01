@@ -324,7 +324,9 @@ public class Operateur {
         // On génère toutes les paires de clients possibles
         for (int i = 1; i < this.vrp.getNb_client()-1; i++) {
             for(int j = 2 ; j < this.vrp.getNb_client() ; j++){
-                clientPair.add(new Pair<>(this.vrp.getClientByIndex(i), this.vrp.getClientByIndex(j)));
+                if(i != j) {
+                    clientPair.add(new Pair<>(this.vrp.getClientByIndex(i), this.vrp.getClientByIndex(j)));
+                }
             }
         }
 
