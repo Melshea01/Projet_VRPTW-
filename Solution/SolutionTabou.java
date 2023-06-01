@@ -81,6 +81,8 @@ public class SolutionTabou extends Solution {
                     if(neighbors.contains(currentSolution)){
                         neighbors.remove(currentSolution);
                     }
+
+
                     // On récupère le meilleur voisin
                     for (int i = 0; i < neighbors.size(); i++) {
                         if (neighbors.get(i).getFirst() != null) {
@@ -95,10 +97,13 @@ public class SolutionTabou extends Solution {
                         }
                     }
 
-                System.out.println("distance current solution "+ currentSolution.getTotalDistance());
-                System.out.println("distance distance modifiée "+ modifiedDistance);
-                System.out.println("solutiontoTest "+ solutionToTest.getTotalDistance());
+                    if(k>495){
+                        System.out.println("distance current solution "+ currentSolution.getTotalDistance());
+                        System.out.println("distance distance modifiée "+ modifiedDistance);
+                        System.out.println("solutiontoTest "+ solutionToTest.getTotalDistance());
+                    }
 
+                    modifiedDistance = solutionToTest.getTotalDistance();
 
                     if (modifiedDistance < bestDistance) {
                         bestDistance = modifiedDistance;
@@ -121,6 +126,7 @@ public class SolutionTabou extends Solution {
                                                     break;
                                                 }
                                             }
+                                            break;
                                         case "Exchange":
                                             if ((actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(3).equals(tabuAction.get(3))) ||
                                                     (actionToTest.get(1).equals(tabuAction.get(3)) && actionToTest.get(3).equals(tabuAction.get(1)))) {
@@ -130,8 +136,10 @@ public class SolutionTabou extends Solution {
                                                     break;
                                                 }
                                             }
+                                            break;
+
                                         case "Relocate":
-                                            if (actionToTest.get(1).equals(actionToTest.get(3))) {
+                                            if (actionToTest.get(1).equals(tabuAction.get(3))) {
                                                 //cas d'un relocate intra route
                                                 if (actionToTest.get(4).equals(tabuAction.get(2)) && actionToTest.get(2).equals(tabuAction.get(4))) {
                                                     actionInTabuList = true;
@@ -143,6 +151,7 @@ public class SolutionTabou extends Solution {
                                                     break;
                                                 }
                                             }
+                                            break;
                                         case "CrossExchange":
                                             if (actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(4).equals(tabuAction.get(4))) {
                                                 if (actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(5).equals(tabuAction.get(5))) {
@@ -152,7 +161,8 @@ public class SolutionTabou extends Solution {
                                                     }
                                                 }
                                             }
-                                            break;
+                                        break;
+
                                         default: break;
                                     }
 
