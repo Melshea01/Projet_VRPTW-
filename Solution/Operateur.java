@@ -42,6 +42,7 @@ public class Operateur {
                             Solution newNeighbor = new Solution();
                             newNeighbor = solution.cloneSolution();
                             newNeighbor.getRoutes().set(i1, tempRoute);
+                            newNeighbor.getTotalDistance();
                             action.add("TwoOptSameRoute");
                             //Route modifié
                             action.add(Integer.toString(i1));
@@ -113,6 +114,7 @@ public class Operateur {
                         newNeighbor.getRoutes().set(i, newRouteOrigine);
                         //route d'arrivée
                         newNeighbor.getRoutes().set(j, newRouteArrive);
+                        newNeighbor.getTotalDistance();
 
                         int indexArrivee = newRouteArrive.getIndexOfClient(client);
 
@@ -286,6 +288,7 @@ public class Operateur {
                         Solution newNeighbor = new Solution();
                         newNeighbor = solution.cloneSolution();
                         newNeighbor.getRoutes().set(i1, tempRoute);
+                        newNeighbor.getTotalDistance();
                         action.add("Relocate");
                         //Route modifié
                         action.add(Integer.toString(i1));
@@ -372,6 +375,7 @@ public class Operateur {
 
                     Solution newNeighbor = new Solution();
                     newNeighbor.setRoutes(newRoutes);
+                    newNeighbor.getTotalDistance();
 
                     // On génère l'action correspondante
                     ArrayList<String> action = new ArrayList<>();
@@ -447,7 +451,7 @@ public class Operateur {
                                     newNeighbor = solution.cloneSolution();
                                     newNeighbor.getRoutes().set(i, newRoute1);
                                     newNeighbor.getRoutes().set(j, newRoute2);
-
+                                    newNeighbor.getTotalDistance();
                                     // On génère l'action correspondante
                                     ArrayList<String> action = new ArrayList<>();
                                     action.add("CrossExchange");

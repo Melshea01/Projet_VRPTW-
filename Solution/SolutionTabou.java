@@ -57,6 +57,7 @@ public class SolutionTabou extends Solution {
                     if (o.relocateInter(currentSolution).get(0).getFirst() != null) {
                         neighbors.addAll(o.relocateInter(currentSolution));
                         int clientsTotrelocateInter = neighbors.get(neighbors.size() - 1).getKey().getNbClients();
+                        System.out.println("nb de boucle "+k);
                     }
                     if (o.exchange(currentSolution).get(0).getFirst() != null) {
                         neighbors.addAll(o.exchange(currentSolution));
@@ -74,20 +75,30 @@ public class SolutionTabou extends Solution {
                     int clientssss = neighbors.get(neighbors.size() - 1).getKey().getNbClients();
                     Solution solutionToTest = new Solution();
                     ArrayList<String> actionToTest = new ArrayList<>();
-                    double modifiedDistance = neighbors.get(0).getFirst().getTotalDistance();
+                    //on prends la valeur du premier voisin
+                    double modifiedDistance = Double.POSITIVE_INFINITY;
 
+                    if(neighbors.contains(currentSolution)){
+                        neighbors.remove(currentSolution);
+                    }
                     // On récupère le meilleur voisin
                     for (int i = 0; i < neighbors.size(); i++) {
                         if (neighbors.get(i).getFirst() != null) {
                             double neighborDistance = neighbors.get(i).getKey().getTotalDistance();
-                            if (neighborDistance < modifiedDistance) {
+                            if (neighborDistance <= modifiedDistance) {
                                 modifiedDistance = neighborDistance;
-                                solutionToTest = neighbors.get(i).getFirst();
-                                actionToTest = neighbors.get(i).getSecond();
+                                if(modifiedDistance != currentSolution.getTotalDistance()){
+                                    solutionToTest = neighbors.get(i).getFirst();
+                                    actionToTest = neighbors.get(i).getSecond();
+                                }
                             }
                         }
                     }
-                    int clientsTot = solutionToTest.getNbClients();
+
+                System.out.println("distance current solution "+ currentSolution.getTotalDistance());
+                System.out.println("distance distance modifiée "+ modifiedDistance);
+                System.out.println("solutiontoTest "+ solutionToTest.getTotalDistance());
+
 
                     if (modifiedDistance < bestDistance) {
                         bestDistance = modifiedDistance;
@@ -141,6 +152,8 @@ public class SolutionTabou extends Solution {
                                                     }
                                                 }
                                             }
+                                            break;
+                                        default: break;
                                     }
 
                                 }
@@ -166,6 +179,7 @@ public class SolutionTabou extends Solution {
                 k++;
                 System.out.println(bestDistance);
             }
+        System.out.println("Tabou List size "+ tabuList.size());
         return bestSolution;
     }
 
