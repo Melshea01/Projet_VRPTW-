@@ -53,8 +53,9 @@ public class Main {
         System.out.println("nb route aléatoire" + routes.size());
 
 
-        SolutionTabou solutionTabou = new SolutionTabou(solution1, 5, solution.getInstanceVRP());
-        Solution solutionUpgrade = solutionTabou.Tabu_search();
+        SolutionTabou solutionTabou = new SolutionTabou(solution1, 50, solution.getInstanceVRP());
+        int max = 500;
+        Solution solutionUpgrade = solutionTabou.Tabu_search(max);
         try {
             visu.updateGraph(solutionUpgrade.getRoutes());
             Thread.sleep(3000);
