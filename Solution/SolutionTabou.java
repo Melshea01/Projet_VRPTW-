@@ -234,7 +234,6 @@ public class SolutionTabou extends Solution {
                 System.out.println("k = " + k);
                 k++;
             }
-        System.out.println("Tabou List size "+ tabuList.size());
         return bestSolution;
     }
 

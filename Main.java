@@ -54,29 +54,9 @@ public class Main {
         System.out.println("nb route aléatoire" + routes.size());
 
 //******************************************RECUIT SIMULE**********************************************************************
-        SimulatedAnnealing recuit = new SimulatedAnnealing(solution1, 2, 125, 0.9);
-        int max = 500;
-        Solution solutionUpgrade = recuit.generateSimulatedAnnealing();
-        try {
-            visu.updateGraph(solutionUpgrade.getRoutes());
-            Thread.sleep(3000);
-        } catch (InterruptedException e) {
-            e.printStackTrace();
-        }
-
-        int nbroute=0;
-        ArrayList<Route> routesTabou = solutionUpgrade.getRoutes();
-        for(Route route : routesTabou){
-            if(route.clients.size()>2){
-                nbroute++;
-            }
-        }
-
-//******************************************TABOU**********************************************************************
-
-//        SolutionTabou solutionTabou = new SolutionTabou(solution1, 60, solution.getInstanceVRP());
+//        SimulatedAnnealing recuit = new SimulatedAnnealing(solution1, 2, 125, 0.9);
 //        int max = 500;
-//        Solution solutionUpgrade = solutionTabou.Tabu_search(max);
+//        Solution solutionUpgrade = recuit.generateSimulatedAnnealing();
 //        try {
 //            visu.updateGraph(solutionUpgrade.getRoutes());
 //            Thread.sleep(3000);
@@ -91,6 +71,26 @@ public class Main {
 //                nbroute++;
 //            }
 //        }
+
+//******************************************TABOU**********************************************************************
+
+        SolutionTabou solutionTabou = new SolutionTabou(solution1, 60, solution.getInstanceVRP());
+        int max = 2500;
+        Solution solutionUpgrade = solutionTabou.Tabu_search(max);
+        try {
+            visu.updateGraph(solutionUpgrade.getRoutes());
+            Thread.sleep(3000);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+
+        int nbroute=0;
+        ArrayList<Route> routesTabou = solutionUpgrade.getRoutes();
+        for(Route route : routesTabou){
+            if(route.clients.size()>2){
+                nbroute++;
+            }
+        }
 
 
         /*
