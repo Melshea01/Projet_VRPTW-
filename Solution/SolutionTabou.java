@@ -4,8 +4,7 @@ import Logistique.InstanceVRP;
 import Logistique.Route;
 import org.apache.commons.math3.util.Pair;
 
-import java.util.ArrayList;
-import java.util.Iterator;
+import java.util.*;
 
 public class SolutionTabou extends Solution {
 
@@ -73,27 +72,18 @@ public class SolutionTabou extends Solution {
             }
 
             double modifiedDistance = Double.POSITIVE_INFINITY;
-            // On récupère le meilleur voisin
-            for (int i = 0; i < neighbors.size(); i++) {
-                if (neighbors.get(i).getFirst() != null) {
-                    double neighborDistance = neighbors.get(i).getKey().getTotalDistance();
-                    if (neighborDistance <= modifiedDistance) {
-                        modifiedDistance = neighborDistance;
-                        if (modifiedDistance != currentSolution.getTotalDistance()) {
-                            solutionToTest = neighbors.get(i).getFirst();
-                            actionToTest = neighbors.get(i).getSecond();
-                        }
-                    }
-                }
-            }
+            // On trie le meilleur voisin
 
-                    if(k>495){
-                        System.out.println("distance current solution "+ currentSolution.getTotalDistance());
-                        System.out.println("distance distance modifiée "+ modifiedDistance);
-                        System.out.println("solutiontoTest "+ solutionToTest.getTotalDistance());
-                    }
 
-                    modifiedDistance = solutionToTest.getTotalDistance();
+                // Changement de stratégie on trie
+                sortByDistance(neighbors);
+
+                //On choisit le meilleur voisin
+                solutionToTest = neighbors.get(0).getFirst().cloneSolution();
+                modifiedDistance = solutionToTest.getTotalDistance();
+                actionToTest.clear();
+                actionToTest.addAll( neighbors.get(0).getSecond());
+
 
                     if (modifiedDistance < bestDistance) {
                         bestDistance = modifiedDistance;
@@ -235,6 +225,11 @@ public class SolutionTabou extends Solution {
                 k++;
             }
         return bestSolution;
+    }
+
+    // Méthode pour trier les solutions par distance
+    private void sortByDistance(List<Pair<Solution, ArrayList<String>>> neighbors) {
+        Collections.sort(neighbors, Comparator.comparingDouble(p -> p.getFirst().getTotalDistance()));
     }
 
 }

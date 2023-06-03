@@ -8,6 +8,8 @@ import Solution.SolutionTabou;
 import Solution.Operateur;
 import org.graphstream.graph.Graph;
 
+import java.time.Duration;
+import java.time.Instant;
 import java.util.ArrayList;
 
 public class Main {
@@ -74,9 +76,14 @@ public class Main {
 
 //******************************************TABOU**********************************************************************
 
-        SolutionTabou solutionTabou = new SolutionTabou(solution1, 60, solution.getInstanceVRP());
-        int max = 2500;
+        Instant start = Instant.now();
+        SolutionTabou solutionTabou = new SolutionTabou(solution1, 50, solution.getInstanceVRP());
+        int max = 1000;
         Solution solutionUpgrade = solutionTabou.Tabu_search(max);
+        Instant end = Instant.now();
+        Duration interval = Duration.between(start, end);
+        System.out.println("Execution time in seconds: " + interval.getSeconds());
+
         try {
             visu.updateGraph(solutionUpgrade.getRoutes());
             Thread.sleep(3000);
@@ -92,28 +99,11 @@ public class Main {
             }
         }
 
-
-        /*
-        //Vérification des routes
-        double distance3 = 0;
-        int i=0;
-        for (Transport transports: transports) {
-            Logistique.Route route = transports.get(transport.getId()-1 ).getRoute();
-            i++;
-            System.out.println(i);
-            System.out.println(route.getCoordonnees() + "distance total de chaque route "+ solution.transports.get(transport.getId()-1 ).getRoute().getDistance());
-            distance3 += solution.transports.get(transport.getId()-1 ).getRoute().getDistance();
-        }
-        ArrayList<Client> clientroute1= new ArrayList<Client>();
-        clientroute1 = distance.get(0).getRoute().getRoute();
-        */
-
-
-//        System.out.println("nombre de transport final " + solution1.getRoutes().size());
-//        System.out.println("distance final " + solution1.getTotalDistance()) ;
+        System.out.println("nombre de transport initial " + solution1.getRoutes().size());
+        System.out.println("fitness initial" + solution1.getTotalDistance()) ;
 
         System.out.println("nombre de transport final " + solutionUpgrade.getRoutes().size());
-        System.out.println("distance final " + solutionUpgrade.getTotalDistance()) ;
+        System.out.println("fitness final " + solutionUpgrade.getTotalDistance()) ;
     }
 
 }

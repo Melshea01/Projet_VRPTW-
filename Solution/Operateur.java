@@ -432,6 +432,13 @@ public class Operateur {
                                 ArrayList<Client> part1 = new ArrayList<>(listClientTemp1.subList(startIndex1, endIndex1 + 1));
                                 ArrayList<Client> part2 = new ArrayList<>(ListClientTemp2.subList(startIndex2, endIndex2 + 1));
 
+
+                                // Vérifier si les parties à échanger ne sont pas les routes entières
+                                if (part1.size() == route1.getListClient().size()-2 || part2.size() == route2.getListClient().size()-2) {
+                                    continue;
+                                }
+
+
                                 // Échanger les parties entre les deux routes
                                 Route newRoute1 = new Route();
                                 newRoute1.cloneRoute(route1);
