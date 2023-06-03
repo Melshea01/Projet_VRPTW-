@@ -4,14 +4,13 @@ import Logistique.InstanceVRP;
 import Logistique.Route;
 import org.apache.commons.math3.util.Pair;
 
-import java.sql.SQLOutput;
 import java.util.ArrayList;
 import java.util.Iterator;
 
 public class SolutionTabou extends Solution {
 
-    private Solution initialSolution;
-    private int sizeTabu;
+    private final Solution initialSolution;
+    private final int sizeTabu;
 
     public SolutionTabou(Solution initialSolution, int sizeTabu, InstanceVRP vrp) {
         this.initialSolution = initialSolution;
@@ -45,55 +44,48 @@ public class SolutionTabou extends Solution {
                     Operateur o = new Operateur(vrp);
                     ArrayList<Pair<Solution, ArrayList<String>>> neighbors = new ArrayList<>();
 
-                    // On génère tous les voisins
-                    if (o.twoOpt(currentSolution).get(0).getFirst() != null) {
-                        neighbors.addAll(o.twoOpt(currentSolution));
-                        int clientsTottwoOpt = neighbors.get(neighbors.size() - 1).getKey().getNbClients();
-                    }
-                    if (o.relocateIntra(currentSolution).get(0).getFirst() != null) {
-                        neighbors.addAll(o.relocateIntra(currentSolution));
-                        int clientsTotrelocateIntra = neighbors.get(neighbors.size() - 1).getKey().getNbClients();
-                    }
-                    if (o.relocateInter(currentSolution).get(0).getFirst() != null) {
-                        neighbors.addAll(o.relocateInter(currentSolution));
-                        int clientsTotrelocateInter = neighbors.get(neighbors.size() - 1).getKey().getNbClients();
-                        System.out.println("nb de boucle "+k);
-                    }
-                    if (o.exchange(currentSolution).get(0).getFirst() != null) {
-                        neighbors.addAll(o.exchange(currentSolution));
-                        int clientsTotExchange = neighbors.get(neighbors.size() - 1).getKey().getNbClients();
-                    }
-                    if (o.crossExchange(currentSolution).get(0).getFirst() != null) {
-                        neighbors.addAll(o.crossExchange(currentSolution));
-                        int clientsTotCrossExchange = neighbors.get(neighbors.size() - 1).getKey().getNbClients();
-                    }
+            // On génère tous les voisins
+            if (o.twoOpt(currentSolution).get(0).getFirst() != null) {
+                neighbors.addAll(o.twoOpt(currentSolution));
+            }
+            if (o.relocateIntra(currentSolution).get(0).getFirst() != null) {
+                neighbors.addAll(o.relocateIntra(currentSolution));
+            }
+            if (o.relocateInter(currentSolution).get(0).getFirst() != null) {
+                neighbors.addAll(o.relocateInter(currentSolution));
+            }
+            if (o.exchange(currentSolution).get(0).getFirst() != null) {
+                neighbors.addAll(o.exchange(currentSolution));
+            }
+            if (o.crossExchange(currentSolution).get(0).getFirst() != null) {
+                neighbors.addAll(o.crossExchange(currentSolution));
+            }
 
-                    //Renvoie null à partir d'un moment
-                    if (neighbors.isEmpty()) {
-                        return bestSolution;
-                    }
-                    int clientssss = neighbors.get(neighbors.size() - 1).getKey().getNbClients();
-                    Solution solutionToTest = new Solution();
-                    ArrayList<String> actionToTest = new ArrayList<>();
+            //Renvoie null à partir d'un moment
+            if (neighbors.isEmpty()) {
+                return bestSolution;
+            }
+            Solution solutionToTest = new Solution();
+            ArrayList<String> actionToTest = new ArrayList<>();
 
-                    if(neighbors.contains(currentSolution)){
-                        neighbors.remove(currentSolution);
-                    }
+            if (neighbors.contains(currentSolution)) {
+                neighbors.remove(currentSolution);
+            }
 
-
-                    // On récupère le meilleur voisin
-                    for (int i = 0; i < neighbors.size(); i++) {
-                        if (neighbors.get(i).getFirst() != null) {
-                            double neighborDistance = neighbors.get(i).getKey().getTotalDistance();
-                            if (neighborDistance <= modifiedDistance) {
-                                modifiedDistance = neighborDistance;
-                                if(modifiedDistance != currentSolution.getTotalDistance()){
-                                    solutionToTest = neighbors.get(i).getFirst();
-                                    actionToTest = neighbors.get(i).getSecond();
-                                }
-                            }
+            double modifiedDistance = Double.POSITIVE_INFINITY;
+            // On récupère le meilleur voisin
+            for (int i = 0; i < neighbors.size(); i++) {
+                if (neighbors.get(i).getFirst() != null) {
+                    double neighborDistance = neighbors.get(i).getKey().getTotalDistance();
+                    if (neighborDistance <= modifiedDistance) {
+                        modifiedDistance = neighborDistance;
+                        if (modifiedDistance != currentSolution.getTotalDistance()) {
+                            solutionToTest = neighbors.get(i).getFirst();
+                            actionToTest = neighbors.get(i).getSecond();
                         }
                     }
+                }
+            }
 
                     if(k>495){
                         System.out.println("distance current solution "+ currentSolution.getTotalDistance());
@@ -241,7 +233,6 @@ public class SolutionTabou extends Solution {
                     }
                 System.out.println("k = " + k);
                 k++;
-                System.out.println(bestDistance);
             }
         System.out.println("Tabou List size "+ tabuList.size());
         return bestSolution;

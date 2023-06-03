@@ -64,7 +64,6 @@ public class Operateur {
 
 
     public ArrayList<Pair<Solution, ArrayList<String>>>  relocateInter(Solution solution){
-        System.out.println("route initiale" + solution.getNbClients());
         ArrayList<Pair <Solution, ArrayList<String>>> neighbors = new ArrayList<>();
         //Suppression du client dans la route d'origine
         Route newRouteOrigine = new Route();
@@ -421,10 +420,10 @@ public class Operateur {
                 }
 
                 // Parcourir toutes les sous-parties de la route 1
-                for (int startIndex1 = 1; startIndex1 < route1.getListClient().size() - 3; startIndex1++) {
+                for (int startIndex1 = 1; startIndex1 < route1.getListClient().size() - 1; startIndex1++) {
                     for (int endIndex1 = startIndex1 + 2; endIndex1 < route1.getListClient().size() - 1; endIndex1++) {
                         // Parcourir toutes les sous-parties de la route 2
-                        for (int startIndex2 = 1; startIndex2 < route2.getListClient().size() - 3; startIndex2++) {
+                        for (int startIndex2 = 1; startIndex2 < route2.getListClient().size() - 1; startIndex2++) {
                             for (int endIndex2 = startIndex2 + 2; endIndex2 < route2.getListClient().size() - 1; endIndex2++) {
                                 // Extraire les parties des routes à échanger
                                 ArrayList<Client> listClientTemp1 = (ArrayList<Client>) new ArrayList<>(route1.getListClient()).clone();
