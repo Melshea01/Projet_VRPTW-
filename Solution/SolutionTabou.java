@@ -26,7 +26,7 @@ public class SolutionTabou extends Solution {
             Solution currentSolution = this.initialSolution;
             ArrayList<String> currentAction = new ArrayList<>();
             ArrayList<ArrayList<String>> tabuList = new ArrayList<>();
-            ArrayList<Pair<Solution, ArrayList<String>>> visitedSolutions = new ArrayList<>();
+            ArrayList<Pair<Solution, ArrayList<ArrayList<String>>>> visitedSolutions = new ArrayList<>();
             Pair<Solution, ArrayList<String>> currentPair = new Pair<>(currentSolution, currentAction);
 
             int k= 0;
@@ -40,7 +40,7 @@ public class SolutionTabou extends Solution {
                         }
                     }
 
-                    visitedSolutions.add(new Pair<>(currentSolution, currentAction));
+                    visitedSolutions.add(new Pair<>(currentSolution, tabuList));
 
                     Operateur o = new Operateur(vrp);
                     ArrayList<Pair<Solution, ArrayList<String>>> neighbors = new ArrayList<>();
@@ -75,8 +75,6 @@ public class SolutionTabou extends Solution {
                     int clientssss = neighbors.get(neighbors.size() - 1).getKey().getNbClients();
                     Solution solutionToTest = new Solution();
                     ArrayList<String> actionToTest = new ArrayList<>();
-                    //on prends la valeur du premier voisin
-                    double modifiedDistance = Double.POSITIVE_INFINITY;
 
                     if(neighbors.contains(currentSolution)){
                         neighbors.remove(currentSolution);
@@ -107,81 +105,137 @@ public class SolutionTabou extends Solution {
 
                     if (modifiedDistance < bestDistance) {
                         bestDistance = modifiedDistance;
-                        bestSolution = solutionToTest;
-                        currentSolution = solutionToTest;
+                        bestSolution = solutionToTest.cloneSolution();
+                        bestSolution.getTotalDistance();
+                        currentSolution = solutionToTest.cloneSolution();
+                        currentSolution.getTotalDistance();
+                        currentAction.clear();
                         currentAction.addAll(actionToTest);
                         currentPair = new Pair<>(currentSolution, currentAction);
 
-                    } else if (modifiedDistance > bestDistance) {
-                        boolean actionInTabuList = false;
-                        for (ArrayList<String> tabuAction : tabuList) {
-                            if (actionToTest.size() == tabuAction.size()) {
-                                if (actionToTest.get(0).equals(tabuAction.get(0))) {
-                                    switch (actionToTest.get(0)) {
-                                        case "TwoOptSameRoute":
-                                            if (actionToTest.get(1).equals(tabuAction.get(1))) {
-                                                if ((actionToTest.get(2).equals(tabuAction.get(2)) || actionToTest.get(2).equals(tabuAction.get(3))) &&
-                                                        (actionToTest.get(3).equals(tabuAction.get(2)) || actionToTest.get(3).equals(tabuAction.get(3)))) {
-                                                    actionInTabuList = true;
-                                                    break;
-                                                }
-                                            }
-                                            break;
-                                        case "Exchange":
-                                            if ((actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(3).equals(tabuAction.get(3))) ||
-                                                    (actionToTest.get(1).equals(tabuAction.get(3)) && actionToTest.get(3).equals(tabuAction.get(1)))) {
-                                                if ((actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(4).equals(tabuAction.get(4))) ||
-                                                        (actionToTest.get(2).equals(tabuAction.get(4)) && actionToTest.get(4).equals(tabuAction.get(2)))) {
-                                                    actionInTabuList = true;
-                                                    break;
-                                                }
-                                            }
-                                            break;
+                    } else if (modifiedDistance >= bestDistance) {
+                        //Le mouvement est interdit
+                        boolean isForbidden = true;
+                        //Tant qu'il est interdit
+                        while (isForbidden) {
 
-                                        case "Relocate":
-                                            if (actionToTest.get(1).equals(tabuAction.get(3))) {
-                                                //cas d'un relocate intra route
-                                                if (actionToTest.get(4).equals(tabuAction.get(2)) && actionToTest.get(2).equals(tabuAction.get(4))) {
-                                                    actionInTabuList = true;
-                                                    break;
-                                                }
-                                                //cas d'un relocate inter route
-                                                if (actionToTest.get(3).equals(tabuAction.get(1)) && actionToTest.get(4).equals(tabuAction.get(2))) {
-                                                    actionInTabuList = true;
-                                                    break;
-                                                }
-                                            }
-                                            break;
-                                        case "CrossExchange":
-                                            if (actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(4).equals(tabuAction.get(4))) {
-                                                if (actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(5).equals(tabuAction.get(5))) {
-                                                    if (actionToTest.get(3).equals(tabuAction.get(3)) && actionToTest.get(6).equals(tabuAction.get(6))) {
+                            if(!neighbors.isEmpty()) {
+                                solutionToTest = neighbors.get(0).getFirst().cloneSolution();
+                                actionToTest = neighbors.get(0).getSecond();
+                            } else { return bestSolution;}
+                            boolean actionInTabuList = false;
+
+                            for (ArrayList<String> tabuAction : tabuList) {
+                                if (actionToTest.size() == tabuAction.size()) {
+                                    if (actionToTest.get(0).equals(tabuAction.get(0))) {
+                                        switch (actionToTest.get(0)) {
+                                            case "TwoOptSameRoute":
+                                                if (actionToTest.get(1).equals(tabuAction.get(1))) {
+                                                    if ((actionToTest.get(2).equals(tabuAction.get(2)) || actionToTest.get(2).equals(tabuAction.get(3))) &&
+                                                            (actionToTest.get(3).equals(tabuAction.get(2)) || actionToTest.get(3).equals(tabuAction.get(3)))) {
                                                         actionInTabuList = true;
+
+                                                        if(!neighbors.isEmpty()) {
+                                                            neighbors.remove(0);
+                                                        } else { return bestSolution;}
                                                         break;
                                                     }
                                                 }
-                                            }
-                                        break;
+                                                break;
+                                            case "Exchange":
+                                                if ((actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(3).equals(tabuAction.get(3))) ||
+                                                        (actionToTest.get(1).equals(tabuAction.get(3)) && actionToTest.get(3).equals(tabuAction.get(1)))) {
+                                                    if ((actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(4).equals(tabuAction.get(4))) ||
+                                                            (actionToTest.get(2).equals(tabuAction.get(4)) && actionToTest.get(4).equals(tabuAction.get(2)))) {
+                                                        actionInTabuList = true;
+                                                        if(!neighbors.isEmpty()) {
+                                                            neighbors.remove(0);
+                                                        } else { return bestSolution;}
+                                                        break;
+                                                    }
+                                                }
+                                                break;
 
-                                        default: break;
+                                            case "Relocate":
+                                                //Cas d'un relocate intra
+                                                if(actionToTest.get(1).equals(actionToTest.get(3))){
+                                                    if( (actionToTest.get(2).equals(tabuAction.get(2))&&(actionToTest.get(4).equals(tabuAction.get(4))))
+                                                            || (actionToTest.get(2).equals(tabuAction.get(4))&&(actionToTest.get(4).equals(tabuAction.get(2))))) {
+                                                        actionInTabuList = true;
+                                                        if(!neighbors.isEmpty()) {
+                                                            neighbors.remove(0);
+                                                        } else { return bestSolution;}
+                                                        break;
+                                                    }
+                                                }else{
+                                                    if ((actionToTest.get(2).equals(tabuAction.get(2))&&(actionToTest.get(4).equals(tabuAction.get(4)))&&(actionToTest.get(3).equals(tabuAction.get(3))))||
+                                                            actionToTest.get(1).equals(tabuAction.get(3)) && (actionToTest.get(2).equals(tabuAction.get(4))) && (actionToTest.get(3).equals(tabuAction.get(1)) && (actionToTest.get(4).equals(tabuAction.get(2))))){
+                                                        actionInTabuList = true;
+                                                        if(!neighbors.isEmpty()) {
+                                                            neighbors.remove(0);
+                                                        } else { return bestSolution;}
+                                                        break;
+                                                    }
+                                                }
+                                                break;
+                                            case "CrossExchange":
+                                                if (actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(4).equals(tabuAction.get(4))) {
+                                                    if (actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(5).equals(tabuAction.get(5))) {
+                                                        if (actionToTest.get(3).equals(tabuAction.get(3)) && actionToTest.get(6).equals(tabuAction.get(6))) {
+                                                            actionInTabuList = true;
+                                                            if(!neighbors.isEmpty()) {
+                                                                neighbors.remove(0);
+                                                            } else { return bestSolution;}
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+
+                                                //Mouvement inverse
+                                                //Calucle de la différence des indices
+
+                                                int dif1 = Integer.parseInt(tabuAction.get(3)) - Integer.parseInt(tabuAction.get(2));
+                                                int dif2 = Integer.parseInt(tabuAction.get(6)) - Integer.parseInt(tabuAction.get(5));
+                                                String newIndex1 = String.valueOf(Integer.parseInt(actionToTest.get(2)) + dif2);
+                                                String newIndex2 = String.valueOf(Integer.parseInt(actionToTest.get(5)) + dif1);
+                                                //Vérification du mouvement inverse
+                                                if (actionToTest.get(1).equals(tabuAction.get(1)) && actionToTest.get(4).equals(tabuAction.get(4))) {
+                                                    if (actionToTest.get(2).equals(tabuAction.get(2)) && actionToTest.get(5).equals(tabuAction.get(5))) {
+                                                        if (actionToTest.get(3).equals(newIndex1) && actionToTest.get(6).equals(newIndex2)) {
+                                                            actionInTabuList = true;
+                                                            if(!neighbors.isEmpty()) {
+                                                                neighbors.remove(0);
+                                                            } else { return bestSolution;}
+                                                            break;
+                                                        }
+                                                    }
+                                                }
+                                                break;
+
+                                            default:
+                                                break;
+                                        }
+
                                     }
-
                                 }
                             }
-                        }
-                        if (!actionInTabuList) {
-                            currentSolution = solutionToTest;
-                            currentAction.addAll(actionToTest);
-                            currentPair = new Pair<>(currentSolution, currentAction);
+                            //Si l'action n'est pas dans la liste Tabou on l'ajoute
+                            if (!actionInTabuList) {
+                                isForbidden = false;
+                                currentSolution = solutionToTest.cloneSolution();
+                                currentAction.clear();
+                                currentAction.addAll(actionToTest);
+                                currentPair = new Pair<>(currentSolution, currentAction);
 
-                            if (tabuList.size() == this.sizeTabu) {
-                                tabuList.remove(tabuList.size() - 1);
+                                if (tabuList.size() == this.sizeTabu) {
+                                    tabuList.remove(tabuList.size() - 1);
+                                }
+                                tabuList.add(0, actionToTest);
                             }
-
-                            tabuList.add(0, actionToTest);
                         }
                     } else {
-                        currentSolution = solutionToTest;
+                        currentSolution = solutionToTest.cloneSolution();
+                        currentAction.clear();
                         currentAction.addAll(actionToTest);
                         currentPair = new Pair<>(currentSolution, currentAction);
                     }

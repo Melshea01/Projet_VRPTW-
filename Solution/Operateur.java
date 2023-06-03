@@ -323,7 +323,7 @@ public class Operateur {
 
         // On génère toutes les paires de clients possibles
         for (int i = 1; i < this.vrp.getNb_client()-1; i++) {
-            for(int j = 2 ; j < this.vrp.getNb_client() ; j++){
+            for(int j = i+2 ; j < this.vrp.getNb_client() ; j++){
                 clientPair.add(new Pair<>(this.vrp.getClientByIndex(i), this.vrp.getClientByIndex(j)));
             }
         }
@@ -421,10 +421,10 @@ public class Operateur {
                 }
 
                 // Parcourir toutes les sous-parties de la route 1
-                for (int startIndex1 = 1; startIndex1 < route1.getListClient().size() - 1; startIndex1++) {
+                for (int startIndex1 = 1; startIndex1 < route1.getListClient().size() - 3; startIndex1++) {
                     for (int endIndex1 = startIndex1 + 2; endIndex1 < route1.getListClient().size() - 1; endIndex1++) {
                         // Parcourir toutes les sous-parties de la route 2
-                        for (int startIndex2 = 1; startIndex2 < route2.getListClient().size() - 1; startIndex2++) {
+                        for (int startIndex2 = 1; startIndex2 < route2.getListClient().size() - 3; startIndex2++) {
                             for (int endIndex2 = startIndex2 + 2; endIndex2 < route2.getListClient().size() - 1; endIndex2++) {
                                 // Extraire les parties des routes à échanger
                                 ArrayList<Client> listClientTemp1 = (ArrayList<Client>) new ArrayList<>(route1.getListClient()).clone();
