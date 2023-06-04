@@ -5,7 +5,6 @@ import org.apache.commons.math3.util.Pair;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Random;
-import static java.lang.Math.abs;
 
 public class SimulatedAnnealing extends Solution{
     private Solution initialSolution;

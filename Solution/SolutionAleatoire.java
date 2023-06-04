@@ -17,7 +17,7 @@ public class SolutionAleatoire extends Solution{
     //Fonction qui prend en paramètre l'instance VRP
     public Solution generateRandomSolution(InstanceVRP vrp) {
         Solution solution = new Solution(vrp);
-        ArrayList<Client> toDeliver = (ArrayList<Client>) solution.instanceVRP.getClients().clone();
+        ArrayList<Client> toDeliver = (ArrayList<Client>) solution.getInstanceVRP().getClients().clone();
         ArrayList<Double> distances = new ArrayList<>();
         ArrayList<Client> potentials = new ArrayList<>();
         int x_depot = toDeliver.get(0).getX();
@@ -35,7 +35,7 @@ public class SolutionAleatoire extends Solution{
             transportUsed.route.addDestination(toDeliver.get(0));
 
             //Remplissage du camion
-            while (time <= max_time && transportUsed.getChargement() <= solution.instanceVRP.getCapacity() ){
+            while (time <= max_time && transportUsed.getChargement() <= solution.getInstanceVRP().getCapacity() ){
                 //Calculer les clients potentiel
                 for (int i = 1; i < toDeliver.size(); i++) {
                     //la distance entre le véhicule et le client

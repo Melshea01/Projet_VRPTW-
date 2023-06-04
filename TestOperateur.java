@@ -35,17 +35,17 @@ public class TestOperateur {
          * */
 
         ArrayList<Pair<Solution, ArrayList<String>>> neighbors = new ArrayList<>();
-        neighbors = o.crossExchange(solution1);
+        //neighbors = o.crossExchange(solution1);
         //neighbors = o.twoOpt(solution1);
         //neighbors = o.exchange(solution1);
         //neighbors = o.relocateIntra(solution1);
-        //neighbors = o.relocateInter(solution1);
+        neighbors = o.relocateInter(solution1);
         Solution soltemp = new Solution();
         soltemp = solution1.cloneSolution();
 
         for(Route route: solution1.getRoutes()) {
             System.out.println("route base :");
-            for (Client client : route.clients) {
+            for (Client client : route.getListClient()) {
                 System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
             }
             System.out.println(" ");
@@ -57,7 +57,7 @@ public class TestOperateur {
         int i1 =0;
         while ( i1<10){
 
-            neighbors = o.crossExchange(soltemp);
+            neighbors = o.relocateInter(soltemp);
         if (neighbors.get(0).getFirst() != null) {
             for (int i = 0; i < neighbors.size(); i++) {
                 double disttemp = soltemp.getTotalDistance();
@@ -67,7 +67,7 @@ public class TestOperateur {
                     System.out.println(neighbors.get(i).getSecond());
                     for (Route route : soltemp.getRoutes()) {
                         System.out.println("route base :");
-                        for (Client client : route.clients) {
+                        for (Client client : route.getListClient()) {
                             System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
                         }
                         System.out.println(" ");
@@ -82,7 +82,7 @@ public class TestOperateur {
                     visu.updateGraph(soltemp.getRoutes());
                     for (Route route : soltemp.getRoutes()) {
                         System.out.println("route modif :");
-                        for (Client client : route.clients) {
+                        for (Client client : route.getListClient()) {
                             System.out.println("Client " + client.getIdName() + " - temps de début: (" + client.getReadyTime() + ", temps de fin " + client.getDueTime() + ")");
                         }
                         System.out.println(" ");

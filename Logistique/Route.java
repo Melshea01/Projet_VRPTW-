@@ -1,37 +1,18 @@
 package Logistique;
 
-import java.awt.*;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.concurrent.atomic.AtomicInteger;
 
 public class Route {
 
-public double distance;
-public ArrayList<Client> clients = new ArrayList<>();
-//TODO : Peut être utilisé une hashmap
-HashMap<Client, Point> hashMap = new HashMap<>();
-private static final AtomicInteger ID_FACTORY = new AtomicInteger();
-private final int id;
-
-
-    /*Logistique.Route à faire
-* Ajouter les destinations au fur et à mesure
-* les sauvegarder pour éviter de repasser sur une route passer
-* */
+    private double distance;
+    private ArrayList<Client> clients = new ArrayList<>();
 
     public Route() {
-        this.id = ID_FACTORY.getAndIncrement();
         this.distance = 0;
     }
 
-
     public  void addDestination (Client Destination) {
         clients.add(Destination);
-    }
-
-    public void removeDestination (Client Destination){
-        clients.remove(Destination);
     }
 
     public void setClients(ArrayList<Client> clients) {
@@ -53,24 +34,6 @@ private final int id;
         return index;
     }
 
-    public int getTotalDemandRoute() {
-        int totaldemand = 0;
-        for (int i =0; i<clients.size(); i++){
-             totaldemand += clients.get(i).getDemand();
-        }
-        return totaldemand;
-    }
-
-    /*
-* Calcul de la distance parcourue par le camion
-* */
-    public double getDistance() {
-        return distance;
-    }
-
-    public final int getId() {
-        return id;
-    }
 
     /*
     Ajout de la distance parcourue
@@ -187,7 +150,4 @@ private final int id;
             return true; // La route est réalisable
         } else { return false;}
     }
-
-
-
 }

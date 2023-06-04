@@ -9,7 +9,7 @@ import java.util.Random;
 
 public class Operateur {
 
-    private InstanceVRP vrp;
+    private final InstanceVRP vrp;
 
 
     public Operateur(InstanceVRP vrp) {
@@ -22,7 +22,7 @@ public class Operateur {
     public ArrayList<Pair<Solution, ArrayList<String>>>  twoOpt(Solution solution){
         ArrayList<Pair <Solution, ArrayList<String>>> neighbors = new ArrayList<>();
 
-        for(int i1 =0;i1 < solution.getRoutes().size()-1 ; i1++) {
+        for(int i1 =0 ; i1 < solution.getRoutes().size() ; i1++) {
                 //Vérification qu'il y a au moins 3 clients dans la  route
                 if (solution.getRoutes().get(i1).getListClient().size() < 5) {
                     break;
@@ -70,7 +70,7 @@ public class Operateur {
 
 
         //Pour toutes les routes de la solution
-        for(int i = 0;i < solution.getRoutes().size()-1 ; i++){
+        for(int i = 0;i < solution.getRoutes().size() ; i++){
             //On copie la liste de de client de la route
              Route route1 = solution.getRoutes().get(i).cloneRoute();
             if(solution.getRoutes().get(i).getListClient().size()<3){

@@ -94,7 +94,7 @@ public class Main {
         int nbroute=0;
         ArrayList<Route> routesTabou = solutionUpgrade.getRoutes();
         for(Route route : routesTabou){
-            if(route.clients.size()>2){
+            if(route.getListClient().size()>2){
                 nbroute++;
             }
         }

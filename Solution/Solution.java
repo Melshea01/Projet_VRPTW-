@@ -1,27 +1,19 @@
 package Solution;
 
-import Logistique.Client;
 import Logistique.InstanceVRP;
 import Logistique.Route;
 import Logistique.Transport;
-import org.apache.commons.math3.util.Pair;
 
 import java.util.ArrayList;
-import java.util.Random;
 
-import static java.lang.Math.pow;
-import static java.lang.Math.sqrt;
 
 public class Solution {
 
     private ArrayList<Route> routes;
     private ArrayList<Transport> transports;
-
     private double distanceSolution ;
+    protected InstanceVRP instanceVRP;
 
-    public InstanceVRP instanceVRP;
-
-    private int nbClients;
 
     public Solution() {
         this.routes = new ArrayList<Route>();
@@ -50,17 +42,6 @@ public class Solution {
         return route;
     }
 
-    public int getIndexOfRoute(Route searchRoute) {
-        int index = 0;
-        for (int i = 0 ; i < this.getRoutes().size()-1 ; i++) {
-            Route route = this.getRoutes().get(i);
-            if(searchRoute.routesAreEquals(route)) {
-                index = i;
-            }
-        }
-        return index;
-    }
-
     public InstanceVRP getInstanceVRP() {
         return this.instanceVRP;
     }
@@ -74,26 +55,12 @@ public class Solution {
         return distanceSolution;
     }
 
-    public int getNbClients() {
-        this.nbClients =0;
-        for (Route route : this.routes) {
-            this.nbClients += route.getListClient().size()-2;
-        }
-        return this.nbClients;
-    }
-
     //Modifie la liste des routes d'une solution
     public void setRoutes(ArrayList routes) {
         this.routes = routes;
         this.distanceSolution = this.getTotalDistance();
     }
 
-
-    protected Route getRandomRoute() {
-        Random rand = new Random();
-        int randomIndex = rand.nextInt(routes.size());
-        return routes.get(randomIndex);
-    }
 
     public Solution cloneSolution() {
         Solution clonedSolution = new Solution();
@@ -104,8 +71,5 @@ public class Solution {
 
         return clonedSolution;
     }
-
-
-
 }
 

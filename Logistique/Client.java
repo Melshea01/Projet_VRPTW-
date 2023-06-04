@@ -1,7 +1,5 @@
 package Logistique;
 
-import java.util.ArrayList;
-
 public class Client {
     private String idName;
     private int x;
@@ -10,7 +8,6 @@ public class Client {
     private int dueTime;
     private int demand;
     private int service;
-    public int livraisontime;
 
     public Client(String idName, int x, int y, int readyTime, int dueTime, int demand, int service) {
         this.idName = idName;
@@ -21,8 +18,6 @@ public class Client {
         this.demand = demand;
         //Temps de livraison
         this.service = service;
-        //Date de livraison
-        this.livraisontime = 0;
     }
 
     public String getIdName() {
@@ -45,13 +40,8 @@ public class Client {
         return this.dueTime;
     }
 
-
     public int getDemand() {
         return this.demand;
-    }
-
-    public int getLivraisontime() {
-        return this.livraisontime;
     }
 
     public int getService() {
@@ -61,6 +51,4 @@ public class Client {
     public boolean isFeasible(double arrivalTime) {
         return arrivalTime >= this.readyTime && arrivalTime <= this.dueTime;
     }
-
-
 }

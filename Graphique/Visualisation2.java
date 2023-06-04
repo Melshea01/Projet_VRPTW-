@@ -100,7 +100,7 @@ public class Visualisation2 {
                 Node node2 = graph.getNode(vehicleClients.get(i + 1).getIdName());
                 Edge edge = graph.addEdge(node1.getId() + "-" + node2.getId(), node1, node2);
                 if (edge != null) {
-                    edge.setAttribute("vehicle", route.getId());
+                    edge.setAttribute("vehicle");
                     edge.setAttribute("ui.style", "fill-color: " + color + "; size: 1px;");
                 }
             }
