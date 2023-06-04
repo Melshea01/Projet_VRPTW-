@@ -3,7 +3,6 @@ package Solution;
 import Logistique.Client;
 import Logistique.InstanceVRP;
 import Logistique.Transport;
-import Solution.Solution;
 
 import java.util.ArrayList;
 import java.util.Random;

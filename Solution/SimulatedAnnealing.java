@@ -42,7 +42,6 @@ public class SimulatedAnnealing extends Solution{
         if (o.crossExchange(initialSolution).get(0).getFirst() != null) {
             neighbors.addAll(o.crossExchange(initialSolution));
         }
-        System.out.println("distance initiale" + this.initialSolution.getTotalDistance());
 
         // On récupère le pire voisin
         for (int i = 0; i < neighbors.size(); i++) {
@@ -63,20 +62,13 @@ public class SimulatedAnnealing extends Solution{
         this.setInitialTemperature();
         double currentTemp = this.initialTemperature;
         Solution currentSolution = this.initialSolution;
-        System.out.println("Température initiale" + this.initialTemperature);
         double currentDistance = this.initialSolution.getTotalDistance();
 
         while(currentTemp > this.finalTemperature) {
-            System.out.println("bestDistance" + bestDistance);
+            System.out.println("Meilleure solution intermédiaire : " + bestSolution);
             for(int l=0; l < this.movesAtTTemp; l++) {
 
-                Iterator<Route> iterator = currentSolution.getRoutes().iterator();
-                while (iterator.hasNext()) {
-                    Route route = iterator.next();
-                    if (route.getListClient().size() < 3) {
-                        iterator.remove(); // Utilisation de la méthode remove() de l'itérateur pour supprimer les routes vides
-                    }
-                }
+                currentSolution.getRoutes().removeIf(route -> route.getListClient().size() < 3);
 
                 // On génère tous les voisins
                 ArrayList<Pair<Solution, ArrayList<String>>> neighbors = new ArrayList<>();
@@ -126,6 +118,7 @@ public class SimulatedAnnealing extends Solution{
             }
             currentTemp *= decrease;
         }
+        System.out.println("Température initiale " + this.initialTemperature);
         return bestSolution;
     }
 }

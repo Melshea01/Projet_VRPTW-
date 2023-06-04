@@ -26,14 +26,6 @@ public class Solution {
         this.instanceVRP = instance;
     }
 
-    public void addRoute(Route route) {
-        this.routes.add(route);
-    }
-
-    public void addTransport(Transport transport) {
-        this.transports.add(transport);
-    }
-
     public ArrayList<Route> getRoutes() {
         return this.routes;
     }
@@ -61,7 +53,6 @@ public class Solution {
         this.distanceSolution = this.getTotalDistance();
     }
 
-
     public Solution cloneSolution() {
         Solution clonedSolution = new Solution();
 
@@ -70,6 +61,14 @@ public class Solution {
         // Assurez-vous de copier en profondeur les objets imbriqués si nécessaire
 
         return clonedSolution;
+    }
+
+    public void addRoute(Route route) {
+        this.routes.add(route);
+    }
+
+    public void addTransport(Transport transport) {
+        this.transports.add(transport);
     }
 }
 

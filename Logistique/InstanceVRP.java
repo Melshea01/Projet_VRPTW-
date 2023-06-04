@@ -1,7 +1,5 @@
 package Logistique;
 
-import Logistique.Client;
-
 import java.util.ArrayList;
 
 public class InstanceVRP {

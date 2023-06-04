@@ -11,13 +11,20 @@ public class Route {
         this.distance = 0;
     }
 
-    public  void addDestination (Client Destination) {
-        clients.add(Destination);
-    }
+
 
     public void setClients(ArrayList<Client> clients) {
         this.clients.clear();
         this.clients.addAll(clients);
+    }
+
+    //Modifier un objet route
+    public Route setRoute(ArrayList<Client> newClients) {
+        Route newRoute = new Route();
+        for (Client client : newClients) {
+            newRoute.addDestination(client);
+        }
+        return newRoute;
     }
 
     public ArrayList<Client> getListClient() {
@@ -34,6 +41,30 @@ public class Route {
         return index;
     }
 
+    //calcule la distance totale
+    public double calculateDistance() {
+        double distance = 0.0;
+
+        for (int i = 0; i < clients.size() - 1; i++) {
+            Client currentClient = clients.get(i);
+            Client nextClient = clients.get(i + 1);
+
+            // Calculer la distance entre le client actuel et le client suivant
+            double clientDistance = getDistanceBetweenTwoClient(currentClient,nextClient);
+
+            distance += clientDistance;
+
+        }
+        this.distance= distance;
+        return distance;
+    }
+
+    /*
+   Ajout d'un client
+    */
+    public  void addDestination (Client Destination) {
+        clients.add(Destination);
+    }
 
     /*
     Ajout de la distance parcourue
@@ -51,15 +82,6 @@ public class Route {
     public Route cloneRoute() {
         Route newRoute = new Route();
         for (Client client : this.getListClient()) {
-            newRoute.addDestination(client);
-        }
-        return newRoute;
-    }
-
-    //Modifier un objet route
-    public Route setRoute(ArrayList<Client> newClients) {
-        Route newRoute = new Route();
-        for (Client client : newClients) {
             newRoute.addDestination(client);
         }
         return newRoute;
@@ -91,6 +113,7 @@ public class Route {
     }
 
 
+    //calcule l'heure d'arrivée à un client depuis un autre
     public double calculateArrivalTime(Client prevClient, Client currClient) {
         double distance = Math.sqrt(Math.pow(currClient.getX() - prevClient.getX(), 2) + Math.pow(currClient.getY() - prevClient.getY(), 2));
         double arrivalTime = prevClient.getService() + distance;
@@ -103,24 +126,8 @@ public class Route {
         }
     }
 
-    public double calculateDistance() {
-        double distance = 0.0;
 
-        for (int i = 0; i < clients.size() - 1; i++) {
-            Client currentClient = clients.get(i);
-            Client nextClient = clients.get(i + 1);
-
-            // Calculer la distance entre le client actuel et le client suivant
-            double clientDistance = getDistanceBetweenTwoClient(currentClient,nextClient);
-
-            distance += clientDistance;
-
-        }
-        this.distance= distance;
-        return distance;
-    }
-    //fonction relocate capable d'ajouter un client d'une route vers une autre
-
+    //calcule la distance entre deux clients
     public double getDistanceBetweenTwoClient(Client c1, Client c2){
         double x1 = c1.getX();
         double y1 = c1.getY();
@@ -130,6 +137,7 @@ public class Route {
         return distance;
     }
 
+    // estime si une route est faisable en tenant compte des contraintes de temps et de capacité de chargement
     public boolean isFeasible(int capacity) {
         int currentTime = 0; // On commence à l'entrepôt à l'heure 0
         int totalDemand = 0;

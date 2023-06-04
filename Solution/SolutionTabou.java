@@ -23,7 +23,6 @@ public class SolutionTabou extends Solution {
         Solution currentSolution = this.initialSolution;
         ArrayList<String> currentAction = new ArrayList<>();
         ArrayList<ArrayList<String>> tabuList = new ArrayList<>();
-        Pair<Solution, ArrayList<String>> currentPair = new Pair<>(currentSolution, currentAction);
 
         // Si une route a été vidée, on la supprime
         for(int k =0 ; k<max ; k++) {
@@ -60,11 +59,10 @@ public class SolutionTabou extends Solution {
                 neighbors.remove(currentSolution);
             }
 
-            double modifiedDistance = Double.POSITIVE_INFINITY;
-            // On trie le meilleur voisin
+            double modifiedDistance;
 
 
-            // Changement de stratégie on trie
+            // On trie la liste des voisins
             sortByDistance(neighbors);
 
             //On choisit le meilleur voisin
@@ -82,7 +80,6 @@ public class SolutionTabou extends Solution {
                 currentSolution.getTotalDistance();
                 currentAction.clear();
                 currentAction.addAll(actionToTest);
-                currentPair = new Pair<>(currentSolution, currentAction);
 
             } else if (modifiedDistance >= bestDistance) {
                 //Le mouvement est interdit
@@ -210,7 +207,6 @@ public class SolutionTabou extends Solution {
                         currentSolution = solutionToTest.cloneSolution();
                         currentAction.clear();
                         currentAction.addAll(actionToTest);
-                        currentPair = new Pair<>(currentSolution, currentAction);
 
                         if (tabuList.size() == this.sizeTabu) {
                             tabuList.remove(tabuList.size() - 1);
@@ -222,9 +218,8 @@ public class SolutionTabou extends Solution {
                 currentSolution = solutionToTest.cloneSolution();
                 currentAction.clear();
                 currentAction.addAll(actionToTest);
-                currentPair = new Pair<>(currentSolution, currentAction);
             }
-            System.out.println("k = " + k);
+            System.out.println(k+"ème itération");
             k++;
         }
         return bestSolution;

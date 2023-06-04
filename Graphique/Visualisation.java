@@ -1,20 +1,14 @@
 package Graphique;
 
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Random;
-
 import org.graphstream.graph.Edge;
-import org.graphstream.graph.Graph;
 import org.graphstream.graph.Node;
 import org.graphstream.graph.implementations.SingleGraph;
+import org.graphstream.ui.view.Viewer;
+
 
 import Logistique.Client;
 import Logistique.Route;
-import org.graphstream.ui.view.View;
-import org.graphstream.ui.view.Viewer;
-import org.graphstream.ui.view.ViewerPipe;
 
 
 public class Visualisation {
@@ -90,6 +84,5 @@ public class Visualisation {
             }
             colorIndex += 100;
         }
-
     }
 }
