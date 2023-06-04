@@ -23,15 +23,11 @@ public class SolutionTabou extends Solution {
         Solution currentSolution = this.initialSolution;
         ArrayList<String> currentAction = new ArrayList<>();
         ArrayList<ArrayList<String>> tabuList = new ArrayList<>();
-        ArrayList<Pair<Solution, ArrayList<ArrayList<String>>>> visitedSolutions = new ArrayList<>();
         Pair<Solution, ArrayList<String>> currentPair = new Pair<>(currentSolution, currentAction);
 
-        int k = 0;
         // Si une route a été vidée, on la supprime
-        while (!visitedSolutions.contains(currentPair) && k < max) {
+        for(int k =0 ; k<max ; k++) {
             currentSolution.getRoutes().removeIf(route -> route.getListClient().size() < 3);
-
-            visitedSolutions.add(new Pair<>(currentSolution, tabuList));
 
             Operateur o = new Operateur(vrp);
             ArrayList<Pair<Solution, ArrayList<String>>> neighbors = new ArrayList<>();

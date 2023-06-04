@@ -43,11 +43,11 @@ public class SimulatedAnnealing extends Solution{
             neighbors.addAll(o.crossExchange(initialSolution));
         }
         System.out.println("distance initiale" + this.initialSolution.getTotalDistance());
-        // On récupère le meilleur voisin
+
+        // On récupère le pire voisin
         for (int i = 0; i < neighbors.size(); i++) {
             if (neighbors.get(i).getFirst() != null) {
                 double neighborDistance = neighbors.get(i).getKey().getTotalDistance();
-//                System.out.println("voisin " + i +" " + neighborDistance);
                 if (delta < neighborDistance - this.initialSolution.getTotalDistance()) {
                     delta = neighborDistance - this.initialSolution.getTotalDistance();
                 }
@@ -106,20 +106,6 @@ public class SimulatedAnnealing extends Solution{
                 Pair<Solution, ArrayList<String>> randNeighbor = neighbors.get(randNeighborIndex.nextInt(neighbors.size()));
                 solutionToTest = randNeighbor.getKey();
 
-
-//                // On récupère le meilleur voisin
-//                double modifiedDistance = Double.POSITIVE_INFINITY;
-//                for (int i = 0; i < neighbors.size(); i++) {
-//                    if (neighbors.get(i).getFirst() != null) {
-//                        double neighborDistance = neighbors.get(i).getKey().getTotalDistance();
-//                        if (neighborDistance <= modifiedDistance) {
-//                            modifiedDistance = neighborDistance;
-//                            if(modifiedDistance != currentSolution.getTotalDistance()){
-//                                solutionToTest = neighbors.get(i).getFirst();
-//                            }
-//                        }
-//                    }
-//                }
 
                 // On regarde si la nouvelle solution a une plus petite distance totale que l'autre
                 double distDifference = solutionToTest.getTotalDistance() - currentDistance;
